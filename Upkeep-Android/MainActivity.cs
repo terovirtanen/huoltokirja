@@ -1,11 +1,11 @@
 ﻿using Android.App;
 using Android.OS;
 using Android.Runtime;
-using Android.Views;
 using Android.Widget;
 using AndroidX.AppCompat.App;
-using System;
 using System.Collections.Generic;
+using UpkeepBase.Data;
+using UpkeepBase.Model;
 
 namespace Upkeep_Android
 {
@@ -17,8 +17,12 @@ namespace Upkeep_Android
         private List<MainListItems> mlist;
         MainListAdapter adapter;
 
+        DataManager dataManager;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
+            dataManager = new DataManager();
+
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
 
@@ -27,22 +31,8 @@ namespace Upkeep_Android
 
             mainList = (ListView)FindViewById<ListView>(Resource.Id.mainlistview);
 
-            List<MainListItems> objstud = new List<MainListItems>();
-            objstud.Add(new MainListItems
-            {
-                Name = "Suresh",
-                Age = 26
-            });
-            objstud.Add(new MainListItems
-            {
-                Name = "C#Cornet",
-                Age = 26
-            });
-            objstud.Add(new MainListItems
-            {
-                Name = "JAva",
-                Age = 28
-            }); 
+            List<MainListItems> objstud = ConvertToMainList(dataManager.GetDependantList());
+
             mainlistView = FindViewById<ListView>(Resource.Id.mainlistview);
             mlist = new List<MainListItems>();
             mlist = objstud;
@@ -53,7 +43,23 @@ namespace Upkeep_Android
             //    Android.Widget.Toast.MakeText(this, t, Android.Widget.ToastLength.Long).Show();
             //};
         }
+        private List<MainListItems> ConvertToMainList(DependantList dependantList)
+        {
+            List<MainListItems> mainlist = new List<MainListItems>();
 
+            var items = dependantList.Items;
+
+            items.ForEach(item =>
+            {
+                mainlist.Add(new MainListItems
+                {
+                    Title = item.Name,
+                    Description = item.Name
+                });
+            });
+
+            return mainlist;
+        }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
@@ -61,5 +67,7 @@ namespace Upkeep_Android
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+
+
     }
 }

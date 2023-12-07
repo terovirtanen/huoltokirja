@@ -46,8 +46,8 @@ namespace Upkeep_Android
                 TextView txtName = row.FindViewById<TextView>(Resource.Id.textView1);
                 TextView txtName2 = row.FindViewById<TextView>(Resource.Id.textView2);
 
-                txtName.Text = sList[position].Name;
-                txtName2.Text = sList[position].Age.ToString();
+                txtName.Text = sList[position].Title;
+                txtName2.Text = sList[position].Description;
             }
             catch (Exception ex)
             {
@@ -59,12 +59,12 @@ namespace Upkeep_Android
     }
     public class MainListItems
     {
-        public string Name
+        public string Title
         {
             get;
             set;
         }
-        public int Age
+        public string Description
         {
             get;
             set;
