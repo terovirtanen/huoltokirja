@@ -38,10 +38,11 @@ namespace Upkeep_Android
             mlist = objstud;
             adapter = new MainListAdapter(this, mlist);
             mainList.Adapter = adapter;
-            //mainList.ItemClick += (s, e) => {
-            //    var t = items[e.Position];
-            //    Android.Widget.Toast.MakeText(this, t, Android.Widget.ToastLength.Long).Show();
-            //};
+            mainList.ItemClick += (s, e) =>
+            {
+                var t = adapter[e.Position];
+                Android.Widget.Toast.MakeText(this, t.Title, Android.Widget.ToastLength.Long).Show();
+            };
         }
         private List<MainListItems> ConvertToMainList(DependantList dependantList)
         {
