@@ -18,10 +18,12 @@ namespace Upkeep_Android
         MainListAdapter adapter;
 
         DataManager dataManager;
+        NotesList notesList;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             dataManager = new DataManager();
+            notesList = new NotesList();
 
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
@@ -31,7 +33,8 @@ namespace Upkeep_Android
 
             mainList = (ListView)FindViewById<ListView>(Resource.Id.mainlistview);
 
-            List<MainListItems> objstud = ConvertToMainList(dataManager.GetDependantList());
+//            List<MainListItems> objstud = ConvertToMainList(dataManager.GetDependantList());
+            List<MainListItems> objstud = ConvertToMainList(notesList);
 
             mainlistView = FindViewById<ListView>(Resource.Id.mainlistview);
             mlist = new List<MainListItems>();
@@ -44,18 +47,18 @@ namespace Upkeep_Android
                 Android.Widget.Toast.MakeText(this, t.Title, Android.Widget.ToastLength.Long).Show();
             };
         }
-        private List<MainListItems> ConvertToMainList(DependantList dependantList)
+        private List<MainListItems> ConvertToMainList(NotesList notesList)
         {
             List<MainListItems> mainlist = new List<MainListItems>();
 
-            var items = dependantList.Items;
+            var items = notesList.Items;
 
             items.ForEach(item =>
             {
                 mainlist.Add(new MainListItems
                 {
-                    Title = item.Name,
-                    Description = item.Name
+                    Title = item.Title,
+                    Description = item.ListText
                 });
             });
 
