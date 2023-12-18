@@ -41,7 +41,7 @@ namespace Upkeep_Android
             {
                 if (row == null)
                 {
-                    row = sContext.LayoutInflater.Inflate(Resource.Layout.activity_main, null, false);
+                    row = sContext.LayoutInflater.Inflate(Resource.Layout.activity_row_main, null, false);
                 }
                 TextView txtName = row.FindViewById<TextView>(Resource.Id.textView1);
                 TextView txtName2 = row.FindViewById<TextView>(Resource.Id.textView2);

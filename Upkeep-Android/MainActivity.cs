@@ -13,7 +13,6 @@ namespace Upkeep_Android
     public class MainActivity : AppCompatActivity
     {
         ListView mainList;
-        private ListView mainlistView;
         private List<MainListItems> mlist;
         MainListAdapter adapter;
 
@@ -36,7 +35,6 @@ namespace Upkeep_Android
 //            List<MainListItems> objstud = ConvertToMainList(dataManager.GetDependantList());
             List<MainListItems> objstud = ConvertToMainList(notesList);
 
-            mainlistView = FindViewById<ListView>(Resource.Id.mainlistview);
             mlist = new List<MainListItems>();
             mlist = objstud;
             adapter = new MainListAdapter(this, mlist);

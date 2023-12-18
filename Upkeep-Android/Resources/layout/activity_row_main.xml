@@ -5,18 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:text="Lisää"
+    <TextView
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/buttonAdd"/>
-
-    <ListView
-        android:minWidth="25px"
-        android:minHeight="25px"
+        android:id="@+id/textView1" />
+    <TextView
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/buttonAdd"
+        android:id="@+id/textView2" 
+        android:layout_below="@id/textView1"/>
 
-        android:id="@+id/mainlistview" />
 </RelativeLayout>
