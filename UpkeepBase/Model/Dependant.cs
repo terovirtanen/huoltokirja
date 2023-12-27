@@ -107,7 +107,7 @@ namespace UpkeepBase.Model
         }
         public INote AddNoteFromScheduler(NoteTypes noteType, string title, string description, DateTime eventtime)
         {
-            INote note = null;
+            INote? note = null;
 
             if (noteType == NoteTypes.BASIC)
             {

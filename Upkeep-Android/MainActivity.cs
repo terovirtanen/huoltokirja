@@ -41,8 +41,12 @@ namespace Upkeep_Android
             mainList.Adapter = adapter;
             mainList.ItemClick += (s, e) =>
             {
-                var t = adapter[e.Position];
-                Android.Widget.Toast.MakeText(this, t.Title, Android.Widget.ToastLength.Long).Show();
+                //var t = adapter[e.Position];
+                //Android.Widget.Toast.MakeText(this, t.Title, Android.Widget.ToastLength.Long).Show();
+
+                var fm = SupportFragmentManager;
+                var dialog = MainDialogFragment.NewInstance(this);
+                dialog.Show(fm, "dialog");
             };
         }
         private List<MainListItems> ConvertToMainList(NotesList notesList)
