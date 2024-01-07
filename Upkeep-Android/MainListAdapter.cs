@@ -11,11 +11,13 @@ namespace Upkeep_Android
     {
         public List<MainListItems> sList;
         private Activity sContext;
+
         public MainListAdapter(Activity context, List<MainListItems> list)
         {
             sList = list;
             sContext = context;
         }
+
         public override MainListItems this[int position]
         {
             get
@@ -41,7 +43,7 @@ namespace Upkeep_Android
             {
                 if (row == null)
                 {
-                    row = sContext.LayoutInflater.Inflate(Resource.Layout.activity_row_main, null, false);
+                     row = sContext.LayoutInflater.Inflate(Resource.Layout.activity_row_main, null, false);
                 }
                 TextView txtName = row.FindViewById<TextView>(Resource.Id.textView1);
                 TextView txtName2 = row.FindViewById<TextView>(Resource.Id.textView2);

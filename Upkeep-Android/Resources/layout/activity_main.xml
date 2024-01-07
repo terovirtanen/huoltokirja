@@ -11,12 +11,15 @@
         android:layout_height="wrap_content"
         android:id="@+id/buttonAdd"/>
 
-    <ListView
-        android:minWidth="25px"
-        android:minHeight="25px"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/mainTabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/buttonAdd"
+        android:layout_below="@id/buttonAdd"/>
 
-        android:id="@+id/mainlistview" />
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/mainViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/mainTabLayout" />
 </RelativeLayout>
