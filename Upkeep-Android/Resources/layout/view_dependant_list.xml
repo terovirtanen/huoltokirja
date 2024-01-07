@@ -12,13 +12,23 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
-        <TextView
-            android:layout_width="wrap_content"
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="view2"
+            android:id="@+id/dependantSpinner" />
+        <TextView
+            android:id="@+id/dependantText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:textSize="16dp"
             android:layout_marginTop="10dp" />
-
+        <ListView
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/dependantlistview" />
     </LinearLayout>
 </ScrollView>

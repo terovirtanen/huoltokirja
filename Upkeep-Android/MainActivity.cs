@@ -114,8 +114,8 @@ namespace Upkeep_Android
                 string text = position switch
                 {
                     0 => "View 1",
-                    1 => "View 2",
-                    _ => "ViewList"
+                    1 => "ViewList",
+                    _ => "ViewDependantList"
                 };
 
                 tab.SetText(text);
@@ -138,8 +138,8 @@ namespace Upkeep_Android
                 return position switch
                 {
                     0 => View1.NewInstance(),
-                    1 => View2.NewInstance(),
-                    _ => ViewList.NewInstance()
+                    1 => ViewList.NewInstance(),
+                    _ => ViewDependantList.NewInstance()
 
                 };
             }

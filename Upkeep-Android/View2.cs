@@ -30,12 +30,12 @@ namespace Upkeep_Android
 
             var dataManager = new DataManager();
 
-            var dependantArray = dataManager.GetDependantList().Items.Select(x => x.Name).ToList();
+            var dependants = dataManager.GetDependantList().Items.Select(x => x.Name).ToList();
 
             Spinner spinner = view.FindViewById<Spinner>(Resource.Id.dependantSpinner);
 
             spinner.ItemSelected += new EventHandler<AdapterView.ItemSelectedEventArgs>(spinner_ItemSelected);
-            var adapter = new ArrayAdapter<String>(this.Context as Activity, Android.Resource.Layout.SimpleSpinnerItem, dependantArray);
+            var adapter = new ArrayAdapter<String>(this.Context as Activity, Android.Resource.Layout.SimpleSpinnerItem, dependants);
             adapter.SetDropDownViewResource(Android.Resource.Layout.SimpleSpinnerDropDownItem);
             spinner.Adapter = adapter;
 
@@ -46,7 +46,7 @@ namespace Upkeep_Android
         private void spinner_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
         {
             Spinner spinner = (Spinner)sender;
-            string toast = string.Format("The planet is {0}", spinner.GetItemAtPosition(e.Position));
+            string toast = string.Format("The dependant is {0}", spinner.GetItemAtPosition(e.Position));
             Toast.MakeText(this.Context as Activity, toast, ToastLength.Long).Show();
         }
     }

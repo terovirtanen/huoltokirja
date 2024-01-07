@@ -62,10 +62,12 @@
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
     <Compile Include="MainDialogFragment.cs" />
+    <Compile Include="DependantListAdapter.cs" />
     <Compile Include="MainListAdapter.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="View1.cs" />
+    <Compile Include="ViewDependantList.cs" />
     <Compile Include="ViewList.cs" />
     <Compile Include="View2.cs" />
   </ItemGroup>
@@ -134,6 +136,12 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\view_list.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\view_dependant_list.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>
