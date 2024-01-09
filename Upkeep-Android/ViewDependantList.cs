@@ -12,6 +12,7 @@ using System.Text;
 using UpkeepBase.Data;
 using UpkeepBase.Model;
 using UpkeepBase.Model.Note;
+using static Java.IO.ObjectInputStream;
 using Fragment = AndroidX.Fragment.App.Fragment;
 
 namespace Upkeep_Android
@@ -40,23 +41,42 @@ namespace Upkeep_Android
             adapter.SetDropDownViewResource(Android.Resource.Layout.SimpleSpinnerDropDownItem);
             spinner.Adapter = adapter;
 
+            RefresfListViewData(view, dependants.FirstOrDefault());
 
-            TextView textfield = view.FindViewById<TextView>(Resource.Id.dependantText);
-            textfield.Text = dependants.FirstOrDefault();
+            return view;
+        }
 
-            var dependantList = (ListView)view.FindViewById<ListView>(Resource.Id.dependantlistview);
+        private void spinner_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
+        {
+            Spinner spinner = (Spinner)sender;
+            var selected = spinner.GetItemAtPosition(e.Position);
+            string toast = string.Format("The dependant is {0}", selected);
 
-            var notesList = dataManager.GetDependantList().Items.Where(x => x.Name == textfield.Text).First().NItemsOrderByDescendingByEventTime;
+            RefresfListViewData(this.View, selected.ToString());
+
+            Toast.MakeText(this.Context as Activity, toast, ToastLength.Long).Show();
+        }
+
+        private void RefresfListViewData(View _view, string dependantName)
+        {
+            var dependantItem = dataManager.GetDependantList().Items.Where(x => x.Name == dependantName).First();
+
+            TextView textfield = _view.FindViewById<TextView>(Resource.Id.dependantText);
+
+            // show text field only if something to present
+            dependantItem.CalculateCounterEstimate();
+            textfield.Text = dependantItem.CounterEstimate;
+            //textfield.Visibility = (textfield.Text == "") ? ViewStates.Gone : ViewStates.Visible;
+
+            var notesList = dependantItem.NItemsOrderByDescendingByEventTime;
             List<DependantListItems> objstud = ConvertToDependantList(notesList);
 
             var mlist = new List<DependantListItems>();
             mlist = objstud;
             var mainlistadapter = new DependantListAdapter(this.Context as Activity, mlist);
+
+            var dependantList = (ListView)_view.FindViewById<ListView>(Resource.Id.dependantlistview);
             dependantList.Adapter = mainlistadapter;
-
-
-
-            return view;
         }
         private List<DependantListItems> ConvertToDependantList(List<INote> notesList)
         {
@@ -74,28 +94,5 @@ namespace Upkeep_Android
             return dependantlist;
         }
 
-        private void spinner_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
-        {
-            Spinner spinner = (Spinner)sender;
-            var selected = spinner.GetItemAtPosition(e.Position);
-            string toast = string.Format("The dependant is {0}", selected);
-            
-            TextView textfield = this.View.FindViewById<TextView>(Resource.Id.dependantText);
-            textfield.Text = selected.ToString();
-
-
-            var dependantList = (ListView)this.View.FindViewById<ListView>(Resource.Id.dependantlistview);
-
-            var notesList = dataManager.GetDependantList().Items.Where(x => x.Name == textfield.Text).First().NItemsOrderByDescendingByEventTime;
-            List<DependantListItems> objstud = ConvertToDependantList(notesList);
-
-            var mlist = new List<DependantListItems>();
-            mlist = objstud;
-            var mainlistadapter = new DependantListAdapter(this.Context as Activity, mlist);
-            dependantList.Adapter = mainlistadapter;
-
-
-            Toast.MakeText(this.Context as Activity, toast, ToastLength.Long).Show();
-        }
     }
 }
