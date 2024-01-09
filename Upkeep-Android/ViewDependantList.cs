@@ -1,5 +1,6 @@
 ﻿using Android.App;
 using Android.Content;
+using Android.Media.TV;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
@@ -43,6 +44,18 @@ namespace Upkeep_Android
 
             RefresfListViewData(view, dependants.FirstOrDefault());
 
+            var dependantButton = (Button)view.FindViewById<Button>(Resource.Id.buttonAddDependant);
+
+            dependantButton.Click += (s, e) =>
+            {
+                var t = "Add new";
+                Toast.MakeText(this.Context, t, ToastLength.Long).Show();
+
+                //    var fm = SupportFragmentManager;
+                //    var dialog = MainDialogFragment.NewInstance(this);
+                //    dialog.Show(fm, "dialog");
+            };
+
             return view;
         }
 
@@ -77,6 +90,17 @@ namespace Upkeep_Android
 
             var dependantList = (ListView)_view.FindViewById<ListView>(Resource.Id.dependantlistview);
             dependantList.Adapter = mainlistadapter;
+
+
+            dependantList.ItemClick += (s, e) =>
+            {
+                var t = mainlistadapter[e.Position];
+                Toast.MakeText(this.Context, t.Title, ToastLength.Long).Show();
+
+                //    var fm = SupportFragmentManager;
+                //    var dialog = MainDialogFragment.NewInstance(this);
+                //    dialog.Show(fm, "dialog");
+            };
         }
         private List<DependantListItems> ConvertToDependantList(List<INote> notesList)
         {

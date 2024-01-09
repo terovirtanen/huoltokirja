@@ -2,7 +2,6 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -13,17 +12,36 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
 
-        <androidx.appcompat.widget.AppCompatSpinner
+        <!-- 
+            android:background="@android:color/white"
+
+            android:background="@android:color/transparent" 
+        hide spinner arrow: android:background="android:color/transparent" -->
+        <RelativeLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/dependantSpinner" />
+            android:layout_height="wrap_content">
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:background="@android:color/transparent" 
+                android:id="@+id/dependantSpinner" />
+            <Button
+                android:text="Add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/buttonAddDependant"/> 
+        </RelativeLayout>
         <TextView
             android:id="@+id/dependantText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:textSize="16dp"
-            android:layout_marginTop="10dp" />
+
+             />
         <ListView
             android:minWidth="25px"
             android:minHeight="25px"
