@@ -55,7 +55,7 @@ namespace Upkeep_Android
 
             TabLayout tabLayout = view.FindViewById<TabLayout>(Resource.Id.tabLayout);
 
-            var adapter = new MainDialogAdapter(ChildFragmentManager, ViewLifecycleOwner.Lifecycle, 2);
+            var adapter = new MainDialogAdapter(ChildFragmentManager, ViewLifecycleOwner.Lifecycle, 3);
 
             viewPager2.Adapter = adapter;
 
@@ -79,7 +79,14 @@ namespace Upkeep_Android
 
         public void OnConfigureTab(TabLayout.Tab tab, int position)
         {
-            tab.SetText(position == 0 ? "View 2" : "View 1");
+            string text = position switch
+            {
+                0 => "Basic",
+                1 => "Notes",
+                _ => "Schedules"
+            };
+
+            tab.SetText(text);
         }
     }
 
@@ -99,8 +106,9 @@ namespace Upkeep_Android
         {
             return position switch
             {
-                0 => View1.NewInstance(),
-                _ => View2.NewInstance()
+                0 => ViewDependantBasic.NewInstance(),
+                1 => ViewDependantNote.NewInstance(),
+                _ => ViewDependantScheduler.NewInstance()
             };
         }
     }

@@ -43,7 +43,7 @@ namespace Upkeep_Android
 
             TabLayout tabLayout = FindViewById<TabLayout>(Resource.Id.mainTabLayout);
 
-            var adapter = new MainMMMAdapter(this.SupportFragmentManager, this.Lifecycle, 3);
+            var adapter = new MainMMMAdapter(this.SupportFragmentManager, this.Lifecycle, 2);
 
             viewPager2.Adapter = adapter;
 
@@ -113,8 +113,7 @@ namespace Upkeep_Android
             {
                 string text = position switch
                 {
-                    0 => "View 1",
-                    1 => "ViewList",
+                    0 => "ViewList",
                     _ => "ViewDependantList"
                 };
 
@@ -123,9 +122,11 @@ namespace Upkeep_Android
         }
         public class MainMMMAdapter : FragmentStateAdapter
         {
+            private AndroidX.Fragment.App.FragmentManager _fragmentManager;
             public MainMMMAdapter(AndroidX.Fragment.App.FragmentManager fragmentManager, Lifecycle lifecylce, int itemCount) : base(fragmentManager, lifecylce)
             {
                 this.itemCount = itemCount;
+                this._fragmentManager = fragmentManager;
             }
 
             private readonly int itemCount;
@@ -137,9 +138,8 @@ namespace Upkeep_Android
             {
                 return position switch
                 {
-                    0 => View1.NewInstance(),
-                    1 => ViewList.NewInstance(),
-                    _ => ViewDependantList.NewInstance()
+                    0 => ViewList.NewInstance(),
+                    _ => ViewDependantList.NewInstance(_fragmentManager)
 
                 };
             }

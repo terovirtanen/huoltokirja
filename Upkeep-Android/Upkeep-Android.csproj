@@ -66,10 +66,11 @@
     <Compile Include="MainListAdapter.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="View1.cs" />
+    <Compile Include="ViewDependantBasic.cs" />
     <Compile Include="ViewDependantList.cs" />
+    <Compile Include="ViewDependantScheduler.cs" />
     <Compile Include="ViewList.cs" />
-    <Compile Include="View2.cs" />
+    <Compile Include="ViewDependantNote.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -129,10 +130,10 @@
     <AndroidResource Include="Resources\layout\main_tabbed_dialog.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\view1.xml" />
+    <AndroidResource Include="Resources\layout\view_dependant_basic.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\view2.xml" />
+    <AndroidResource Include="Resources\layout\view_dependant_scheduler.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\view_list.xml">
@@ -141,7 +142,13 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\view_dependant_list.xml">
+    <AndroidResource Include="Resources\layout\view_list_dependant.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\view_dependant_note.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>

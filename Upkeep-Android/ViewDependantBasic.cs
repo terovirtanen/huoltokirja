@@ -13,18 +13,18 @@ using Fragment = AndroidX.Fragment.App.Fragment;
 
 namespace Upkeep_Android
 {
-    public class View1 : Fragment
+    public class ViewDependantBasic : Fragment
     {
-        public static View1 NewInstance()
+        public static ViewDependantBasic NewInstance()
         {
-            return new View1 { Arguments = new Bundle() };
+            return new ViewDependantBasic { Arguments = new Bundle() };
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             base.OnCreateView(inflater, container, savedInstanceState);
 
-            var view = inflater.Inflate(Resource.Layout.view1, container, false);
+            var view = inflater.Inflate(Resource.Layout.view_dependant_basic, container, false);
 
             return view;
         }

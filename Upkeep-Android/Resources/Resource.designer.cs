@@ -14,7 +14,7 @@ namespace Upkeep_Android
 {
 	
 	
-	[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Android.Build.Tasks", "13.2.1.111")]
+	[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Android.Build.Tasks", "13.2.2.120")]
 	public partial class Resource
 	{
 		
@@ -11665,16 +11665,19 @@ namespace Upkeep_Android
 			public const int support_simple_spinner_dropdown_item = 2131427439;
 			
 			// aapt resource value: 0x7F0B0070
-			public const int view1 = 2131427440;
+			public const int view_dependant_basic = 2131427440;
 			
 			// aapt resource value: 0x7F0B0071
-			public const int view2 = 2131427441;
+			public const int view_dependant_note = 2131427441;
 			
 			// aapt resource value: 0x7F0B0072
-			public const int view_dependant_list = 2131427442;
+			public const int view_dependant_scheduler = 2131427442;
 			
 			// aapt resource value: 0x7F0B0073
 			public const int view_list = 2131427443;
+			
+			// aapt resource value: 0x7F0B0074
+			public const int view_list_dependant = 2131427444;
 			
 			static Layout()
 			{

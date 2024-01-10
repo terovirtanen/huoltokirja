@@ -15,14 +15,18 @@ using UpkeepBase.Model;
 using UpkeepBase.Model.Note;
 using static Java.IO.ObjectInputStream;
 using Fragment = AndroidX.Fragment.App.Fragment;
+using AndroidX.Fragment.App;
+using System.Runtime.CompilerServices;
 
 namespace Upkeep_Android
 {
     public class ViewDependantList : Fragment
     {
         private DataManager dataManager;
-        public static ViewDependantList NewInstance()
+        protected static AndroidX.Fragment.App.FragmentManager _fragmentManager;
+        public static ViewDependantList NewInstance(AndroidX.Fragment.App.FragmentManager fragmentManager)
         {
+            _fragmentManager = fragmentManager;
             return new ViewDependantList { Arguments = new Bundle() };
         }
 
@@ -30,7 +34,7 @@ namespace Upkeep_Android
         {
             base.OnCreateView(inflater, container, savedInstanceState);
 
-            var view = inflater.Inflate(Resource.Layout.view_dependant_list, container, false);
+            var view = inflater.Inflate(Resource.Layout.view_list_dependant, container, false);
 
             dataManager = new DataManager();
 
@@ -51,9 +55,9 @@ namespace Upkeep_Android
                 var t = "Add new";
                 Toast.MakeText(this.Context, t, ToastLength.Long).Show();
 
-                //    var fm = SupportFragmentManager;
-                //    var dialog = MainDialogFragment.NewInstance(this);
-                //    dialog.Show(fm, "dialog");
+                var fm = _fragmentManager;
+                var dialog = MainDialogFragment.NewInstance(this.Context);
+                dialog.Show(fm, "dialog");
             };
 
             return view;
