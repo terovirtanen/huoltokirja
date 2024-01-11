@@ -15,9 +15,29 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dependant basic"
+            android:text="Name"
             android:layout_marginBottom="10dp"
             android:textSize="16dp"
             android:layout_marginTop="10dp" />
+        <androidx.appcompat.widget.AppCompatEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editDependantName" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Group"
+            android:layout_marginBottom="10dp"
+            android:textSize="16dp"
+            android:layout_marginTop="10dp" />
+        <androidx.appcompat.widget.AppCompatEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editDependantGroup" />
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editDependantUnit" />
+
     </LinearLayout>
 </ScrollView>

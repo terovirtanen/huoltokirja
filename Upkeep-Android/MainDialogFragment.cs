@@ -35,11 +35,18 @@ namespace Upkeep_Android
         {
             var view = inflater.Inflate(Resource.Layout.main_tabbed_dialog, container, false);
 
-            var btnOK = view.FindViewById<Button>(Resource.Id.btnOK);
+
+            var btnOK = view.FindViewById<Button>(Resource.Id.buttonDependantOK);
 
             btnOK.Click += BtnOK_Click;
 
             return view;
+        }
+        public override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+            SetStyle(DialogFragment.StyleNoTitle, Resource.Style.DialogStyle);
+
         }
 
         private void BtnOK_Click(object sender, EventArgs e)
@@ -51,7 +58,7 @@ namespace Upkeep_Android
         {
             base.OnViewCreated(view, savedInstanceState);
 
-            ViewPager2 viewPager2 = view.FindViewById<ViewPager2>(Resource.Id.masterViewPager);
+            ViewPager2 viewPager2 = view.FindViewById<ViewPager2>(Resource.Id.dependantViewPager);
 
             TabLayout tabLayout = view.FindViewById<TabLayout>(Resource.Id.tabLayout);
 
