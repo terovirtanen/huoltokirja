@@ -55,8 +55,13 @@ namespace Upkeep_Android
                 var t = "Add new";
                 Toast.MakeText(this.Context, t, ToastLength.Long).Show();
 
+                Spinner spinner = view.FindViewById<Spinner>(Resource.Id.dependantSpinner);
+                string selected = spinner.SelectedItem.ToString();
+
+                IDependant dependant = dataManager.GetDependantList().Items.Find(x => x.Name == selected);
+
                 var fm = _fragmentManager;
-                var dialog = MainDialogFragment.NewInstance(this.Context);
+                var dialog = MainDialogFragment.NewInstance(this.Context, dependant);
                 dialog.Show(fm, "dialog");
             };
 
@@ -101,9 +106,10 @@ namespace Upkeep_Android
                 var t = mainlistadapter[e.Position];
                 Toast.MakeText(this.Context, t.Title, ToastLength.Long).Show();
 
-                //    var fm = SupportFragmentManager;
-                //    var dialog = MainDialogFragment.NewInstance(this);
-                //    dialog.Show(fm, "dialog");
+                var fm = _fragmentManager;
+                var dialog = MainDialogFragment.NewInstance(this.Context);
+                dialog.Show(fm, "dialog");
+
             };
         }
         private List<DependantListItems> ConvertToDependantList(List<INote> notesList)

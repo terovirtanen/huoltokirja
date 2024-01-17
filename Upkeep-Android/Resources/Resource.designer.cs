@@ -10003,10 +10003,10 @@ namespace Upkeep_Android
 			public const int edge = 2131230902;
 			
 			// aapt resource value: 0x7F0800B7
-			public const int editDependantGroup = 2131230903;
+			public const int editDependantName = 2131230903;
 			
 			// aapt resource value: 0x7F0800B8
-			public const int editDependantName = 2131230904;
+			public const int editDependantTag = 2131230904;
 			
 			// aapt resource value: 0x7F0800B9
 			public const int editDependantUnit = 2131230905;

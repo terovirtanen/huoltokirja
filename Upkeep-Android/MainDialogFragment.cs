@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UpkeepBase.Model;
 using DialogFragment = AndroidX.Fragment.App.DialogFragment;
 using Fragment = AndroidX.Fragment.App.Fragment;
 using FragmentManager = AndroidX.Fragment.App.FragmentManager;
@@ -24,13 +25,23 @@ namespace Upkeep_Android
     public partial class MainDialogFragment : DialogFragment
     {
         static Context mContext;
+        private IDependant mSelectedDependant;
 
+        private MainDialogFragment(IDependant dependant) : base()
+        {
+            mSelectedDependant = dependant;
+        }
         public static MainDialogFragment NewInstance(Context context)
         {
             mContext = context;
-            return new MainDialogFragment();
+            return new MainDialogFragment(null);
         }
-
+        public static MainDialogFragment NewInstance(Context context, IDependant dependant)
+        {
+            mContext = context;
+            return new MainDialogFragment(dependant);
+        }
+        
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             var view = inflater.Inflate(Resource.Layout.main_tabbed_dialog, container, false);
@@ -63,6 +74,7 @@ namespace Upkeep_Android
             TabLayout tabLayout = view.FindViewById<TabLayout>(Resource.Id.tabLayout);
 
             var adapter = new MainDialogAdapter(ChildFragmentManager, ViewLifecycleOwner.Lifecycle, 3);
+            adapter.mSelectedDependant = mSelectedDependant;
 
             viewPager2.Adapter = adapter;
 
@@ -99,6 +111,8 @@ namespace Upkeep_Android
 
     public class MainDialogAdapter : FragmentStateAdapter
     {
+        public IDependant mSelectedDependant;
+
         public MainDialogAdapter(FragmentManager fragmentManager, Lifecycle lifecylce, int itemCount) : base(fragmentManager, lifecylce)
         {
             this.itemCount = itemCount;
@@ -113,7 +127,7 @@ namespace Upkeep_Android
         {
             return position switch
             {
-                0 => ViewDependantBasic.NewInstance(),
+                0 => ViewDependantBasic.NewInstance(mSelectedDependant),
                 1 => ViewDependantNote.NewInstance(),
                 _ => ViewDependantScheduler.NewInstance()
             };
