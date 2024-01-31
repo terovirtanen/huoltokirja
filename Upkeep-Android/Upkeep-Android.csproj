@@ -66,11 +66,12 @@
     <Compile Include="MainListAdapter.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewDependantBasic.cs" />
-    <Compile Include="ViewDependantList.cs" />
-    <Compile Include="ViewDependantScheduler.cs" />
+    <Compile Include="ViewDependant\IOnDialogCloseListener.cs" />
+    <Compile Include="ViewDependant\ViewDependantBasic.cs" />
+    <Compile Include="ViewDependant\ViewDependantList.cs" />
+    <Compile Include="ViewDependant\ViewDependantScheduler.cs" />
     <Compile Include="ViewList.cs" />
-    <Compile Include="ViewDependantNote.cs" />
+    <Compile Include="ViewDependant\ViewDependantNote.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

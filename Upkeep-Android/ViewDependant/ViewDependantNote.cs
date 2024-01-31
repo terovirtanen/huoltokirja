@@ -14,7 +14,7 @@ using Fragment = AndroidX.Fragment.App.Fragment;
 
 namespace Upkeep_Android
 {
-    public class ViewDependantNote : Fragment
+    public class ViewDependantNote : Fragment, IOnDialogCloseListener
     {
 
         public static ViewDependantNote NewInstance()
@@ -29,6 +29,11 @@ namespace Upkeep_Android
             var view = inflater.Inflate(Resource.Layout.view_dependant_note, container, false);
 
             return view;
+        }
+
+        public void OnDialogClose()
+        {
+            //throw new NotImplementedException();
         }
     }
 }

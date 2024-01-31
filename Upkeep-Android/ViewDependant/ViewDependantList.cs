@@ -17,12 +17,14 @@ using static Java.IO.ObjectInputStream;
 using Fragment = AndroidX.Fragment.App.Fragment;
 using AndroidX.Fragment.App;
 using System.Runtime.CompilerServices;
+using Android.Webkit;
 
 namespace Upkeep_Android
 {
-    public class ViewDependantList : Fragment
+    public class ViewDependantList : Fragment, IOnDialogCloseListener
     {
         private DataManager dataManager;
+        private Spinner spinner;
         protected static AndroidX.Fragment.App.FragmentManager _fragmentManager;
         public static ViewDependantList NewInstance(AndroidX.Fragment.App.FragmentManager fragmentManager)
         {
@@ -40,11 +42,13 @@ namespace Upkeep_Android
 
             var dependants = dataManager.GetDependantList().Items.Select(x => x.Name).ToList();
 
-            Spinner spinner = view.FindViewById<Spinner>(Resource.Id.dependantSpinner);
+            spinner = view.FindViewById<Spinner>(Resource.Id.dependantSpinner);
             spinner.ItemSelected += new EventHandler<AdapterView.ItemSelectedEventArgs>(spinner_ItemSelected);
-            var adapter = new ArrayAdapter<String>(this.Context as Activity, Android.Resource.Layout.SimpleSpinnerItem, dependants);
+            //var adapter = new ArrayAdapter<String>(this.Context as Activity, Android.Resource.Layout.SimpleSpinnerItem, dependants);
+            var adapter = new SpinnerAdapter(this.Context as Activity, Android.Resource.Layout.SimpleSpinnerItem, dependants);
             adapter.SetDropDownViewResource(Android.Resource.Layout.SimpleSpinnerDropDownItem);
             spinner.Adapter = adapter;
+
 
             RefresfListViewData(view, dependants.FirstOrDefault());
 
@@ -61,7 +65,7 @@ namespace Upkeep_Android
                 IDependant dependant = dataManager.GetDependantList().Items.Find(x => x.Name == selected);
 
                 var fm = _fragmentManager;
-                var dialog = MainDialogFragment.NewInstance(this.Context, dependant);
+                var dialog = MainDialogFragment.NewInstance(this.Context, dependant, this);
                 dialog.Show(fm, "dialog");
             };
 
@@ -128,5 +132,38 @@ namespace Upkeep_Android
             return dependantlist;
         }
 
+        public void OnDialogClose()
+        {
+            // ei ole päivittynyt
+            var dependants = dataManager.GetDependantList().Items.Select(x => x.Name).ToList();
+            spinner.Adapter = new SpinnerAdapter(this.Context as Activity, Android.Resource.Layout.SimpleSpinnerItem, dependants);
+
+            var adapter = spinner.Adapter as SpinnerAdapter;
+            adapter.SetDropDownViewResource(Android.Resource.Layout.SimpleSpinnerDropDownItem);
+
+            adapter.NotifyDataSetChanged();
+            //this.View.RefreshDrawableState();
+        }
+
+
+        public class SpinnerAdapter : ArrayAdapter<string>
+        {
+            List<string> items;
+            Activity context;
+            public SpinnerAdapter(Activity context, int resource, List<string> items) : base(context, resource, items)
+            {
+                this.context = context;
+                this.items = items;
+            }
+            public override View GetView(int position, View convertView, ViewGroup parent)
+            {
+                View view = convertView; // re-use an existing view, if one is available
+                if (view == null) // otherwise create a new one
+                    view = context.LayoutInflater.Inflate(Android.Resource.Layout.SimpleSpinnerItem, null);
+                view.FindViewById<TextView>(Android.Resource.Id.Text1).Text = items[position];
+
+                return view;
+            }
+        }
     }
 }

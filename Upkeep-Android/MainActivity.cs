@@ -43,7 +43,7 @@ namespace Upkeep_Android
 
             TabLayout tabLayout = FindViewById<TabLayout>(Resource.Id.mainTabLayout);
 
-            var adapter = new MainMMMAdapter(this.SupportFragmentManager, this.Lifecycle, 2);
+            var adapter = new MainActivityAdapter(this.SupportFragmentManager, this.Lifecycle, 2);
 
             viewPager2.Adapter = adapter;
 
@@ -120,10 +120,10 @@ namespace Upkeep_Android
                 tab.SetText(text);
             }
         }
-        public class MainMMMAdapter : FragmentStateAdapter
+        public class MainActivityAdapter : FragmentStateAdapter
         {
             private AndroidX.Fragment.App.FragmentManager _fragmentManager;
-            public MainMMMAdapter(AndroidX.Fragment.App.FragmentManager fragmentManager, Lifecycle lifecylce, int itemCount) : base(fragmentManager, lifecylce)
+            public MainActivityAdapter(AndroidX.Fragment.App.FragmentManager fragmentManager, Lifecycle lifecylce, int itemCount) : base(fragmentManager, lifecylce)
             {
                 this.itemCount = itemCount;
                 this._fragmentManager = fragmentManager;
