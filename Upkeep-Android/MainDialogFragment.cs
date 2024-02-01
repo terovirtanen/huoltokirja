@@ -148,7 +148,7 @@ namespace Upkeep_Android
             return position switch
             {
                 0 => ViewDependantBasic.NewInstance(mSelectedDependant),
-                1 => ViewDependantNote.NewInstance(),
+                1 => ViewDependantNote.NewInstance(mSelectedDependant),
                 _ => ViewDependantScheduler.NewInstance()
             };
         }

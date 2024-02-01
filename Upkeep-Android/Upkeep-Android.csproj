@@ -60,6 +60,7 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DependantNotesListAdapter.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MainDialogFragment.cs" />
     <Compile Include="DependantListAdapter.cs" />
