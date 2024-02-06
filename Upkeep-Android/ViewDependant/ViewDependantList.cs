@@ -38,7 +38,7 @@ namespace Upkeep_Android
 
             var view = inflater.Inflate(Resource.Layout.view_list_dependant, container, false);
 
-            dataManager = new DataManager();
+            dataManager = ((this.Context as Activity).Application as UpKeepApplication).dataManager;
 
             var dependants = dataManager.GetDependantList().Items.Select(x => x.Name).ToList();
 
@@ -64,9 +64,14 @@ namespace Upkeep_Android
 
                 IDependant dependant = dataManager.GetDependantList().Items.Find(x => x.Name == selected);
 
-                var fm = _fragmentManager;
-                var dialog = MainDialogFragment.NewInstance(this.Context, dependant, this);
-                dialog.Show(fm, "dialog");
+                //var fm = _fragmentManager;
+                //var dialog = MainDialogFragment.NewInstance(this.Context, dependant, this);
+                //dialog.Show(fm, "dialog");
+
+
+                Intent intent = new Intent(this.Context, typeof(DependantActivity));
+                intent.PutExtra("selectedDependantName", dependant.Name);
+                StartActivity(intent);
             };
 
             return view;

@@ -67,6 +67,8 @@
     <Compile Include="MainListAdapter.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UpKeepApplication.cs" />
+    <Compile Include="ViewDependant\DependantActivity.cs" />
     <Compile Include="ViewDependant\IOnDialogCloseListener.cs" />
     <Compile Include="ViewDependant\ViewDependantBasic.cs" />
     <Compile Include="ViewDependant\ViewDependantList.cs" />
@@ -151,6 +153,12 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\view_dependant_note.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\activity_dependant.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>

@@ -13,6 +13,7 @@ using Google.Android.Material.Tabs;
 using System.Collections.Generic;
 using UpkeepBase.Data;
 using UpkeepBase.Model;
+using static Android.Service.Voice.VoiceInteractionSession;
 
 namespace Upkeep_Android
 {
@@ -23,16 +24,11 @@ namespace Upkeep_Android
         private List<MainListItems> mlist;
         //MainListAdapter mainlistadapter;
 
-        DataManager dataManager;
-        NotesList notesList;
 
         ViewPager2 viewPager2;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
-            dataManager = new DataManager();
-            notesList = new NotesList();
-
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
 
@@ -53,6 +49,14 @@ namespace Upkeep_Android
             tabMediator.Attach();
 
 
+            var dependantButton = FindViewById<Button>(Resource.Id.buttonAdd);
+
+            dependantButton.Click += (s, e) =>
+            {
+                Intent intent = new Intent(this, typeof(DependantActivity));
+                StartActivity(intent);
+            };
+
             //// mainlist view stuff
             //mainList = (ListView)FindViewById<ListView>(Resource.Id.mainlistview);
 
@@ -63,7 +67,7 @@ namespace Upkeep_Android
             //mlist = objstud;
             //var mainlistadapter = new MainListAdapter(this, mlist);
             //mainList.Adapter = new MainListAdapter(this, mlist);
-         //   mainList.Adapter = mainlistadapter;
+            //   mainList.Adapter = mainlistadapter;
             //mainList.ItemClick += (s, e) =>
             //{
             //    //var t = adapter[e.Position];

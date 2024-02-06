@@ -9,12 +9,23 @@ namespace UpkeepBase.Data
 {
     public class DataManager
     {
-        private DependantList dependantlist = new DependantList();
+        private static DataManager dataManager = new DataManager();
+        private DependantList dependantlist;
 
-        public DataManager()
+        private DataManager()
         {
+            dependantlist = new DependantList();
+
             TestData testData = new TestData();
-            testData.AddTestData(this.dependantlist);
+            testData.AddTestData(dependantlist);
+        }
+        public static DataManager GetInstance()
+        {
+            if (dataManager == null)
+            {
+                dataManager = new DataManager();
+            }
+            return dataManager;
         }
 
         public DependantList GetDependantList()

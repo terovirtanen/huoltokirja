@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dependant name"
+        android:layout_marginBottom="10dp"
+        android:textSize="16dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/textDependantActivity"/>
+    <Button
+        android:text="Lisää Note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/buttonDependantFinish"
+        android:id="@+id/buttonAddNote"/>
+    <Button
+        android:text="X"
+        android:layout_width="40sp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/buttonDependantFinish"/>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/dependantTabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:layout_below="@+id/buttonDependantFinish"/>
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/dependantViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dependantTabLayout"/>
+</RelativeLayout>
