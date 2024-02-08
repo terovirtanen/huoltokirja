@@ -65,22 +65,41 @@ namespace Upkeep_Android
                 //var fm = _fragmentManager;
                 //var dialog = MainDialogFragment.NewInstance(this.Context);
                 //dialog.Show(fm, "dialog");
+
+                var note = mDependant.NItemsOrderByDescendingByEventTime.Find(x => x.GetHashCode() == t.ItemHashCode);
+
+                NoteActivity.mNote = (INote)note;
+
+                Intent intent = new Intent(this.Context, typeof(NoteActivity));
+                intent.PutExtra("noteHashCode", t.ItemHashCode);
+                StartActivity(intent);
+
+                //Spinner spinner = _view.FindViewById<Spinner>(Resource.Id.dependantSpinner);
+                //string selected = spinner.SelectedItem.ToString();
+
+                //IDependant dependant = dataManager.GetDependantList().Items.Find(x => x.Name == selected);
+
+                //Intent intent = new Intent(this.Context, typeof(DependantActivity));
+                //intent.PutExtra("selectedDependantName", dependant.Name);
+                //StartActivity(intent);
+
             };
         }
         private List<NotesListItems> ConvertToNotesList(List<INote> notesList)
         {
-            List<NotesListItems> noteslist = new List<NotesListItems>();
+            List<NotesListItems> _noteslist = new List<NotesListItems>();
 
             notesList.ForEach(item =>
             {
-                noteslist.Add(new NotesListItems
+                _noteslist.Add(new NotesListItems
                 {
                     Title = item.Title,
-                    Description = item.ListText
+                    Description = item.ListText,
+                    ItemHashCode = item.GetHashCode()
                 });
             });
 
-            return noteslist;
+            return _noteslist;
         }
 
     }

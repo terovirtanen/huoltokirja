@@ -68,6 +68,7 @@
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UpKeepApplication.cs" />
+    <Compile Include="Utils\DatePickerFragment.cs" />
     <Compile Include="ViewDependant\DependantActivity.cs" />
     <Compile Include="ViewDependant\IOnDialogCloseListener.cs" />
     <Compile Include="ViewDependant\ViewDependantBasic.cs" />
@@ -75,6 +76,8 @@
     <Compile Include="ViewDependant\ViewDependantScheduler.cs" />
     <Compile Include="ViewList.cs" />
     <Compile Include="ViewDependant\ViewDependantNote.cs" />
+    <Compile Include="ViewNote\NoteActivity.cs" />
+    <Compile Include="ViewNote\ViewNoteBasic.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -159,6 +162,24 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\activity_dependant.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\view_note.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\activity_note.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\view_note_service.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>
