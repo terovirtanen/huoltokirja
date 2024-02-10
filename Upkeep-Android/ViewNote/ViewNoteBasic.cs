@@ -16,6 +16,7 @@ using AndroidX.AppCompat.Widget;
 using System.Runtime.InteropServices;
 using static Upkeep_Android.ViewDependantList;
 using UpkeepBase.Model.Note;
+using Java.Lang.Annotation;
 
 namespace Upkeep_Android
 {
@@ -44,6 +45,13 @@ namespace Upkeep_Android
 
             LinearLayout parentLayout = view.FindViewById<LinearLayout>(Resource.Id.noteParentLinearLayout);
 
+            if ( mNote.GetType().Name == "Inspection")
+            {
+                var _view = inflater.Inflate(Resource.Layout.view_note_inspection, null);
+                ElementSetInspection(_view);
+                parentLayout.AddView(_view);
+            }
+
             if (mNote.GetType().Name == "Service" || mNote.GetType().Name == "Inspection")
             {
                 var _view = inflater.Inflate(Resource.Layout.view_note_service, null);
@@ -54,8 +62,8 @@ namespace Upkeep_Android
 
             ElementSet(view);
 
-            var elementDate = view.FindViewById<TextView>(Resource.Id.noteDate);
-            //var elementDate = view.FindViewById<AppCompatEditText>(Resource.Id.noteDate);
+            //var elementDate = view.FindViewById<TextView>(Resource.Id.noteDate);
+            var elementDate = view.FindViewById<AppCompatEditText>(Resource.Id.noteDate);
             elementDate.Text = mNote.EventTime.ToShortDateString();
 
             elementDate.Click += (s, e) =>
@@ -99,13 +107,27 @@ namespace Upkeep_Android
                 if (mNote.GetType().Name == "Inspection") { index = 0; }
 
                 elementType.SetSelection(index);
-
-
             }
-
         }
         private void ElementSetService(View view)
         {
+            var elementCounter = view.FindViewById<AppCompatEditText>(Resource.Id.noteCounter);
+            var elementPrice = view.FindViewById<AppCompatEditText>(Resource.Id.notePrice);
+            var elementFixer = view.FindViewById<AppCompatEditText>(Resource.Id.noteFixer);
+            if (mNote != null)
+            {
+                elementCounter.Text = mNote.Counter.ToString();
+                elementPrice.Text = (mNote as INoteService).Price.ToString();
+                elementFixer.Text = (mNote as INoteService).Fixer.ToString();
+            }
+        }
+        private void ElementSetInspection(View view)
+        {
+            var elementInspection = view.FindViewById<CheckBox>(Resource.Id.checkBoxInspection);
+            if (mNote != null)
+            {
+                elementInspection.Selected = (mNote as INoteInspection).Pass;
+            }
         }
         void DateSelect_OnClick(object sender, EventArgs eventArgs)
         {

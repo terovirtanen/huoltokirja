@@ -1,14 +1,50 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<TextView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="note service"
     android:layout_marginBottom="10dp"
     android:textSize="16dp"
     android:layout_marginTop="10dp" />
-<!--<androidx.appcompat.widget.AppCompatEditText
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="counter"
+    android:textSize="16dp"
+    android:layout_marginTop="10dp" />
+<androidx.appcompat.widget.AppCompatEditText
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/noteTitle" />-->
+    android:inputType="number"
+    android:maxLines="1"
+    android:id="@+id/noteCounter" />
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="price"
+    android:textSize="16dp"
+    android:layout_marginTop="10dp" />
+<androidx.appcompat.widget.AppCompatEditText
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:inputType="numberDecimal"
+    android:maxLines="1"
+    android:id="@+id/notePrice" />
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="fixer"
+    android:textSize="16dp"
+    android:layout_marginTop="10dp" />
+<androidx.appcompat.widget.AppCompatEditText
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/noteFixer" />
+</LinearLayout>
+

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UpkeepBase.Model.Note
 {
-    internal class Service : Note
+    internal class Service : Note, INoteService
     {
         private const string CLASSTITLE = "Huolto";
 
