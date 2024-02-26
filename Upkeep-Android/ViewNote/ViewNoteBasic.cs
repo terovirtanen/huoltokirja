@@ -91,22 +91,22 @@ namespace Upkeep_Android
         {
             var elementTitle = view.FindViewById<AppCompatEditText>(Resource.Id.noteTitle);
             var elementDescription = view.FindViewById<AppCompatEditText>(Resource.Id.noteDescription);
-            var elementType = view.FindViewById<Spinner>(Resource.Id.noteTypeSpinner);
+            //var elementType = view.FindViewById<Spinner>(Resource.Id.noteTypeSpinner);
 
-            var adapter = new ArrayAdapter<String>(this.Context as Activity, Android.Resource.Layout.SimpleSpinnerItem, Constansts.NoteTypes);
-            adapter.SetDropDownViewResource(Android.Resource.Layout.SimpleSpinnerDropDownItem);
-            elementType.Adapter = adapter;
+            //var adapter = new ArrayAdapter<String>(this.Context as Activity, Android.Resource.Layout.SimpleSpinnerItem, Constansts.NoteTypes);
+            //adapter.SetDropDownViewResource(Android.Resource.Layout.SimpleSpinnerDropDownItem);
+            //elementType.Adapter = adapter;
 
             if (mNote != null)
             {
                 elementTitle.Text = mNote.Title;
                 elementDescription.Text = mNote.Description;
 
-                var index = 2;
-                if (mNote.GetType().Name == "Service") { index = 1; }
-                if (mNote.GetType().Name == "Inspection") { index = 0; }
+                //var index = 2;
+                //if (mNote.GetType().Name == "Service") { index = 1; }
+                //if (mNote.GetType().Name == "Inspection") { index = 0; }
 
-                elementType.SetSelection(index);
+                //elementType.SetSelection(index);
             }
         }
         private void ElementSetService(View view)
@@ -147,13 +147,26 @@ namespace Upkeep_Android
         {
             var elementTitle = view.FindViewById<AppCompatEditText>(Resource.Id.noteTitle);
             var elementDescription = view.FindViewById<AppCompatEditText>(Resource.Id.noteDescription);
-            var elementType = view.FindViewById<Spinner>(Resource.Id.noteTypeSpinner);
-
+            var elementDate = view.FindViewById<AppCompatEditText>(Resource.Id.noteDate);
 
             if (mNote != null)
             {
                 mNote.Title = elementTitle.Text;
                 mNote.Description = elementDescription.Text;
+                mNote.EventTime = DateTime.Parse(elementDate.Text);
+
+                if (mNote.GetType().Name == "Service" || mNote.GetType().Name == "Inspection")
+                {
+                    INoteService noteService = mNote as INoteService;
+                    noteService.Counter = Convert.ToInt32(view.FindViewById<AppCompatEditText>(Resource.Id.noteCounter).Text);
+                    noteService.Price = Convert.ToDouble(view.FindViewById<AppCompatEditText>(Resource.Id.notePrice).Text);
+                    noteService.Fixer = view.FindViewById<AppCompatEditText>(Resource.Id.noteFixer).Text;
+                }
+                if (mNote.GetType().Name == "Inspection")
+                {
+                    INoteInspection noteInspection = mNote as INoteInspection;
+                    noteInspection.Pass = view.FindViewById<AppCompatEditText>(Resource.Id.checkBoxInspection).Selected;
+                }
             }
         }
 

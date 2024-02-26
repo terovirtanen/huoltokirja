@@ -46,7 +46,7 @@ namespace Upkeep_Android
 
             TabLayout tabLayout = FindViewById<TabLayout>(Resource.Id.noteTabLayout);
 
-            var adapter = new NoteActivityAdapter(this.SupportFragmentManager, this.Lifecycle, 3);
+            var adapter = new NoteActivityAdapter(this.SupportFragmentManager, this.Lifecycle, 1);
             adapter.mSelectedNote = mNote;
 
             viewPager2.Adapter = adapter;
@@ -79,9 +79,10 @@ namespace Upkeep_Android
             {
                 string text = position switch
                 {
-                    0 => "Basic",
-                    1 => "Service",
-                    _ => "Inspection"
+                    //0 => "Basic",
+                    //1 => "Service",
+                    //_ => "Inspection"
+                    _ => "Basic"
                 };
 
 
@@ -107,8 +108,8 @@ namespace Upkeep_Android
             {
                 return position switch
                 {
-                    0 => ViewNoteBasic.NewInstance(mSelectedNote),
-                    1 => ViewNoteBasic.NewInstance(mSelectedNote),
+                    //0 => ViewNoteBasic.NewInstance(mSelectedNote),
+                    //1 => ViewNoteBasic.NewInstance(mSelectedNote),
                     _ => ViewNoteBasic.NewInstance(mSelectedNote)
                 };
             }

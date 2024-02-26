@@ -73,6 +73,7 @@
     <Compile Include="ViewDependant\IOnDialogCloseListener.cs" />
     <Compile Include="ViewDependant\ViewDependantBasic.cs" />
     <Compile Include="ViewDependant\ViewDependantList.cs" />
+    <Compile Include="ViewDependant\NoteAddDialogFragment.cs" />
     <Compile Include="ViewDependant\ViewDependantScheduler.cs" />
     <Compile Include="ViewList.cs" />
     <Compile Include="ViewDependant\ViewDependantNote.cs" />
@@ -186,6 +187,12 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\view_note_service.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\view_note_add.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>

@@ -54,6 +54,15 @@ namespace Upkeep_Android
             mlist = objstud;
             var noteslistadapter = new DependantNotesListAdapter(this.Context as Activity, mlist);
 
+            var dependantNoteAdd = (Button)_view.FindViewById<Button>(Resource.Id.buttonAddDependantNote);
+            dependantNoteAdd.Click += delegate (object sender, EventArgs e)
+            {
+                //var fm = _fragmentManager;
+                //var dialog = MainDialogFragment.NewInstance(this.Context);
+                //dialog.Show(fm, "dialog");
+
+            };
+
             var dependantNotesList = (ListView)_view.FindViewById<ListView>(Resource.Id.listDependantNotes);
             dependantNotesList.Adapter = noteslistadapter;
 
