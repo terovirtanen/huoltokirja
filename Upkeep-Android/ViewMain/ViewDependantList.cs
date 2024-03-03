@@ -60,8 +60,8 @@ namespace Upkeep_Android
 
             dependantButton.Click += (s, e) =>
             {
-                var t = "Add new";
-                Toast.MakeText(this.Context, t, ToastLength.Long).Show();
+                //var t = "Add new";
+                //Toast.MakeText(this.Context, t, ToastLength.Long).Show();
 
                 Spinner spinner = view.FindViewById<Spinner>(Resource.Id.dependantSpinner);
                 string selected = spinner.SelectedItem.ToString();
@@ -84,7 +84,7 @@ namespace Upkeep_Android
             dependantList.ItemClick += (s, e) =>
             {                
                 var t = mDependantListAdapter[e.Position];
-                Toast.MakeText(this.Context, t.Title, ToastLength.Long).Show();
+                //Toast.MakeText(this.Context, t.Title, ToastLength.Long).Show();
 
                 //Intent intent = new Intent(this.Context, typeof(DependantActivity));
                 //StartActivity(intent);
@@ -95,8 +95,6 @@ namespace Upkeep_Android
                 Intent intent = new Intent(this.Context, typeof(NoteActivity));
                 intent.PutExtra("noteHashCode", t.ItemHashCode);
                 StartActivity(intent);
-
-
             };
 
             return view;

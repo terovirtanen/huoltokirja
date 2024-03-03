@@ -90,7 +90,8 @@ namespace Upkeep_Android
                 mainlist.Add(new MainListItems
                 {
                     Title = item.Title,
-                    Description = item.ListText
+                    Description = item.ListText,
+                    ItemHashCode = item.GetHashCode()
                 });
             });
 

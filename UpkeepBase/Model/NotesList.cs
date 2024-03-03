@@ -13,6 +13,11 @@ namespace UpkeepBase.Model
         {
             
         }
-        public List<INote> Items { get { return (Note.Note.Items != null) ? Note.Note.Items.OrderByDescending(note => note.EventTime).ToList() : new List<INote>(); } }        
+        public List<INote> Items { get { return (Note.Note.Items != null) ? Note.Note.Items.OrderByDescending(note => note.EventTime).ToList() : new List<INote>(); } }
+
+        public INote GetByHashCode (int itemHashCode)
+        {
+            return Note.Note.Items.Find(x => x.GetHashCode() == itemHashCode);
+        }
     }
 }

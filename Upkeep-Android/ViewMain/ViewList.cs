@@ -42,6 +42,22 @@ namespace Upkeep_Android.ViewMain
             var mainlistadapter = new MainListAdapter(Context as Activity, mlist);
             mainList.Adapter = mainlistadapter;
 
+            mainList.ItemClick += (s, e) =>
+            {
+                var t = mainlistadapter[e.Position];
+                //Toast.MakeText(this.Context, t.Title, ToastLength.Long).Show();
+
+                //Intent intent = new Intent(this.Context, typeof(DependantActivity));
+                //StartActivity(intent);
+                var note = notesList.GetByHashCode(t.ItemHashCode);
+
+                NoteActivity.mNote = note;
+
+                Intent intent = new Intent(this.Context, typeof(NoteActivity));
+                intent.PutExtra("noteHashCode", t.ItemHashCode);
+                StartActivity(intent);
+            };
+
             return view;
         }
         private List<MainListItems> ConvertToMainList(NotesList notesList)
@@ -55,7 +71,8 @@ namespace Upkeep_Android.ViewMain
                 mainlist.Add(new MainListItems
                 {
                     Title = item.Title,
-                    Description = item.ListText
+                    Description = item.ListText,
+                    ItemHashCode = item.GetHashCode()
                 });
             });
 

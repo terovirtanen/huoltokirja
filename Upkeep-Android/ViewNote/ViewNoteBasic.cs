@@ -116,8 +116,8 @@ namespace Upkeep_Android
             if (mNote != null)
             {
                 elementCounter.Text = mNote.Counter.ToString();
-                elementPrice.Text = (mNote as INoteService).Price.ToString();
-                elementFixer.Text = (mNote as INoteService).Fixer.ToString();
+                elementPrice.Text = (mNote as INoteService).Price?.ToString();
+                elementFixer.Text = (mNote as INoteService).Fixer?.ToString();
             }
         }
         private void ElementSetInspection(View view)

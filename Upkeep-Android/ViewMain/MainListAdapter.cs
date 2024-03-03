@@ -71,5 +71,10 @@ namespace Upkeep_Android
             get;
             set;
         }
+        public int ItemHashCode
+        {
+            get;
+            set;
+        }
     }
 }
