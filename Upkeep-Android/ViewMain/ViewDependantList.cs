@@ -25,6 +25,10 @@ namespace Upkeep_Android
     {
         private DataManager dataManager;
         private Spinner spinner;
+
+        private DependantListAdapter mDependantListAdapter;
+        private IDependant mDependantItem;
+
         protected static AndroidX.Fragment.App.FragmentManager _fragmentManager;
         public static ViewDependantList NewInstance(AndroidX.Fragment.App.FragmentManager fragmentManager)
         {
@@ -74,6 +78,27 @@ namespace Upkeep_Android
                 StartActivity(intent);
             };
 
+            var dependantList = (ListView)view.FindViewById<ListView>(Resource.Id.dependantlistview);
+            //dependantList.Adapter = mDependantListAdapter;
+
+            dependantList.ItemClick += (s, e) =>
+            {                
+                var t = mDependantListAdapter[e.Position];
+                Toast.MakeText(this.Context, t.Title, ToastLength.Long).Show();
+
+                //Intent intent = new Intent(this.Context, typeof(DependantActivity));
+                //StartActivity(intent);
+                var note = mDependantItem.NItemsOrderByDescendingByEventTime.Find(x => x.GetHashCode() == t.ItemHashCode);
+
+                NoteActivity.mNote = (INote)note;
+
+                Intent intent = new Intent(this.Context, typeof(NoteActivity));
+                intent.PutExtra("noteHashCode", t.ItemHashCode);
+                StartActivity(intent);
+
+
+            };
+
             return view;
         }
 
@@ -90,36 +115,43 @@ namespace Upkeep_Android
 
         private void RefresfListViewData(View _view, string dependantName)
         {
-            var dependantItem = dataManager.GetDependantList().Items.Where(x => x.Name == dependantName).First();
+            mDependantItem = dataManager.GetDependantList().Items.Where(x => x.Name == dependantName).First();
 
             TextView textfield = _view.FindViewById<TextView>(Resource.Id.dependantText);
 
             // show text field only if something to present
-            dependantItem.CalculateCounterEstimate();
-            textfield.Text = dependantItem.CounterEstimate;
+            mDependantItem.CalculateCounterEstimate();
+            textfield.Text = mDependantItem.CounterEstimate;
             //textfield.Visibility = (textfield.Text == "") ? ViewStates.Gone : ViewStates.Visible;
 
-            var notesList = dependantItem.NItemsOrderByDescendingByEventTime;
+            var notesList = mDependantItem.NItemsOrderByDescendingByEventTime;
             List<DependantListItems> objstud = ConvertToDependantList(notesList);
 
             var mlist = new List<DependantListItems>();
             mlist = objstud;
-            var mainlistadapter = new DependantListAdapter(this.Context as Activity, mlist);
+            mDependantListAdapter = new DependantListAdapter(this.Context as Activity, mlist);
 
             var dependantList = (ListView)_view.FindViewById<ListView>(Resource.Id.dependantlistview);
-            dependantList.Adapter = mainlistadapter;
+            dependantList.Adapter = mDependantListAdapter;
+
+            //dependantList.ItemClick += (s, e) =>
+            //{
+                
+            //    var t = dependantlistadapter[e.Position];
+            //    Toast.MakeText(this.Context, t.Title, ToastLength.Long).Show();
+
+            //    //Intent intent = new Intent(this.Context, typeof(DependantActivity));
+            //    //StartActivity(intent);
+            //    var note = dependantItem.NItemsOrderByDescendingByEventTime.Find(x => x.GetHashCode() == t.ItemHashCode);
+
+            //    NoteActivity.mNote = (INote)note;
+
+            //    Intent intent = new Intent(this.Context, typeof(NoteActivity));
+            //    intent.PutExtra("noteHashCode", t.ItemHashCode);
+            //    StartActivity(intent);
 
 
-            dependantList.ItemClick += (s, e) =>
-            {
-                var t = mainlistadapter[e.Position];
-                Toast.MakeText(this.Context, t.Title, ToastLength.Long).Show();
-
-                var fm = _fragmentManager;
-                var dialog = MainDialogFragment.NewInstance(this.Context);
-                dialog.Show(fm, "dialog");
-
-            };
+            //};
         }
         private List<DependantListItems> ConvertToDependantList(List<INote> notesList)
         {
@@ -130,7 +162,8 @@ namespace Upkeep_Android
                 dependantlist.Add(new DependantListItems
                 {
                     Title = item.Title,
-                    Description = item.ListText
+                    Description = item.ListText,
+                    ItemHashCode = item.GetHashCode()
                 });
             });
 

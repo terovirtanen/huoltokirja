@@ -14,7 +14,6 @@ using UpkeepBase.Model;
 using static Android.InputMethodServices.Keyboard;
 using AndroidX.AppCompat.Widget;
 using System.Runtime.InteropServices;
-using static Upkeep_Android.ViewDependantList;
 
 namespace Upkeep_Android
 {

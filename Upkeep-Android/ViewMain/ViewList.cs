@@ -15,7 +15,7 @@ using UpkeepBase.Model;
 using static Android.Icu.Text.Transliterator;
 using Fragment = AndroidX.Fragment.App.Fragment;
 
-namespace Upkeep_Android
+namespace Upkeep_Android.ViewMain
 {
     public class ViewList : Fragment
     {
@@ -32,14 +32,14 @@ namespace Upkeep_Android
 
             var view = inflater.Inflate(Resource.Layout.view_list, container, false);
 
-            mainList = (ListView)view.FindViewById<ListView>(Resource.Id.mainlistview);
+            mainList = view.FindViewById<ListView>(Resource.Id.mainlistview);
 
             var notesList = new NotesList();
             List<MainListItems> objstud = ConvertToMainList(notesList);
 
             mlist = new List<MainListItems>();
             mlist = objstud;
-            var mainlistadapter = new MainListAdapter(this.Context as Activity, mlist);
+            var mainlistadapter = new MainListAdapter(Context as Activity, mlist);
             mainList.Adapter = mainlistadapter;
 
             return view;
