@@ -50,12 +50,13 @@ namespace Upkeep_Android
             tabMediator.Attach();
 
 
-            var dependantButton = FindViewById<Button>(Resource.Id.buttonAdd);
+            var noteAddButton = FindViewById<Button>(Resource.Id.buttonAdd);
 
-            dependantButton.Click += (s, e) =>
+            noteAddButton.Click += (s, e) =>
             {
-                Intent intent = new Intent(this, typeof(DependantActivity));
-                StartActivity(intent);
+                var fm = SupportFragmentManager;
+                var dialog = DialogNoteAddSelector.NewInstance(this);
+                dialog.Show(fm, "dialog");
             };
 
             //// mainlist view stuff

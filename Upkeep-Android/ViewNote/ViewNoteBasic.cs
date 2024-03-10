@@ -116,8 +116,8 @@ namespace Upkeep_Android
             if (mNote != null)
             {
                 elementCounter.Text = mNote.Counter.ToString();
-                elementPrice.Text = (mNote as INoteService).Price?.ToString();
-                elementFixer.Text = (mNote as INoteService).Fixer?.ToString();
+                elementPrice.Text = (mNote as INoteService).Price.ToString();
+                elementFixer.Text = (mNote as INoteService).Fixer;
             }
         }
         private void ElementSetInspection(View view)
@@ -125,7 +125,7 @@ namespace Upkeep_Android
             var elementInspection = view.FindViewById<CheckBox>(Resource.Id.checkBoxInspection);
             if (mNote != null)
             {
-                elementInspection.Selected = (mNote as INoteInspection).Pass;
+                elementInspection.Checked = (mNote as INoteInspection).Pass;
             }
         }
         void DateSelect_OnClick(object sender, EventArgs eventArgs)
@@ -164,7 +164,7 @@ namespace Upkeep_Android
                 if (mNote.GetType().Name == "Inspection")
                 {
                     INoteInspection noteInspection = mNote as INoteInspection;
-                    noteInspection.Pass = view.FindViewById<AppCompatEditText>(Resource.Id.checkBoxInspection).Selected;
+                    noteInspection.Pass = view.FindViewById<AppCompatCheckBox>(Resource.Id.checkBoxInspection).Checked;
                 }
             }
         }
