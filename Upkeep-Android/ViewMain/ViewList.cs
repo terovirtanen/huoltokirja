@@ -15,7 +15,7 @@ using UpkeepBase.Model;
 using static Android.Icu.Text.Transliterator;
 using Fragment = AndroidX.Fragment.App.Fragment;
 
-namespace Upkeep_Android.ViewMain
+namespace Upkeep_Android
 {
     public class ViewList : Fragment
     {

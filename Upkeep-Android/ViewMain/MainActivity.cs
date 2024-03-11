@@ -11,7 +11,7 @@ using AndroidX.ViewPager2.Adapter;
 using AndroidX.ViewPager2.Widget;
 using Google.Android.Material.Tabs;
 using System.Collections.Generic;
-using Upkeep_Android.ViewMain;
+using Upkeep_Android;
 using UpkeepBase.Data;
 using UpkeepBase.Model;
 using static Android.Service.Voice.VoiceInteractionSession;

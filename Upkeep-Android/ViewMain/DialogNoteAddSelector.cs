@@ -14,7 +14,7 @@ using UpkeepBase.Model.Note;
 using static Android.Provider.ContactsContract.CommonDataKinds;
 using AndroidX.AppCompat.Widget;
 
-namespace Upkeep_Android.ViewMain
+namespace Upkeep_Android
 {
     public class DialogNoteAddSelector : DialogFragment
     {
@@ -58,7 +58,7 @@ namespace Upkeep_Android.ViewMain
             Spinner spinner = this.View?.FindViewById<Spinner>(Resource.Id.noteSelectorDependantSpinner);
             string selectedDependant = spinner.SelectedItem?.ToString();
 
-            var title = this.View?.FindViewById<AppCompatEditText>(Resource.Id.noteAddTitle);
+            var title = this.View?.FindViewById<AppCompatEditText>(Resource.Id.noteAddTitle)?.Text;
 
             var elementDate = this.View?.FindViewById<AppCompatEditText>(Resource.Id.noteAddDate);
 
