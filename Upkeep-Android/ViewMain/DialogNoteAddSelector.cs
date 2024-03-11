@@ -13,6 +13,7 @@ using UpkeepBase.Model;
 using UpkeepBase.Model.Note;
 using static Android.Provider.ContactsContract.CommonDataKinds;
 using AndroidX.AppCompat.Widget;
+using Upkeep_Android.Utils;
 
 namespace Upkeep_Android
 {
@@ -46,22 +47,27 @@ namespace Upkeep_Android
             };
 
             var btnAddNew = view.FindViewById<Button>(Resource.Id.noteSelectorAddButton);
-            btnAddNew.Click += BtnAddNew_Click;
+            btnAddNew.Click += BtnAddNew_ClickAsync;
 
             var btnCancel = view.FindViewById<Button>(Resource.Id.noteSelectorCancelButton);
             btnCancel.Click += BtnCancel_Click;
 
             return view;
         }
-        private void BtnAddNew_Click(object sender, EventArgs e)
+        private void BtnAddNew_ClickAsync(object sender, EventArgs e)
         {
             Spinner spinner = this.View?.FindViewById<Spinner>(Resource.Id.noteSelectorDependantSpinner);
             string selectedDependant = spinner.SelectedItem?.ToString();
 
-            var title = this.View?.FindViewById<AppCompatEditText>(Resource.Id.noteAddTitle)?.Text;
+            string title = this.View?.FindViewById<AppCompatEditText>(Resource.Id.noteAddTitle)?.Text;
 
             var elementDate = this.View?.FindViewById<AppCompatEditText>(Resource.Id.noteAddDate);
 
+            if (title == "")
+            {
+                AlertHelper.AlertAsync(mContext, "Alert", "Title cannot be empty", "OK");
+                return;
+            }
 
             IDependant dependant = ((mContext as Activity).Application as UpKeepApplication).dataManager.GetDependantList().Items.Find(x => x.Name == selectedDependant);
 
@@ -83,6 +89,9 @@ namespace Upkeep_Android
             NoteActivity.mNote = note;
             Intent intent = new Intent(this.Context, typeof(NoteActivity));
             StartActivity(intent);
+
+            // note activity aloitettu, suljetaan tämä dialog
+            Dismiss();
         }
         private void BtnCancel_Click(object sender, EventArgs e)
         {

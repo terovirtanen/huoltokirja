@@ -21,6 +21,9 @@ namespace Upkeep_Android
     {
         ListView mainList;
         private List<MainListItems> mlist;
+
+        private MainListAdapter mainListAdapter;
+        private NotesList notesList;
         public static ViewList NewInstance()
         {
             return new ViewList { Arguments = new Bundle() };
@@ -34,17 +37,18 @@ namespace Upkeep_Android
 
             mainList = view.FindViewById<ListView>(Resource.Id.mainlistview);
 
-            var notesList = new NotesList();
-            List<MainListItems> objstud = ConvertToMainList(notesList);
+            RefreshListViewData(mainList);
+            //var notesList = new NotesList();
+            //List<MainListItems> objstud = ConvertToMainList(notesList);
 
-            mlist = new List<MainListItems>();
-            mlist = objstud;
-            var mainlistadapter = new MainListAdapter(Context as Activity, mlist);
-            mainList.Adapter = mainlistadapter;
+            //mlist = new List<MainListItems>();
+            //mlist = objstud;
+            //mainListAdapter = new MainListAdapter(Context as Activity, mlist);
+            //mainList.Adapter = mainListAdapter;
 
             mainList.ItemClick += (s, e) =>
             {
-                var t = mainlistadapter[e.Position];
+                var t = mainListAdapter[e.Position];
                 //Toast.MakeText(this.Context, t.Title, ToastLength.Long).Show();
 
                 //Intent intent = new Intent(this.Context, typeof(DependantActivity));
@@ -60,11 +64,23 @@ namespace Upkeep_Android
 
             return view;
         }
-        private List<MainListItems> ConvertToMainList(NotesList notesList)
+
+        private void RefreshListViewData(ListView _mainList)
+        {
+            notesList = new NotesList();
+            List<MainListItems> objstud = ConvertToMainList(notesList);
+
+            mlist = new List<MainListItems>();
+            mlist = objstud;
+            mainListAdapter = new MainListAdapter(this.Context as Activity, mlist);
+            _mainList.Adapter = mainListAdapter;
+        }
+
+        private List<MainListItems> ConvertToMainList(NotesList _notesList)
         {
             List<MainListItems> mainlist = new List<MainListItems>();
 
-            var items = notesList.Items;
+            var items = _notesList.Items;
 
             items.ForEach(item =>
             {
