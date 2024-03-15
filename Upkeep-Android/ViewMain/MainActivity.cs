@@ -4,6 +4,8 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using AndroidX.Activity.Result;
+using AndroidX.Activity.Result.Contract;
 using AndroidX.AppCompat.App;
 using AndroidX.Fragment.App;
 using AndroidX.Lifecycle;
@@ -11,9 +13,11 @@ using AndroidX.ViewPager2.Adapter;
 using AndroidX.ViewPager2.Widget;
 using Google.Android.Material.Tabs;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Upkeep_Android;
 using UpkeepBase.Data;
 using UpkeepBase.Model;
+using UpkeepBase.Model.Note;
 using static Android.Service.Voice.VoiceInteractionSession;
 
 namespace Upkeep_Android
@@ -28,9 +32,18 @@ namespace Upkeep_Android
 
         ViewPager2 viewPager2;
 
+        private ActivityResultCallback _activityResultCallback;
+        public ActivityResultLauncher _activityResultLauncher;
+        public static int _requestCode;
+        public static INote _note;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+
+            _activityResultCallback = new ActivityResultCallback(this);
+            _activityResultLauncher = RegisterForActivityResult(new ActivityResultContracts.StartActivityForResult(), _activityResultCallback);
+
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
 
             // Set our view from the "main" layout resource
@@ -80,6 +93,33 @@ namespace Upkeep_Android
             //    dialog.Show(fm, "dialog");
             //};
         }
+        public void MyActivityResultReceived(int resultCode, Intent data)
+        {
+            if ((_note != null) || (resultCode == (int)Result.Ok))
+            {
+                foreach (var frag in this.SupportFragmentManager.Fragments)
+                {
+                    var viewRefresh = frag as IViewRefresh;
+                    viewRefresh.RefreshData(_note);
+                }
+                //handle the result
+            }
+        }
+        class ActivityResultCallback : Java.Lang.Object, IActivityResultCallback
+        {
+            MainActivity _mainActivity;
+            public ActivityResultCallback(MainActivity mainActivity)
+            {
+                _mainActivity = mainActivity; //initialise the parent activity/fragment here
+            }
+
+            public void OnActivityResult(Java.Lang.Object result)
+            {
+                var activityResult = result as ActivityResult;
+                _mainActivity.MyActivityResultReceived(activityResult.ResultCode, activityResult.Data); //pass the OnActivityResult data to parent class
+            }
+        }
+
         private List<MainListItems> ConvertToMainList(NotesList notesList)
         {
             List<MainListItems> mainlist = new List<MainListItems>();

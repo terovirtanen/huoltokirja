@@ -4,6 +4,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using AndroidX.Activity.Result;
 using AndroidX.Fragment.App;
 using AndroidX.ViewPager2.Widget;
 using System;
@@ -12,12 +13,13 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using UpkeepBase.Model;
+using UpkeepBase.Model.Note;
 using static Android.Icu.Text.Transliterator;
 using Fragment = AndroidX.Fragment.App.Fragment;
 
 namespace Upkeep_Android
 {
-    public class ViewList : Fragment
+    public class ViewList : Fragment, IViewRefresh
     {
         ListView mainList;
         private List<MainListItems> mlist;
@@ -59,7 +61,11 @@ namespace Upkeep_Android
 
                 Intent intent = new Intent(this.Context, typeof(NoteActivity));
                 intent.PutExtra("noteHashCode", t.ItemHashCode);
-                StartActivity(intent);
+                //StartActivity(intent);
+
+                MainActivity._requestCode = 1001;  //flag to handle the multiple intent request 
+                MainActivity._note = note;
+                (this.Context as MainActivity)._activityResultLauncher.Launch(intent);
             };
 
             return view;
@@ -93,6 +99,11 @@ namespace Upkeep_Android
             });
 
             return mainlist;
+        }
+
+        public void RefreshData(INote note)
+        {
+            RefreshListViewData(mainList);
         }
     }
 }

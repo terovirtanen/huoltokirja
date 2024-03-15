@@ -21,7 +21,7 @@ using Android.Webkit;
 
 namespace Upkeep_Android
 {
-    public class ViewDependantList : Fragment, IOnDialogCloseListener
+    public class ViewDependantList : Fragment, IOnDialogCloseListener, IViewRefresh
     {
         private DataManager dataManager;
         private Spinner spinner;
@@ -181,6 +181,10 @@ namespace Upkeep_Android
             //this.View.RefreshDrawableState();
         }
 
+        public void RefreshData(INote note)
+        {
+            RefresfListViewData(this.View, note.Dependant.Name);
+        }
 
         public class SpinnerAdapter : ArrayAdapter<string>
         {
