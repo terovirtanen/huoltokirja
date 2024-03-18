@@ -78,14 +78,12 @@ namespace Upkeep_Android
             return view;
         }
 
-
-        public override void OnDestroyView()
+        public override void OnPause()
         {
             ElementSave(View);
-
-            base.OnDestroyView();
+            base.OnPause();
         }
-
+        
         private void ElementSet(View view)
         {
             var elementTitle = view.FindViewById<AppCompatEditText>(Resource.Id.noteTitle);

@@ -18,6 +18,12 @@ namespace Upkeep_Android
             sContext = context;
         }
 
+        public void UpdateItems (List<MainListItems> list)
+        {
+            sList = list;
+            NotifyDataSetChanged();
+        }
+
         public override MainListItems this[int position]
         {
             get
@@ -58,6 +64,7 @@ namespace Upkeep_Android
             finally { }
             return row;
         }
+
     }
     public class MainListItems
     {

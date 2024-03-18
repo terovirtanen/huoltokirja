@@ -70,7 +70,13 @@ namespace Upkeep_Android
 
             return view;
         }
+        public override void OnResume()
+        {
+            base.OnResume();
 
+            RefreshListViewData(mainList);
+
+        }
         private void RefreshListViewData(ListView _mainList)
         {
             notesList = new NotesList();
@@ -78,8 +84,14 @@ namespace Upkeep_Android
 
             mlist = new List<MainListItems>();
             mlist = objstud;
-            mainListAdapter = new MainListAdapter(this.Context as Activity, mlist);
-            _mainList.Adapter = mainListAdapter;
+
+            if (_mainList.Adapter != null) { 
+                (_mainList.Adapter as MainListAdapter).UpdateItems(mlist);
+            } else
+            {
+                mainListAdapter = new MainListAdapter(this.Context as Activity, mlist);
+                _mainList.Adapter = mainListAdapter;
+            }
         }
 
         private List<MainListItems> ConvertToMainList(NotesList _notesList)
