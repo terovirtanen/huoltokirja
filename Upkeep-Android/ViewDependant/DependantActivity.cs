@@ -5,6 +5,8 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using AndroidX.Activity.Result;
+using AndroidX.Activity.Result.Contract;
 using AndroidX.AppCompat.App;
 using AndroidX.Fragment.App;
 using AndroidX.Lifecycle;
@@ -12,11 +14,13 @@ using AndroidX.ViewPager2.Adapter;
 using AndroidX.ViewPager2.Widget;
 using Google.Android.Material.Tabs;
 using UpkeepBase.Model;
+using UpkeepBase.Model.Note;
+using static Android.App.Instrumentation;
 
 namespace Upkeep_Android
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme")]
-    public class DependantActivity : AppCompatActivity
+    public class DependantActivity : ActivityBase
     {
         private Dependant mDependant;
 
@@ -24,6 +28,10 @@ namespace Upkeep_Android
         {
 
             base.OnCreate(savedInstanceState);
+
+            //_activityResultCallback = new ActivityResultCallback(this);
+            //_activityResultLauncher = RegisterForActivityResult(new ActivityResultContracts.StartActivityForResult(), _activityResultCallback);
+
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             SetContentView(Resource.Layout.activity_dependant);
 
@@ -32,9 +40,16 @@ namespace Upkeep_Android
                 var selected = Intent.GetStringExtra("selectedDependantName");
                 mDependant = (Application as UpKeepApplication).dataManager.GetDependantList().Items.Find(x => x.Name == selected) as Dependant;
             }
+            
+            var addNoteButton = FindViewById<Button>(Resource.Id.buttonAddNote);
+            addNoteButton.Click += (s, e) =>
+            {
+                var fm = SupportFragmentManager;
+                var dialog = DialogNoteAddSelector.NewInstance(this);
+                dialog.Show(fm, "dialog");
+            };
 
             var dependantButton = FindViewById<Button>(Resource.Id.buttonDependantFinish);
-
             dependantButton.Click += (s, e) =>
             {
                 Finish();
@@ -64,6 +79,44 @@ namespace Upkeep_Android
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+
+        //private ActivityResultCallback _activityResultCallback;
+        //public ActivityResultLauncher _activityResultLauncher;
+        //public static int _requestCode;
+        //public static INote _note;
+
+        public override void ActivityResultReceived(int resultCode, Intent data)
+        {
+            if ((_note != null) || (resultCode == (int)Result.Ok))
+            {
+                foreach (var frag in this.SupportFragmentManager.Fragments)
+                {
+                    //if (frag is IViewRefresh) { 
+                    //    var viewRefresh = frag as IViewRefresh;
+                    //    viewRefresh.RefreshData(_note);
+
+                    //    TabLayout tabLayout = FindViewById<TabLayout>(Resource.Id.dependantTabLayout);
+                    //    tabLayout.GetTabAt(1).Select();
+                    //}
+                }
+                //handle the result
+            }
+        }
+        //class ActivityResultCallback : Java.Lang.Object, IActivityResultCallback
+        //{
+        //    DependantActivity _activity;
+        //    public ActivityResultCallback(DependantActivity activity)
+        //    {
+        //        _activity = activity; //initialise the parent activity/fragment here
+        //    }
+
+        //    public void OnActivityResult(Java.Lang.Object result)
+        //    {
+        //        var activityResult = result as ActivityResult;
+        //        _activity.MyActivityResultReceived(activityResult.ResultCode, activityResult.Data); //pass the OnActivityResult data to parent class
+        //    }
+        //}
+
 
         public class TabFullFilterConfigurationStrategy : Java.Lang.Object, TabLayoutMediator.ITabConfigurationStrategy
         {

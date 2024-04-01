@@ -17,7 +17,7 @@ using Fragment = AndroidX.Fragment.App.Fragment;
 
 namespace Upkeep_Android
 {
-    public class ViewDependantNote : Fragment, IOnDialogCloseListener
+    public class ViewDependantNote : Fragment, IOnDialogCloseListener, IViewRefresh
     {
         private static Dependant mDependant;
         public ViewDependantNote() : base()
@@ -80,8 +80,12 @@ namespace Upkeep_Android
                 NoteActivity.mNote = (INote)note;
 
                 Intent intent = new Intent(this.Context, typeof(NoteActivity));
-                intent.PutExtra("noteHashCode", t.ItemHashCode);
-                StartActivity(intent);
+                //intent.PutExtra("noteHashCode", t.ItemHashCode);
+                //StartActivity(intent);
+
+                (this.Context as DependantActivity)._requestCode = 1001;  //flag to handle the multiple intent request 
+                (this.Context as DependantActivity)._note = note;
+                (this.Context as DependantActivity)._activityResultLauncher.Launch(intent);
 
                 //Spinner spinner = _view.FindViewById<Spinner>(Resource.Id.dependantSpinner);
                 //string selected = spinner.SelectedItem.ToString();
@@ -110,6 +114,9 @@ namespace Upkeep_Android
 
             return _noteslist;
         }
-
+        public void RefreshData(INote note)
+        {
+            RefresfListViewData(View);
+        }
     }
 }

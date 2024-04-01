@@ -28,7 +28,7 @@ namespace Upkeep_Android
             return new DialogNoteAddSelector();
         }
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-        {
+        { 
             var view = inflater.Inflate(Resource.Layout.dialog_note_add_selector, container, false);
 
             SpinnerData(view);
@@ -88,7 +88,13 @@ namespace Upkeep_Android
 
             NoteActivity.mNote = note;
             Intent intent = new Intent(this.Context, typeof(NoteActivity));
-            StartActivity(intent);
+            //StartActivity(intent);
+
+            var activity = mContext as ActivityBase;
+            activity._requestCode = 1001;  //flag to handle the multiple intent request 
+            activity._note = note;
+            activity._activityResultLauncher.Launch(intent);
+
 
             // note activity aloitettu, suljetaan tämä dialog
             Dismiss();

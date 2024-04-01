@@ -18,6 +18,7 @@ using Fragment = AndroidX.Fragment.App.Fragment;
 using AndroidX.Fragment.App;
 using System.Runtime.CompilerServices;
 using Android.Webkit;
+using static Android.Provider.ContactsContract.CommonDataKinds;
 
 namespace Upkeep_Android
 {
@@ -76,6 +77,7 @@ namespace Upkeep_Android
                 Intent intent = new Intent(this.Context, typeof(DependantActivity));
                 intent.PutExtra("selectedDependantName", dependant.Name);
                 StartActivity(intent);
+
             };
 
             var dependantList = (ListView)view.FindViewById<ListView>(Resource.Id.dependantlistview);
@@ -86,15 +88,13 @@ namespace Upkeep_Android
                 var t = mDependantListAdapter[e.Position];
                 //Toast.MakeText(this.Context, t.Title, ToastLength.Long).Show();
 
-                //Intent intent = new Intent(this.Context, typeof(DependantActivity));
-                //StartActivity(intent);
                 var note = mDependantItem.NItemsOrderByDescendingByEventTime.Find(x => x.GetHashCode() == t.ItemHashCode);
 
                 NoteActivity.mNote = (INote)note;
 
                 Intent intent = new Intent(this.Context, typeof(NoteActivity));
-                intent.PutExtra("noteHashCode", t.ItemHashCode);
-                StartActivity(intent);
+                MainActivity._note = note;
+                (this.Context as MainActivity)._activityResultLauncher.Launch(intent);
             };
 
             return view;

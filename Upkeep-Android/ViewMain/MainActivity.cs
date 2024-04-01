@@ -32,10 +32,10 @@ namespace Upkeep_Android
 
         ViewPager2 viewPager2;
 
-        private ActivityResultCallback _activityResultCallback;
-        public ActivityResultLauncher _activityResultLauncher;
-        public static int _requestCode;
-        public static INote _note;
+            private ActivityResultCallback _activityResultCallback;
+            public ActivityResultLauncher _activityResultLauncher;
+            public static int _requestCode;
+            public static INote _note;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
