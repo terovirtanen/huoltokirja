@@ -23,7 +23,7 @@ using static Android.Service.Voice.VoiceInteractionSession;
 namespace Upkeep_Android
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
-    public class MainActivity : AppCompatActivity
+    public class MainActivity : ActivityBase
     {
         ListView mainList;
         private List<MainListItems> mlist;
@@ -32,17 +32,17 @@ namespace Upkeep_Android
 
         ViewPager2 viewPager2;
 
-            private ActivityResultCallback _activityResultCallback;
-            public ActivityResultLauncher _activityResultLauncher;
-            public static int _requestCode;
-            public static INote _note;
+            //private ActivityResultCallback _activityResultCallback;
+            //public ActivityResultLauncher _activityResultLauncher;
+            //public static int _requestCode;
+            //public static INote _note;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
-            _activityResultCallback = new ActivityResultCallback(this);
-            _activityResultLauncher = RegisterForActivityResult(new ActivityResultContracts.StartActivityForResult(), _activityResultCallback);
+            //_activityResultCallback = new ActivityResultCallback(this);
+            //_activityResultLauncher = RegisterForActivityResult(new ActivityResultContracts.StartActivityForResult(), _activityResultCallback);
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
 
@@ -93,11 +93,12 @@ namespace Upkeep_Android
             //    dialog.Show(fm, "dialog");
             //};
         }
-        public void MyActivityResultReceived(int resultCode, Intent data)
+        public override void ActivityResultReceived(int resultCode, Intent data)
         {
-            if ((_note != null) || (resultCode == (int)Result.Ok))
+            //if ((_note != null) || (resultCode == (int)Result.Ok))
+            if (resultCode == 0)
             {
-                foreach (var frag in this.SupportFragmentManager.Fragments)
+                    foreach (var frag in this.SupportFragmentManager.Fragments)
                 {
                     var viewRefresh = frag as IViewRefresh;
                     viewRefresh.RefreshData(_note);
@@ -105,20 +106,20 @@ namespace Upkeep_Android
                 //handle the result
             }
         }
-        class ActivityResultCallback : Java.Lang.Object, IActivityResultCallback
-        {
-            MainActivity _mainActivity;
-            public ActivityResultCallback(MainActivity mainActivity)
-            {
-                _mainActivity = mainActivity; //initialise the parent activity/fragment here
-            }
+        //class ActivityResultCallback : Java.Lang.Object, IActivityResultCallback
+        //{
+        //    MainActivity _mainActivity;
+        //    public ActivityResultCallback(MainActivity mainActivity)
+        //    {
+        //        _mainActivity = mainActivity; //initialise the parent activity/fragment here
+        //    }
 
-            public void OnActivityResult(Java.Lang.Object result)
-            {
-                var activityResult = result as ActivityResult;
-                _mainActivity.MyActivityResultReceived(activityResult.ResultCode, activityResult.Data); //pass the OnActivityResult data to parent class
-            }
-        }
+        //    public void OnActivityResult(Java.Lang.Object result)
+        //    {
+        //        var activityResult = result as ActivityResult;
+        //        _mainActivity.MyActivityResultReceived(activityResult.ResultCode, activityResult.Data); //pass the OnActivityResult data to parent class
+        //    }
+        //}
 
         private List<MainListItems> ConvertToMainList(NotesList notesList)
         {

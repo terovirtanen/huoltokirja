@@ -63,8 +63,8 @@ namespace Upkeep_Android
                 intent.PutExtra("noteHashCode", t.ItemHashCode);
                 //StartActivity(intent);
 
-                MainActivity._requestCode = 1001;  //flag to handle the multiple intent request 
-                MainActivity._note = note;
+                (this.Context as MainActivity)._requestCode = 1001;  //flag to handle the multiple intent request 
+                (this.Context as MainActivity)._note = note;
                 (this.Context as MainActivity)._activityResultLauncher.Launch(intent);
             };
 

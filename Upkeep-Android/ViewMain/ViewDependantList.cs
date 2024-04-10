@@ -76,7 +76,8 @@ namespace Upkeep_Android
 
                 Intent intent = new Intent(this.Context, typeof(DependantActivity));
                 intent.PutExtra("selectedDependantName", dependant.Name);
-                StartActivity(intent);
+                //StartActivity(intent);
+                (this.Context as MainActivity)._activityResultLauncher.Launch(intent);
 
             };
 
@@ -93,7 +94,7 @@ namespace Upkeep_Android
                 NoteActivity.mNote = (INote)note;
 
                 Intent intent = new Intent(this.Context, typeof(NoteActivity));
-                MainActivity._note = note;
+                (this.Context as MainActivity)._note = note;
                 (this.Context as MainActivity)._activityResultLauncher.Launch(intent);
             };
 
@@ -183,7 +184,8 @@ namespace Upkeep_Android
 
         public void RefreshData(INote note)
         {
-            RefresfListViewData(this.View, note.Dependant.Name);
+            //RefresfListViewData(this.View, note.Dependant.Name);
+            RefresfListViewData(this.View, mDependantItem.Name);
         }
 
         public class SpinnerAdapter : ArrayAdapter<string>

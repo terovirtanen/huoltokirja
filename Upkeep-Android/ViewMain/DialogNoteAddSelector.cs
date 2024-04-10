@@ -87,14 +87,13 @@ namespace Upkeep_Android
             note.EventTime = DateTime.Parse(elementDate.Text);
 
             NoteActivity.mNote = note;
-            Intent intent = new Intent(this.Context, typeof(NoteActivity));
+            Intent intent = new Intent(mContext, typeof(NoteActivity));
             //StartActivity(intent);
 
             var activity = mContext as ActivityBase;
             activity._requestCode = 1001;  //flag to handle the multiple intent request 
             activity._note = note;
             activity._activityResultLauncher.Launch(intent);
-
 
             // note activity aloitettu, suljetaan tämä dialog
             Dismiss();
