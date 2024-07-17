@@ -10,9 +10,12 @@
     <ApplicationVersion>1</ApplicationVersion>
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 	<TargetFrameworkVersion>v13.0</TargetFrameworkVersion>
-	<AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
-	<AndroidResgenClass>Resource</AndroidResgenClass>
+	<!--<AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>-->
+	<!--<AndroidResgenClass>Resource</AndroidResgenClass>-->
+	<!--<AndroidUseDesignerAssembly>false</AndroidUseDesignerAssembly>-->
+
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Xamarin.AndroidX.ViewPager2" Version="1.0.0.25" />
     <PackageReference Include="Xamarin.Google.Android.Material" Version="1.10.0.3" />
