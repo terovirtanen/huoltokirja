@@ -1,6 +1,6 @@
-# Model Promptit: huoltokirja
+# Model Promptit: huoltokirja Flutter-uudelleentoteutukseen
 
-Tassa kansiossa on promptit, joilla AI pystyy avaamaan kaytossa olevan datarakenteen UpkeepBase-mallikerroksesta.
+Tassa kansiossa on promptit, joilla AI pystyy avaamaan nykyisen datarakenteen ja muuttamaan sen uuden Flutter + SQLite -toteutuksen vaatimuksiksi.
 
 ## Suositeltu jarjestys
 
@@ -17,8 +17,9 @@ Jos haluat kaiken yhdella ajolla:
 ## Tavoite
 
 Promptit tuottavat dokumentaation, josta selviaa:
-- entiteetit ja niiden kentat
+- nykyisen .NET-mallin entiteetit ja kentat
 - relaatiot ja omistajuudet
 - note- ja scheduler-tyyppien erot
 - laskennalliset kentat
 - datan elinkaari ja nykyinen persistenssi
+- syotteet uuden Dart-domainin ja SQLite-skeeman suunnitteluun

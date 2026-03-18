@@ -1,27 +1,32 @@
-Toteuta Android UI valmiimmaksi nykyiseen Xamarin-projektiin ilman että rikot olemassa olevaa rakennetta.
+Toteuta uuden sovelluksen UI alusta Flutterilla nykyisen Android-kayttoliittyman pohjalta.
 
 Konteksti:
-- Projekti: UpKeep-Android
-- Nykyinen adapteri esim. MainListAdapter.cs on olemassa
-- Tarkoitus on saada käytettävä lista- ja detail-näkymä riippuvaisille (dependant), muistiinpanoille ja aikatauluille
+- Nykyinen Android UI toimii vaatimusten lahteena
+- Uusi toteutus tehdaan Flutterilla
+- UI:n tulee toimia seka Androidilla etta iPhonella yhdesta koodipohjasta
 
 Tee nyt:
-1) Käy läpi Androidin näkymät, adapterit ja activityt
-2) Korjaa UX- ja käytettävyysongelmat:
-   - tyhjät tilat (empty states)
-   - virheilmoitukset
-   - lataus-/odotustila tarvittaessa
-   - listan päivitys, kun data muuttuu
-3) Yhdenmukaista nimeämistä ja UI-flowta mahdollisimman vähän invasiivisesti
-4) Lisää puuttuvat null-checkit ja crash-suojat kriittisiin kohtiin
-5) Lisää tarvittaessa pienet layout-parannukset XML-tiedostoihin
+1) Kay lapi `prompts/ui`-kansion analyysit ja nykyinen Android UI vaatimusten lahteena.
+2) Toteuta Flutterilla vastaavat paanaymat:
+  - paanavigaatio
+  - dependant-lista
+  - dependant detail
+  - note-listat ja note-editori
+  - scheduler-nakymat
+3) Korjaa samalla nykyanalyysissa loydetyt UX-puutteet:
+  - empty states
+  - virheviestit
+  - loading-tilat
+  - johdonmukainen navigaatio
+4) Tee UI adaptiiviseksi Androidille ja iPhonelle.
+5) Pida rakenne modulaarisena niin, etta SQLite-data voidaan kytkea siihen seuraavassa vaiheessa.
 
 Rajoitteet:
-- Säilytä nykyinen arkkitehtuuri niin pitkälle kuin mahdollista
-- Tee muutokset vaiheittain ja perustele lyhyesti
-- Näytä aina:
-  - mitä tiedostoja muutit
-  - miksi
-  - miten testaan manuaalisesti Androidilla
+- ala muokkaa vanhaa Xamarin-UI-koodia
+- rakenna uusi Flutter UI greenfieldina
+- käytä nykyistä UI:ta vain speksinä, älä porttaa tiedostoja mekaanisesti
 
-Lopuksi anna "Done/Next" -lista seuraavaan vaiheeseen.
+Lopuksi anna:
+- luodut Flutter-tiedostot
+- mitä nykyisen UI:n osia toteutit 1:1 ja mitä paransit
+- manuaalinen testiskripti Androidille ja iPhonelle

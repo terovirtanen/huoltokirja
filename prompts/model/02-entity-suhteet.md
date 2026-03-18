@@ -1,4 +1,4 @@
-Analysoi entiteettien valiset suhteet ja omistajuus nykykoodista.
+Analysoi entiteettien valiset suhteet ja omistajuus nykykoodista niin, että niiden perusteella voidaan rakentaa uusi Flutter + SQLite -sovellus.
 
 Kohde:
 - `UpkeepBase/Model/Dependant.cs`
@@ -15,6 +15,7 @@ Tehtava:
    - miten viittaukset asetetaan (esim. note.Dependant)
 3) Tunnista globaalit/staattiset rakenteet ja vaikutus datan elinkaareen.
 4) Piirra tekstimuotoinen ER-kuvaus.
+5) Ehdota miten suhteet kannattaa kuvata Dart-domainissa ja SQLite-skeemassa ilman lopullista toteutusta.
 
 Kayta formaattia:
 - Relation: A -> B
@@ -23,4 +24,4 @@ Kayta formaattia:
 - Navigation properties:
 - Risks:
 
-Lopuksi anna yksi Mermaid ER -kaavio.
+Lopuksi anna yksi Mermaid ER -kaavio ja lyhyt huomio SQLite-taulurakenteen kannalta.

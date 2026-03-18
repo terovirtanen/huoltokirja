@@ -1,29 +1,28 @@
-Toteuta datakerroksen migraatio JSON-tiedostosta NoSQL-tietokantaan säilyttäen domain-mallit.
+Suunnittele ja toteuta uuden Flutter-sovelluksen datakerros SQLitella nykyisen mallin pohjalta.
 
 Nykytila:
-- UpkeepBase/Data/DataManager.cs käyttää in-memory + testidataa
-- UpkeepBase/Data/StorageManager.cs kirjoittaa/lukee storage.json (Newtonsoft)
-- Domain-mallit UpkeepBase/Model alla ovat pääosin kunnossa
+- nykyinen .NET-ratkaisu kayttaa in-memory + JSON-lahestymista
+- nykyinen model-kerros toimii vaatimusten lahteena, ei suoraan uudelleenkaytettavana koodina
 
 Tavoite:
-- Korvataan JSON-pohjainen persistent storage NoSQL-ratkaisulla
-- Ratkaisun tulee toimia mobiilissa (Android + iOS)
-
-Valitse toteutus:
-- ensisijaisesti SQLite-net (dokkarityylinen/NoSQL-tyylinen objektitallennus) TAI LiteDB, jos se sopii paremmin
-- perustele valinta lyhyesti mobiiliyhteensopivuuden kannalta
+- uusi datakerros Flutter/Dartilla
+- paikallinen tietokanta on SQLite
+- Android ja iPhone kayttavat samaa SQLite-pohjaista repository-kerrosta
 
 Tee:
-1) Luo selkeä repository-rajapinta (esim. IDependantRepository)
-2) Toteuta NoSQL-pohjainen repository
-3) Refaktoroi DataManager käyttämään repositorya
-4) Lisää migraatiopolku:
-   - jos vanha storage.json löytyy, lue data ja tallenna uuteen kantaan
-   - merkitse migraatio tehdyksi, ettei toistu
-5) Lisää virheenkäsittely ja lokitus
-6) Lisää yksikkötestit UpkeepBaseTest-projektiin keskeisille operaatioille
+1) Kay lapi `prompts/model`-kansion analyysit ja johda niista uusi SQLite-skeema.
+2) Luo Dart-domain-mallit Flutter-sovellukselle.
+3) Toteuta repository-rajapinnat ja SQLite-toteutus.
+4) Mallinna notet ja schedulerit niin, etta polymorfinen data toimii selkeasti SQLite-rakenteessa.
+5) Suunnittele tarvittaessa import-polku nykyisesta JSON-rakenteesta SQLiteen.
+6) Lisaa testit keskeisille CRUD- ja mapping-operaatioille.
 
-Tärkeää:
-- Älä riko olemassa olevia malleja turhaan
-- Pidä muutokset mahdollisimman pieninä ja turvallisina
-- Anna lopuksi komennot/testiohjeet, joilla varmistan migraation toiminnan
+Rajoitteet:
+- ala jatkokehita vanhaa C# DataManager/StorageManager-ratkaisua
+- tee uusi toteutus Flutterin tarpeisiin alusta
+- SQLite on pakollinen valinta
+
+Lopuksi anna:
+- uusi skeema tai taulurakenne
+- luodut Dart-tiedostot
+- testiohjeet Androidille ja iPhonelle

@@ -1,4 +1,4 @@
-Toimi seniori .NET-arkkitehtina ja analysoi vain UpkeepBase mallikerros.
+Toimi seniori domain-arkkitehtina ja analysoi nykyinen UpkeepBase mallikerros uuden Flutter + SQLite -toteutuksen lahdevaatimuksena.
 
 Kohde:
 - `UpkeepBase/Model/**`
@@ -13,6 +13,7 @@ Tehtava:
    - computed (lasketaan)
    - transient (runtime-only)
 4) Kuvaa nykyinen kokonaisrakenne lyhyena domain-yhteenvetona.
+5) Nosta esiin, miten kentat kannattaa ajatella Dart-domain-malleissa.
 
 Tulosta taulukkona:
 - Entity
@@ -21,4 +22,4 @@ Tulosta taulukkona:
 - Persisted/Computed/Transient
 - Notes
 
-Ala muuta koodia. Tee vain analyysi.
+Ala muuta koodia. Tee vain analyysi, joka auttaa toteuttamaan vastaavan domainin uudelleen Dartilla.

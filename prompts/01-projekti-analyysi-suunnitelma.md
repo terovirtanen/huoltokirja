@@ -1,27 +1,27 @@
-Toimi seniori .NET/Xamarin-kehittajana. Projektini on ratkaisu "huoltokirja".
+Toimi lead-tason Flutter-arkkitehtina. Projektini on ratkaisu "huoltokirja", jonka nykyinen Xamarin/.NET-koodi toimii vain vaatimusten lahteena.
 
-Tassa vaiheessa EI tehdä muutoksia sovelluksen koodiin.
-Tassa vaiheessa analysoidaan VAIN Android UI -nakymat.
+Tassa vaiheessa EI muuteta vanhaa sovelluskoodia.
+Tassa vaiheessa analysoidaan nykyinen ratkaisu ja laaditaan greenfield-toteutussuunnitelma uudelle Flutter-sovellukselle.
+
+Tavoite:
+- uusi toteutus alusta Flutterilla
+- yksi koodipohja Androidille ja iPhonelle
+- SQLite paikallisena tietokantana
 
 Tehtava:
-1) Kay lapi kaikki Androidin UI-nakymat (activityt, fragmentit, dialogit, listarivit ja niihin liittyvat layoutit)
-2) Kirjoita jokaisesta UI-nakymasta oma analyysitiedosto kansioon `prompts/ui`
+1) Kay lapi nykyinen Android UI, iOS-tila ja domain/data-mallit vaatimusten lahteena.
+2) Tee vaiheittainen toteutussuunnitelma uudelle Flutter-sovellukselle.
+3) Tunnista mitka nykyisen sovelluksen ominaisuudet, naymat ja datarakenteet on siirrettava uuteen toteutukseen.
+4) Kirjoita tarvittaessa analyysitiedostoja kansioihin `prompts/ui` ja `prompts/model`, jos jokin osa tarvitsee tarkempaa spesifikaatiota.
 
-Analyysitiedosto per nakyma:
-- tiedostonimi vastaa nakyman nimea, esim. `activity_main.md`
-- kerro mihin layoutiin/luokkaan analyysi perustuu
-- kuvaa nykytila lyhyesti
-- listaa puutteet
-- listaa riskit
-- anna suositukset jatkoon (ilman toteutusta)
+Tulosteessa haluan:
+- Current system summary
+- Flutter rebuild scope
+- priorisoitu ominaisuuslista
+- vaiheistus 4-6 pienessa checkpointissa
+- hyvaksyntakriteerit jokaiselle vaiheelle
 
 Rajoitteet:
-- ala muuta sovelluksen C#- tai XML-koodia
-- ala tee refaktorointeja
-- ala toteuta ominaisuuksia
-- tee vain analyysi- ja dokumentaatiotiedostot
-
-Lopuksi anna yhteenveto:
-- mitka analyysitiedostot luotiin
-- mitka nakymat nayttavat keskeneraisimmilta
-- mika jarjestys kannattaa ottaa Android UI -korjauksiin
+- ala muuta vanhan Xamarin/.NET-sovelluksen lahdekoodia
+- ala tee osittaiskorjauksia vanhaan stackiin
+- kasittele nykykoodia vain lahdevaatimuksena

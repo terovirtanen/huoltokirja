@@ -1,4 +1,4 @@
-Toimi lead-tason .NET domain-arkkitehtina. Tavoite on dokumentoida nykyinen kaytettava datarakenne huolellisesti ennen SQLite-migraatiota.
+Toimi lead-tason domain-arkkitehtina. Tavoite on dokumentoida nykyinen datarakenne niin, että koko sovellus voidaan toteuttaa alusta uudelleen Flutterilla SQLitea käyttäen.
 
 Analysoi tiedostot:
 - `UpkeepBase/Model/**`
@@ -8,8 +8,8 @@ Analysoi tiedostot:
 
 Rajoitteet:
 - Ala muuta koodia.
-- Ala ehdota viela lopullista toteutusta.
-- Keskity as-is datarakenteen ymmartamiseen.
+- Ala ehdota viela lopullista toteutusta tiedostotasolla.
+- Keskity as-is datarakenteen ymmartamiseen ja sen muuntamiseen Flutter + SQLite -vaatimuksiksi.
 
 Tuota raportti tassa muodossa:
 
@@ -41,7 +41,7 @@ Tuota raportti tassa muodossa:
 - mita ei mene JSON:iin
 - mitka tiedot voivat kadota restartissa
 
-# 7) SQLite Migration Input
+# 7) Flutter + SQLite Migration Input
 - taulut/kokoelmat joita tarvitaan
 - kentat joita ei kannata persistoida suoraan
 - migration riskit (High/Medium/Low)
@@ -49,4 +49,4 @@ Tuota raportti tassa muodossa:
 # 8) Deliverables
 - Mermaid ER diagram
 - esimerkkidata JSON-muodossa (Dependant + notes + schedulers)
-- checklist: "valmis siirtymaan SQLite-suunnitteluun" (kylla/ei + perustelu)
+- checklist: "valmis siirtymaan Flutter + SQLite -suunnitteluun" (kylla/ei + perustelu)

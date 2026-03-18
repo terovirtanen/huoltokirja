@@ -1,4 +1,4 @@
-Analysoi nykyinen datavirta mallista tallennukseen.
+Analysoi nykyinen datavirta mallista tallennukseen niin, että sen pohjalta voidaan suunnitella uusi Flutter + SQLite -persistenssi.
 
 Kohde:
 - `UpkeepBase/Data/DataManager.cs`
@@ -14,12 +14,12 @@ Tehtava:
    - JSON serialisointi/deserialisointi
 2) Mihin kenttiin/tyyppeihin persistenssi vaikuttaa?
 3) Mitka osat eivat pysy (JsonIgnore, static, runtime state)?
-4) Laadi "as-is" datarakennedokumentti migration pohjaksi SQLiteen.
+4) Laadi "as-is" datarakennedokumentti migration ja uuden SQLite-skeeman pohjaksi.
 
 Tuota seuraavat osiot:
 - Current data lifecycle
 - Persisted vs non-persisted map
 - Migration considerations
-- Open questions before SQLite schema
+- Open questions before Flutter SQLite schema
 
-Ala toteuta migraatiota tassa vaiheessa.
+Ala toteuta migraatiota tassa vaiheessa. Tuota vain analyysi uuden Flutter-toteutuksen syotteeksi.

@@ -1,21 +1,21 @@
-Tee iOS-projektiin (Upkeep-iOS) toiminnallinen parity Androidin kanssa.
+Viimeistele Flutter-sovellus niin, etta sama koodipohja toimii laadukkaasti iPhonella Androidin ohella.
 
 Tavoite:
-- Samat ydintoiminnot iOS:lle:
-  - dependant-lista
-  - dependant detail
-  - muistiinpanot (lisäys/listaus)
-  - aikataulut (lisäys/listaus)
-- Data tulee samasta UpkeepBase NoSQL-toteutuksesta
+- yksi Flutter-koodi, joka tukee:
+  - dependant-listaa
+  - dependant detailia
+  - muistiinpanojen lisausta ja listausta
+  - aikataulujen lisausta ja listausta
+- sama SQLite-datakerros Androidille ja iPhonelle
 
 Tee nyt:
-1) Vertaa Android flow vs iOS flow ja listaa puuttuvat iOS-toiminnot
-2) Toteuta puuttuvat näkymät/controllerit iOS-projektiin
-3) Kytke iOS käyttöliittymä DataManager/repository-kerrokseen
-4) Lisää perusvalidoinnit ja käyttäjäpalautteet (alertit)
-5) Varmista, että iOS-käynnistys toimii ilman runtime-poikkeuksia
+1) Tunnista Android- ja iOS-kaytokokemuksen erot, jotka on huomioitava Flutter UI:ssa.
+2) Paranna navigaatio, layout ja komponentit niin, etta ne tuntuvat luontevilta iPhonella.
+3) Varmista, etta SQLite toimii iOS:lla ilman alustakohtaisia runtime-ongelmia.
+4) Lisaa iOS-kohtaiset validoinnit, palautteet ja polish.
+5) Tee parity-tarkistus Androidin vaatimuksia vasten.
 
-Anna lopuksi:
-- muokatut tiedostot
-- mitä parity-puutteita jäi jäljelle (jos jäi)
-- askel askeleelta testiohje iOS-simulaattorille
+Lopuksi anna:
+- parity-matriisi Android vs iPhone
+- iOS-simulaattorin testiohjeet
+- jaljelle jaaneet alustakohtaiset puutteet

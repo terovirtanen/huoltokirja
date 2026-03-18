@@ -1,4 +1,4 @@
-Analysoi Note-hierarkia ja kaytettava datarakenne kenttatasolla.
+Analysoi Note-hierarkia ja kaytettava datarakenne kenttatasolla niin, että sama rakenne voidaan toteuttaa uudelleen Dartilla ja SQLitella.
 
 Kohde:
 - `UpkeepBase/Model/Note/INote.cs`
@@ -16,10 +16,12 @@ Tehtava:
    - NoteStatus
 4) Kuvaa miten ListText/ListTextAllNotes muodostuvat eri note-tyypeissa.
 5) Tunnista serialisointiin liittyvat huomautukset (JsonIgnore, static fields).
+6) Kuvaa miten polymorfinen rakenne kannattaa dokumentoida Flutter-toteutusta varten.
 
 Anna tulos:
 - UML-tyylinen tekstikaavio
 - kenttalista per tyyppi
 - JSON-esimerkit: Basic, Service, Inspection
+- huomio siitä, miten nämä voidaan mapata Dart-malleihin ja SQLiteen
 
 Ala muuta koodia.

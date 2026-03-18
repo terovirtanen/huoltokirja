@@ -1,21 +1,24 @@
-Viimeistele ratkaisu julkaisuvalmiimmaksi Androidille ja iOS:lle.
+Viimeistele uusi Flutter-sovellus julkaisuvalmiimmaksi Androidille ja iPhonelle.
 
 Tee:
-1) Lisää testikattavuutta kriittisiin kohtiin:
-   - repository CRUD
-   - migraatio storage.json -> NoSQL
-   - domainin tärkeimmät edge caset
+1) Lisaa testikattavuutta kriittisiin kohtiin:
+   - SQLite repository CRUD
+   - model mapping ja serialisointi
+   - scheduler- ja domain edge caset
+   - widget- ja integraatiotestit keskeisille floeille
 2) Tee build sanity check:
-   - ratkaisu buildaa
+   - Flutter app buildaa Androidille
+   - Flutter app buildaa iPhonelle
    - testit ajettavissa
-3) Tee "release readiness checklist":
-   - versionumerot
-   - app-id/bundle-id tarkistus
-   - ikoni/splash tarkistus
-   - perusoikeudet (permissions)
-4) Listaa known issues + technical debt selkeästi
+3) Tee release readiness checklist:
+   - versionointi
+   - package id / bundle id
+   - icon / splash
+   - permissions
+   - SQLite migration/init behavior cold startissa
+4) Listaa known issues + technical debt selkeasti
 
 Tulosteeksi haluan:
 - priorisoitu bugi-/riski-lista (High/Medium/Low)
-- täsmällinen next sprint -työlista
-- ehdotus miten tämä jaetaan 3 pieneen PR:ään
+- tarkka next sprint -tyolista
+- ehdotus miten Flutter-uudelleentoteutus jaetaan 3 pieneen PR:aan

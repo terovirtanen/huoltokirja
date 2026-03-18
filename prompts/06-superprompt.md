@@ -1,21 +1,24 @@
-Toimi lead-tason .NET/Xamarin-kehittäjänä ja vie tämä projekti valmiimmaksi vaiheittain.
-Projekti on "huoltokirja" ja sisältää:
-- UpKeep-Android (Android UI)
-- Upkeep-iOS (iOS UI)
-- UpkeepBase (domain/data)
-- UpkeepBaseTest (testit)
+Toimi lead-tason Flutter-arkkitehtina ja rakenna tama sovellus alusta uudelleen vaiheittain.
+Nykyinen projekti "huoltokirja" toimii vaatimusten lahteena, ei toteutuspohjana.
+
+Nykyinen ratkaisu sisaltaa:
+- UpKeep-Android (nykyinen Android UI)
+- Upkeep-iOS (nykyinen iOS-aihio)
+- UpkeepBase (nykyinen domain/data)
+- UpkeepBaseTest (nykyiset domain-testit)
 
 Yleistavoite:
-1) Android UI viimeistellään ensin
-2) data siirretään JSON-tiedostosta mobiiliin sopivaan NoSQL-tallennukseen
-3) iOS-versio saatetaan ominaisuuspariteettiin Androidin kanssa
-4) lopuksi laatu, testit ja release-readiness
+1) analysoi nykyjarjestelma vaatimuksina
+2) toteuta uusi sovellus alusta Flutterilla
+3) tue seka Androidia etta iPhonea yhdesta koodipohjasta
+4) kayta SQLitea paikallisena tietokantana
+5) viimeistele laatu, testit ja release-readiness
 
 TARKEÄ TYÖTAPA:
 - Työskentele checkpoint-mallilla: pysähdy aina vaiheen lopussa ja odota hyväksyntää ennen seuraavaa vaihetta.
 - Tee muutokset pieninä, turvallisina kokonaisuuksina.
-- Säilytä nykyinen arkkitehtuuri mahdollisimman pitkälle.
-- Älä tee tarpeettomia massiivisia refaktorointeja.
+- Käsittele nykyistä arkkitehtuuria vain vaatimusten ja domain-logiikan lähteenä.
+- Älä jatkokehitä Xamarin/.NET-koodia vaan rakenna uusi toteutus greenfieldina.
 - Jokaisessa vaiheessa raportoi:
    - mitä tiedostoja muutit
    - miksi muutit
@@ -27,95 +30,94 @@ TARKEÄ TYÖTAPA:
 VAIHE 0: Nykytilan kartoitus (ei isoja koodimuutoksia)
 ========================================
 Tee ensin nopea analyysi:
-- Androidin nykyiset näkymät, adapterit, activityt
-- UpkeepBase datavirta (DataManager, StorageManager, modelit)
-- iOS:n nykyinen toteutuksen taso
-- testien nykytila
+- Androidin nykyiset näkymät vaatimusten lahteena
+- UpkeepBase datamalli ja datavirta vaatimusten lahteena
+- iOS:n nykyinen toiminnallinen taso ja puutteet
+- mitä tästä pitää siirtää Flutter-uudelleentoteutukseen
 
 Tuota:
 1) "Current State" -yhteenveto
 2) priorisoitu puutelista (High/Medium/Low)
-3) toteutussuunnitelma 4-6 pienessä PR:ssä
+3) toteutussuunnitelma 4-6 pienessä checkpointissa Flutter-uudelleentoteutukseen
 4) hyväksyntäkriteerit per vaihe
 
 PYSÄHDY CHECKPOINT 0:aan ja odota hyväksyntä.
 
 ========================================
-VAIHE 1: Android UI valmiimmaksi
+VAIHE 1: Flutter UI perusrunko
 ========================================
-Toteuta Androidiin käytettävyyden kannalta tärkeimmät puutteet:
-- listojen päivitys luotettavasti datan muuttuessa
-- empty state -näkymät
-- virhetilaviestit (selkeät)
-- perus loading/odotustila siellä missä tarpeen
-- null-checkit ja crash-riskien minimointi
-- pienet XML/layout-parannukset ilman designin rikkomista
+Toteuta uusi UI Flutterilla nykyisten UI-analyysien pohjalta:
+- paanavigaatio
+- dependant-lista
+- dependant detail
+- note-listat ja editorit
+- scheduler-nakymat
+- empty state / error / loading tilat
+- adaptiivinen kayttokokemus Androidille ja iPhonelle
 
 Tekniset odotukset:
-- pidä muutokset kohdistettuina olemassa oleviin tiedostoihin
-- älä vaihda teknologiaa
-- lisää vain tarpeelliset kommentit monimutkaisiin kohtiin
+- rakenna uusi Flutter-projektirakenne vaiheittain
+- ala muokkaa vanhaa Xamarin-UI:ta
+- kayta nykyista UI:ta vain spesifikaationa
 
 Tuota:
-- diff-tyylinen muutoslista tiedostoittain
-- manuaalinen Android-testiskripti (askel askeleelta)
-- jäljelle jääneet Android-puutteet
+- luodut Flutter UI -tiedostot
+- manuaalinen testiskripti Androidille ja iPhonelle
+- jaljelle jaaneet UI-puutteet
 
 PYSÄHDY CHECKPOINT 1:een ja odota hyväksyntä.
 
 ========================================
-VAIHE 2: JSON -> NoSQL migraatio (mobiiliyhteensopiva)
+VAIHE 2: SQLite datakerros Flutteriin
 ========================================
 Nykyinen tila:
-- StorageManager käyttää storage.json (Newtonsoft)
-- DataManager käyttää in-memory + testidataa
-- domain-mallit ovat pääosin ok
+- nykyinen data on kuvattu .NET-malleissa ja JSON-rakenteessa
+- uusi toteutus tehdään Dart-malleilla ja SQLite-skeemalla
 
 Tavoite:
-- siirrä persistent data NoSQL-tyyliseen mobiilitallennukseen
-- ensisijainen vaihtoehto: SQLite-net (objektitallennus), ellei vahva syy muuhun
+- toteuta uusi SQLite-pohjainen data layer Flutter-sovellukselle
+- Android ja iPhone kayttavat samaa repository-kerrosta
 
 Toteuta:
-1) repository-abstraktio (esim. IDependantRepository)
-2) NoSQL/SQLite-pohjainen toteutus
-3) DataManager käyttämään repositorya
-4) migraatiopolku:
-   - jos storage.json löytyy, lue vanha data ja tallenna uuteen kantaan
-   - migraatio ajetaan vain kerran (idempotentti)
-5) virheenkäsittely + kevyt lokitus
-6) yksikkötestit tärkeimmille CRUD- ja migraatiopoluille
+1) Dart-domain-mallit nykyisen model-analyysin perusteella
+2) repository-abstraktiot
+3) SQLite-toteutus
+4) tarvittaessa JSON-import polku nykyisesta rakenteesta SQLiteen
+5) virheenkasittely + lokitus
+6) testit tärkeimmille CRUD- ja mapping-poluille
 
 Rajoitteet:
-- älä riko domain-malleja turhaan
-- pidä API-käytös taaksepäin yhteensopivana mahdollisuuksien mukaan
+- ala jatkokehita vanhaa C# data stackia
+- kayta nykyista domainia vain uuden Dart-domainin lahteena
 
 Tuota:
-- arkkitehtuurikuvaus ennen/jälkeen (lyhyt)
-- testiohjeet migraation varmistamiseen
+- SQLite-skeema tai taulurakenne
+- Flutter data layer -tiedostot
+- testiohjeet Androidille ja iPhonelle
 - riskit datan eheyden osalta
 
 PYSÄHDY CHECKPOINT 2:een ja odota hyväksyntä.
 
 ========================================
-VAIHE 3: iOS parity Androidin kanssa
+VAIHE 3: Cross-platform polish iPhonelle
 ========================================
-Tee iOS:lle samat ydinominaisuudet kuin Androidissa:
+Varmista, että Flutter-sovellus tarjoaa samat ydintoiminnot iPhonella kuin Androidilla:
 - dependant-lista
 - dependant detail
 - muistiinpanot (listaus + lisäys)
 - aikataulut (listaus + lisäys)
 
 Toteuta:
-1) gap-analyysi Android vs iOS
-2) puuttuvat iOS-näkymät/controllerit
-3) kytkenta samaan UpkeepBase datakerrokseen
+1) gap-analyysi Android UX vs iPhone UX
+2) alusta- ja kokokohtaiset UI-parannukset Flutterissa
+3) kytkenta samaan SQLite-datakerrokseen
 4) validoinnit + käyttäjäpalautteet (alertit)
 5) käynnistyksen ja perusnavigaation runtime-vakaus
 
 Tuota:
-- parity-matriisi (feature by feature: Done/Partial/Missing)
+- parity-matriisi (Android vs iPhone)
 - iOS manuaalinen testiskripti simulaattorille
-- lista jäljellä olevista puutteista
+- lista jaljella olevista alustakohtaisista puutteista
 
 PYSÄHDY CHECKPOINT 3:een ja odota hyväksyntä.
 
@@ -124,10 +126,11 @@ VAIHE 4: Laatu, testit ja release readiness
 ========================================
 Tee viimeistely:
 1) lisää testit kriittisiin kohtiin:
-   - repository CRUD
-   - migraatio
+   - SQLite repository CRUD
+   - model mapping
    - tärkeät domain edge caset
-2) varmista buildit (Android/iOS + testiprojekti)
+   - widget/integration flows
+2) varmista buildit (Flutter Android/iOS + testit)
 3) release-checklist:
    - versionointi
    - app-id/bundle-id
@@ -150,7 +153,7 @@ RAPORTOINTIMUOTO (käytä tätä joka vaiheessa)
 - ...
 
 ## Files touched
-- path/to/file.cs: mitä ja miksi
+- path/to/file.dart: mitä ja miksi
 
 ## Validation
 - build/test/manual steps
