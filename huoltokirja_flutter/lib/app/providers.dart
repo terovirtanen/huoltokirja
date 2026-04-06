@@ -13,6 +13,7 @@ import '../domain/models/scheduler.dart';
 import '../domain/repositories/dependant_repository.dart';
 import '../domain/repositories/note_repository.dart';
 import '../domain/repositories/scheduler_repository.dart';
+import '../domain/services/counter_estimator.dart';
 
 final appDatabaseProvider = Provider<AppDatabase>((_) {
   throw UnimplementedError('AppDatabase must be overridden in main.dart');
@@ -38,6 +39,26 @@ final schedulerRepositoryProvider = Provider<SchedulerRepository>((ref) {
     const SchedulerMapper(),
   );
 });
+
+final dependantNotesProvider = FutureProvider.autoDispose
+    .family<List<Note>, int>((ref, dependantId) {
+      return ref.read(noteRepositoryProvider).listByDependant(dependantId);
+    });
+
+final dependantUsageEstimateProvider = FutureProvider.autoDispose
+    .family<UsageEstimate?, int>((ref, dependantId) async {
+      final dependant = await ref
+          .read(dependantRepositoryProvider)
+          .getById(dependantId);
+      if (dependant == null) {
+        return null;
+      }
+
+      final notes = await ref
+          .read(noteRepositoryProvider)
+          .listByDependant(dependantId);
+      return estimateDependantUsage(dependant: dependant, notes: notes);
+    });
 
 final dependantListControllerProvider =
     AsyncNotifierProvider<DependantListController, List<Dependant>>(

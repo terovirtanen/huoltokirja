@@ -7,8 +7,9 @@ class DependantMapper {
     return Dependant(
       id: row['id'] as int,
       name: row['name'] as String,
-      birthDate: _parseDate(row['birth_date']),
-      relation: row['relation'] as String?,
+      dependantGroup: DependantGroup.fromStorage(row['dependant_group']),
+      initialDate: _parseDate(row['initial_date'] ?? row['birth_date']),
+      usage: _parseDouble(row['usage']),
       createdAt: DateTime.parse(row['created_at'] as String),
       updatedAt: DateTime.parse(row['updated_at'] as String),
     );
@@ -18,8 +19,9 @@ class DependantMapper {
     return {
       'id': model.id,
       'name': model.name,
-      'birth_date': model.birthDate?.toIso8601String(),
-      'relation': model.relation,
+      'dependant_group': model.dependantGroup.storageValue,
+      'initial_date': model.initialDate?.toIso8601String(),
+      'usage': model.usage,
       'created_at': model.createdAt.toIso8601String(),
       'updated_at': model.updatedAt.toIso8601String(),
     };
@@ -28,5 +30,11 @@ class DependantMapper {
   DateTime? _parseDate(Object? value) {
     if (value == null) return null;
     return DateTime.parse(value as String);
+  }
+
+  double? _parseDouble(Object? value) {
+    if (value == null) return null;
+    if (value is num) return value.toDouble();
+    return double.tryParse(value.toString());
   }
 }

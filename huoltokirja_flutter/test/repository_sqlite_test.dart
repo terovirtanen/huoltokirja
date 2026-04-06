@@ -33,18 +33,38 @@ void main() {
     await db.close();
   });
 
+  test('target can be created without a group', () async {
+    final createdDependant = await dependantRepo.create(
+      Dependant(
+        name: 'Test target',
+        dependantGroup: DependantGroup.none,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+
+    final fetched = await dependantRepo.getById(createdDependant.id!);
+
+    expect(fetched, isNotNull);
+    expect(fetched!.dependantGroup, DependantGroup.none);
+    expect(fetched.supportsUsage, isFalse);
+  });
+
   test('CRUD works for dependant, note and scheduler', () async {
     final createdDependant = await dependantRepo.create(
       Dependant(
-        name: 'Test User',
-        birthDate: null,
-        relation: 'Child',
+        name: 'Test vehicle',
+        dependantGroup: DependantGroup.vehicle,
+        initialDate: DateTime(2024, 1, 1),
+        usage: 12345,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       ),
     );
 
     expect(createdDependant.id, isNotNull);
+    expect(createdDependant.dependantGroup, DependantGroup.vehicle);
+    expect(createdDependant.usage, 12345);
 
     final noteDate = DateTime(2026, 4, 6);
     final note = await noteRepo.create(
@@ -71,14 +91,20 @@ void main() {
     final scheduler = await schedulerRepo.create(
       Scheduler(
         dependantId: createdDependant.id!,
-        label: 'Weekly',
-        intervalDays: 7,
-        lastCompletedAt: DateTime.now(),
+        label: 'Inspection reminder',
+        noteType: NoteType.inspection,
+        startDate: DateTime(2026, 1, 1),
+        calendarIntervalMonths: 12,
+        usageInterval: 5000,
+        usageStartValue: 12000,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       ),
     );
 
+    expect(scheduler.noteType, NoteType.inspection);
+    expect(scheduler.calendarIntervalMonths, 12);
+    expect(scheduler.usageStartValue, 12000);
     expect((await noteRepo.listByDependant(createdDependant.id!)).length, 1);
     expect(
       (await schedulerRepo.listByDependant(createdDependant.id!)).length,

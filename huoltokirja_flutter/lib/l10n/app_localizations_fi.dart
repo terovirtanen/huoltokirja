@@ -47,6 +47,24 @@ class AppLocalizationsFi extends AppLocalizations {
   String get dependantDetails => 'Kohteen tiedot';
 
   @override
+  String get group => 'Ryhmä';
+
+  @override
+  String get noGroup => 'Ei ryhmää';
+
+  @override
+  String get vehicleGroup => 'Ajoneuvo';
+
+  @override
+  String get workMachineGroup => 'Työkone';
+
+  @override
+  String get deviceGroup => 'Laite';
+
+  @override
+  String get animalGroup => 'Eläin';
+
+  @override
   String get noRelation => 'Ei suhdetta';
 
   @override
@@ -64,13 +82,13 @@ class AppLocalizationsFi extends AppLocalizations {
   String get noNotes => 'Ei muistiinpanoja.';
 
   @override
-  String get schedulers => 'Aikataulut';
+  String get schedulers => 'Ajastukset';
 
   @override
-  String get addScheduler => 'Lisää aikataulu';
+  String get addScheduler => 'Lisää ajastus';
 
   @override
-  String get noSchedulers => 'Ei aikatauluja.';
+  String get noSchedulers => 'Ei ajastuksia.';
 
   @override
   String nextSchedule(Object date, Object overdue) {
@@ -79,6 +97,12 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get overdueSuffix => ' (myöhässä)';
+
+  @override
+  String get dueSoonSuffix => ' (alle 2 viikkoa)';
+
+  @override
+  String get dueTomorrowSuffix => ' (1 päivä tai vähemmän)';
 
   @override
   String get newDependant => 'Uusi kohde';
@@ -96,10 +120,52 @@ class AppLocalizationsFi extends AppLocalizations {
   String get relationOptional => 'Suhde (valinnainen)';
 
   @override
+  String get commissioningDateOptional => 'Käyttöönotto pvm (valinnainen)';
+
+  @override
+  String get birthDateOptional => 'Syntymäaika (valinnainen)';
+
+  @override
+  String get odometerOptional => 'Ajokilometrit (valinnainen)';
+
+  @override
+  String get operatingHoursOptional => 'Käyttötunnit (valinnainen)';
+
+  @override
+  String get invalidNumber => 'Anna kelvollinen numero';
+
+  @override
   String get cancel => 'Peruuta';
 
   @override
   String get save => 'Tallenna';
+
+  @override
+  String usageEstimateLine(Object value, Object unit) {
+    return 'Arviolukema nyt: $value $unit';
+  }
+
+  @override
+  String initialDateValue(Object label, Object date) {
+    return '$label: $date';
+  }
+
+  @override
+  String usageValueLabel(Object label, Object value, Object unit) {
+    return '$label: $value $unit';
+  }
+
+  @override
+  String get birthDateShort => 'Syntymäaika';
+
+  @override
+  String get commissioningDateShort => 'Käyttöönotto';
+
+  @override
+  String get odometerShort => 'Kilometrit';
+
+  @override
+  String get operatingHoursShort => 'Tunnit';
 
   @override
   String get addNoteTitle => 'Lisää muistiinpano';
@@ -150,10 +216,58 @@ class AppLocalizationsFi extends AppLocalizations {
   String get noteSaved => 'Muistiinpano tallennettu';
 
   @override
-  String get addSchedulerTitle => 'Lisää aikataulu';
+  String get addSchedulerTitle => 'Lisää ajastus';
 
   @override
-  String get editSchedulerTitle => 'Muokkaa aikataulua';
+  String get editSchedulerTitle => 'Muokkaa ajastusta';
+
+  @override
+  String get scheduleStartDate => 'Ajastuksen alkupäivä';
+
+  @override
+  String get calendarRule => 'Kalenterisääntö';
+
+  @override
+  String get noCalendarRule => 'Ei kalenterisääntöä';
+
+  @override
+  String get yearly => 'Vuosittain';
+
+  @override
+  String get semiAnnual => 'Puolivuosittain';
+
+  @override
+  String get quarterly => 'Neljännesvuosittain';
+
+  @override
+  String get customMonths => 'Mukautettu kuukausiväli';
+
+  @override
+  String get customMonthsLabel => 'Kuukausiväli';
+
+  @override
+  String everyNMonths(Object months) {
+    return 'Joka $months. kuukausi';
+  }
+
+  @override
+  String get monthsMustBePositive => 'Kuukausivälin tulee olla > 0';
+
+  @override
+  String get usageRule => 'Käyttömääräsääntö';
+
+  @override
+  String usageIntervalLabel(Object unit) {
+    return 'Väli ($unit)';
+  }
+
+  @override
+  String usageStartValueLabel(Object unit) {
+    return 'Alkuarvo ($unit)';
+  }
+
+  @override
+  String get scheduleRuleRequired => 'Valitse vähintään yksi ajastussääntö';
 
   @override
   String get intervalDays => 'Väli päivinä';
@@ -171,7 +285,22 @@ class AppLocalizationsFi extends AppLocalizations {
   String get notSet => 'Ei asetettu';
 
   @override
-  String get schedulerSaved => 'Aikataulu tallennettu';
+  String get schedulerSaved => 'Ajastus tallennettu';
+
+  @override
+  String schedulerTypeLine(Object type) {
+    return 'Noten tyyppi: $type';
+  }
+
+  @override
+  String schedulerCalendarLine(Object interval) {
+    return 'Kalenteri: $interval';
+  }
+
+  @override
+  String schedulerUsageLine(Object value, Object unit) {
+    return 'Käyttöraja: $value $unit';
+  }
 
   @override
   String plainNoteSummary(Object date, Object body) {

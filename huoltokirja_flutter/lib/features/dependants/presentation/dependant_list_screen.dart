@@ -42,7 +42,7 @@ class DependantListScreen extends ConsumerWidget {
                 return Card(
                   child: ListTile(
                     title: Text(dependant.listTitle),
-                    subtitle: Text(l10n.idLabel(dependant.id ?? '—')),
+                    subtitle: Text(_buildSubtitle(context, dependant)),
                     onTap: () => context.push('/dependants/${dependant.id}'),
                     trailing: PopupMenuButton<String>(
                       onSelected: (value) {
@@ -80,6 +80,29 @@ class DependantListScreen extends ConsumerWidget {
         label: Text(l10n.add),
       ),
     );
+  }
+
+  String _buildSubtitle(BuildContext context, Dependant dependant) {
+    final l10n = context.l10n;
+    final parts = <String>[
+      switch (dependant.dependantGroup) {
+        DependantGroup.none => l10n.noGroup,
+        DependantGroup.vehicle => l10n.vehicleGroup,
+        DependantGroup.workMachine => l10n.workMachineGroup,
+        DependantGroup.device => l10n.deviceGroup,
+        DependantGroup.animal => l10n.animalGroup,
+      },
+      l10n.idLabel(dependant.id ?? '—'),
+    ];
+
+    if (dependant.usage != null && dependant.usageUnit != null) {
+      final formatted = dependant.usage == dependant.usage!.roundToDouble()
+          ? dependant.usage!.toStringAsFixed(0)
+          : dependant.usage!.toStringAsFixed(1);
+      parts.insert(1, '$formatted ${dependant.usageUnit}');
+    }
+
+    return parts.join(' • ');
   }
 
   Future<void> _showAddDialog(BuildContext context, WidgetRef ref) async {

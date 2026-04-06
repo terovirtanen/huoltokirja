@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/providers.dart';
 import '../../../core/l10n/app_localizations_ext.dart';
+import '../../../domain/models/note.dart';
 import '../../../domain/models/scheduler.dart';
+import '../../../domain/services/counter_estimator.dart';
 
 class SchedulerEditorScreen extends ConsumerStatefulWidget {
   const SchedulerEditorScreen({
@@ -21,13 +23,22 @@ class SchedulerEditorScreen extends ConsumerStatefulWidget {
       _SchedulerEditorScreenState();
 }
 
+enum _CalendarIntervalOption { none, yearly, semiAnnual, quarterly, custom }
+
 class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
   final _formKey = GlobalKey<FormState>();
   final _labelController = TextEditingController();
-  final _intervalController = TextEditingController(text: '30');
-  DateTime? _lastCompletedAt;
+  final _customMonthsController = TextEditingController();
+  final _usageIntervalController = TextEditingController();
+  final _usageStartController = TextEditingController();
   bool _loading = true;
+  bool _usageRuleEnabled = false;
+  bool _usageStartPrefilled = false;
+  DateTime _startDate = DateTime.now();
   DateTime? _createdAt;
+  NoteType _selectedNoteType = NoteType.plain;
+  _CalendarIntervalOption _calendarIntervalOption =
+      _CalendarIntervalOption.yearly;
 
   @override
   void initState() {
@@ -50,8 +61,21 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
     }
 
     _labelController.text = existing.label;
-    _intervalController.text = existing.intervalDays.toString();
-    _lastCompletedAt = existing.lastCompletedAt;
+    _selectedNoteType = existing.noteType;
+    _startDate = existing.startDate;
+    _calendarIntervalOption = _optionFromMonths(
+      existing.calendarIntervalMonths,
+    );
+    if (_calendarIntervalOption == _CalendarIntervalOption.custom &&
+        existing.calendarIntervalMonths != null) {
+      _customMonthsController.text = existing.calendarIntervalMonths.toString();
+    }
+    if (existing.usageInterval != null && existing.usageStartValue != null) {
+      _usageRuleEnabled = true;
+      _usageIntervalController.text = _formatNumber(existing.usageInterval!);
+      _usageStartController.text = _formatNumber(existing.usageStartValue!);
+      _usageStartPrefilled = true;
+    }
     _createdAt = existing.createdAt;
 
     setState(() => _loading = false);
@@ -60,7 +84,9 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
   @override
   void dispose() {
     _labelController.dispose();
-    _intervalController.dispose();
+    _customMonthsController.dispose();
+    _usageIntervalController.dispose();
+    _usageStartController.dispose();
     super.dispose();
   }
 
@@ -71,6 +97,22 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
     }
 
     final l10n = context.l10n;
+    final detailAsync = ref.watch(dependantDetailProvider(widget.dependantId));
+    final detail = detailAsync.valueOrNull;
+    final dependant = detail?.dependant;
+    final usageEstimate = dependant == null || detail == null
+        ? null
+        : estimateDependantUsage(dependant: dependant, notes: detail.notes);
+    final supportsUsage = dependant?.supportsUsage ?? false;
+    final usageUnit = dependant?.usageUnit ?? '';
+
+    if (supportsUsage && !_usageStartPrefilled) {
+      final defaultUsage = usageEstimate?.currentValue ?? dependant?.usage;
+      if (defaultUsage != null) {
+        _usageStartController.text = _formatNumber(defaultUsage);
+      }
+      _usageStartPrefilled = true;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -93,27 +135,34 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
                   : null,
             ),
             const SizedBox(height: 12),
-            TextFormField(
-              controller: _intervalController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: l10n.intervalDays),
-              validator: (value) {
-                final parsed = int.tryParse(value ?? '');
-                if (parsed == null || parsed <= 0) {
-                  return l10n.intervalMustBePositive;
+            DropdownButtonFormField<NoteType>(
+              initialValue: _selectedNoteType,
+              decoration: InputDecoration(labelText: l10n.type),
+              items: [
+                DropdownMenuItem(
+                  value: NoteType.plain,
+                  child: Text(l10n.plainNote),
+                ),
+                DropdownMenuItem(
+                  value: NoteType.service,
+                  child: Text(l10n.serviceNote),
+                ),
+                DropdownMenuItem(
+                  value: NoteType.inspection,
+                  child: Text(l10n.inspectionNote),
+                ),
+              ],
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() => _selectedNoteType = value);
                 }
-                return null;
               },
             ),
             const SizedBox(height: 12),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: Text(l10n.lastCompletedOptional),
-              subtitle: Text(
-                _lastCompletedAt == null
-                    ? l10n.notSet
-                    : _lastCompletedAt!.toIso8601String().split('T').first,
-              ),
+              title: Text(l10n.scheduleStartDate),
+              subtitle: Text(_startDate.toIso8601String().split('T').first),
               trailing: IconButton(
                 icon: const Icon(Icons.calendar_month),
                 onPressed: () async {
@@ -121,14 +170,122 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
                     context: context,
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2100),
-                    initialDate: _lastCompletedAt ?? DateTime.now(),
+                    initialDate: _startDate,
                   );
                   if (picked != null) {
-                    setState(() => _lastCompletedAt = picked);
+                    setState(() => _startDate = picked);
                   }
                 },
               ),
             ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<_CalendarIntervalOption>(
+              initialValue: _calendarIntervalOption,
+              decoration: InputDecoration(labelText: l10n.calendarRule),
+              items: [
+                DropdownMenuItem(
+                  value: _CalendarIntervalOption.none,
+                  child: Text(l10n.noCalendarRule),
+                ),
+                DropdownMenuItem(
+                  value: _CalendarIntervalOption.yearly,
+                  child: Text(l10n.yearly),
+                ),
+                DropdownMenuItem(
+                  value: _CalendarIntervalOption.semiAnnual,
+                  child: Text(l10n.semiAnnual),
+                ),
+                DropdownMenuItem(
+                  value: _CalendarIntervalOption.quarterly,
+                  child: Text(l10n.quarterly),
+                ),
+                DropdownMenuItem(
+                  value: _CalendarIntervalOption.custom,
+                  child: Text(l10n.customMonths),
+                ),
+              ],
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() => _calendarIntervalOption = value);
+                }
+              },
+            ),
+            if (_calendarIntervalOption == _CalendarIntervalOption.custom) ...[
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _customMonthsController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: l10n.customMonthsLabel),
+                validator: (value) {
+                  if (_calendarIntervalOption !=
+                      _CalendarIntervalOption.custom) {
+                    return null;
+                  }
+                  final parsed = int.tryParse(value ?? '');
+                  if (parsed == null || parsed <= 0) {
+                    return l10n.monthsMustBePositive;
+                  }
+                  return null;
+                },
+              ),
+            ],
+            if (supportsUsage) ...[
+              const SizedBox(height: 12),
+              SwitchListTile.adaptive(
+                contentPadding: EdgeInsets.zero,
+                title: Text(l10n.usageRule),
+                subtitle: usageEstimate == null
+                    ? null
+                    : Text(
+                        l10n.usageEstimateLine(
+                          _formatNumber(usageEstimate.currentValue),
+                          usageUnit,
+                        ),
+                      ),
+                value: _usageRuleEnabled,
+                onChanged: (value) => setState(() => _usageRuleEnabled = value),
+              ),
+              if (_usageRuleEnabled) ...[
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _usageIntervalController,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: l10n.usageIntervalLabel(usageUnit),
+                  ),
+                  validator: (value) {
+                    if (!_usageRuleEnabled) {
+                      return null;
+                    }
+                    final parsed = _parseDouble(value);
+                    if (parsed == null || parsed <= 0) {
+                      return l10n.intervalMustBePositive;
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _usageStartController,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: l10n.usageStartValueLabel(usageUnit),
+                  ),
+                  validator: (value) {
+                    if (!_usageRuleEnabled) {
+                      return null;
+                    }
+                    return _parseDouble(value) == null
+                        ? l10n.invalidNumber
+                        : null;
+                  },
+                ),
+              ],
+            ],
             const SizedBox(height: 24),
             FilledButton(onPressed: _save, child: Text(l10n.save)),
           ],
@@ -140,13 +297,28 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final calendarIntervalMonths = _selectedCalendarMonths();
+    if (calendarIntervalMonths == null && !_usageRuleEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.scheduleRuleRequired)),
+      );
+      return;
+    }
+
     final now = DateTime.now();
     final scheduler = Scheduler(
       id: widget.schedulerId,
       dependantId: widget.dependantId,
       label: _labelController.text.trim(),
-      intervalDays: int.parse(_intervalController.text.trim()),
-      lastCompletedAt: _lastCompletedAt,
+      noteType: _selectedNoteType,
+      startDate: _startDate,
+      calendarIntervalMonths: calendarIntervalMonths,
+      usageInterval: _usageRuleEnabled
+          ? _parseDouble(_usageIntervalController.text)
+          : null,
+      usageStartValue: _usageRuleEnabled
+          ? _parseDouble(_usageStartController.text)
+          : null,
       createdAt: _createdAt ?? now,
       updatedAt: now,
     );
@@ -164,5 +336,40 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
       ).showSnackBar(SnackBar(content: Text(context.l10n.schedulerSaved)));
       context.pop();
     }
+  }
+
+  _CalendarIntervalOption _optionFromMonths(int? months) {
+    return switch (months) {
+      null => _CalendarIntervalOption.none,
+      12 => _CalendarIntervalOption.yearly,
+      6 => _CalendarIntervalOption.semiAnnual,
+      3 => _CalendarIntervalOption.quarterly,
+      _ => _CalendarIntervalOption.custom,
+    };
+  }
+
+  int? _selectedCalendarMonths() {
+    return switch (_calendarIntervalOption) {
+      _CalendarIntervalOption.none => null,
+      _CalendarIntervalOption.yearly => 12,
+      _CalendarIntervalOption.semiAnnual => 6,
+      _CalendarIntervalOption.quarterly => 3,
+      _CalendarIntervalOption.custom => int.tryParse(
+        _customMonthsController.text.trim(),
+      ),
+    };
+  }
+
+  double? _parseDouble(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return null;
+    }
+    return double.tryParse(value.trim().replaceAll(',', '.'));
+  }
+
+  String _formatNumber(double value) {
+    return value == value.roundToDouble()
+        ? value.toStringAsFixed(0)
+        : value.toStringAsFixed(1);
   }
 }

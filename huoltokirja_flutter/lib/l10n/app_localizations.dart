@@ -167,6 +167,42 @@ abstract class AppLocalizations {
   /// **'Target details'**
   String get dependantDetails;
 
+  /// No description provided for @group.
+  ///
+  /// In en, this message translates to:
+  /// **'Group'**
+  String get group;
+
+  /// No description provided for @noGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'No group'**
+  String get noGroup;
+
+  /// No description provided for @vehicleGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle'**
+  String get vehicleGroup;
+
+  /// No description provided for @workMachineGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Work machine'**
+  String get workMachineGroup;
+
+  /// No description provided for @deviceGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Device'**
+  String get deviceGroup;
+
+  /// No description provided for @animalGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Animal'**
+  String get animalGroup;
+
   /// No description provided for @noRelation.
   ///
   /// In en, this message translates to:
@@ -227,6 +263,18 @@ abstract class AppLocalizations {
   /// **' (overdue)'**
   String get overdueSuffix;
 
+  /// No description provided for @dueSoonSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **' (within 2 weeks)'**
+  String get dueSoonSuffix;
+
+  /// No description provided for @dueTomorrowSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **' (1 day or less)'**
+  String get dueTomorrowSuffix;
+
   /// No description provided for @newDependant.
   ///
   /// In en, this message translates to:
@@ -257,6 +305,36 @@ abstract class AppLocalizations {
   /// **'Relation (optional)'**
   String get relationOptional;
 
+  /// No description provided for @commissioningDateOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Commissioning date (optional)'**
+  String get commissioningDateOptional;
+
+  /// No description provided for @birthDateOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Birth date (optional)'**
+  String get birthDateOptional;
+
+  /// No description provided for @odometerOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Odometer (optional)'**
+  String get odometerOptional;
+
+  /// No description provided for @operatingHoursOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Operating hours (optional)'**
+  String get operatingHoursOptional;
+
+  /// No description provided for @invalidNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid number'**
+  String get invalidNumber;
+
   /// No description provided for @cancel.
   ///
   /// In en, this message translates to:
@@ -268,6 +346,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save'**
   String get save;
+
+  /// No description provided for @usageEstimateLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated current reading: {value} {unit}'**
+  String usageEstimateLine(Object value, Object unit);
+
+  /// No description provided for @initialDateValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{label}: {date}'**
+  String initialDateValue(Object label, Object date);
+
+  /// No description provided for @usageValueLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{label}: {value} {unit}'**
+  String usageValueLabel(Object label, Object value, Object unit);
+
+  /// No description provided for @birthDateShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Birth date'**
+  String get birthDateShort;
+
+  /// No description provided for @commissioningDateShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Commissioned'**
+  String get commissioningDateShort;
+
+  /// No description provided for @odometerShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Odometer'**
+  String get odometerShort;
+
+  /// No description provided for @operatingHoursShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours'**
+  String get operatingHoursShort;
 
   /// No description provided for @addNoteTitle.
   ///
@@ -377,6 +497,90 @@ abstract class AppLocalizations {
   /// **'Edit schedule'**
   String get editSchedulerTitle;
 
+  /// No description provided for @scheduleStartDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule start date'**
+  String get scheduleStartDate;
+
+  /// No description provided for @calendarRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar rule'**
+  String get calendarRule;
+
+  /// No description provided for @noCalendarRule.
+  ///
+  /// In en, this message translates to:
+  /// **'No calendar rule'**
+  String get noCalendarRule;
+
+  /// No description provided for @yearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get yearly;
+
+  /// No description provided for @semiAnnual.
+  ///
+  /// In en, this message translates to:
+  /// **'Semi-annually'**
+  String get semiAnnual;
+
+  /// No description provided for @quarterly.
+  ///
+  /// In en, this message translates to:
+  /// **'Quarterly'**
+  String get quarterly;
+
+  /// No description provided for @customMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom month interval'**
+  String get customMonths;
+
+  /// No description provided for @customMonthsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Month interval'**
+  String get customMonthsLabel;
+
+  /// No description provided for @everyNMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'Every {months} months'**
+  String everyNMonths(Object months);
+
+  /// No description provided for @monthsMustBePositive.
+  ///
+  /// In en, this message translates to:
+  /// **'Month interval must be > 0'**
+  String get monthsMustBePositive;
+
+  /// No description provided for @usageRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage-based rule'**
+  String get usageRule;
+
+  /// No description provided for @usageIntervalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Interval ({unit})'**
+  String usageIntervalLabel(Object unit);
+
+  /// No description provided for @usageStartValueLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Start value ({unit})'**
+  String usageStartValueLabel(Object unit);
+
+  /// No description provided for @scheduleRuleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one schedule rule'**
+  String get scheduleRuleRequired;
+
   /// No description provided for @intervalDays.
   ///
   /// In en, this message translates to:
@@ -412,6 +616,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Schedule saved'**
   String get schedulerSaved;
+
+  /// No description provided for @schedulerTypeLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Note type: {type}'**
+  String schedulerTypeLine(Object type);
+
+  /// No description provided for @schedulerCalendarLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar: {interval}'**
+  String schedulerCalendarLine(Object interval);
+
+  /// No description provided for @schedulerUsageLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage threshold: {value} {unit}'**
+  String schedulerUsageLine(Object value, Object unit);
 
   /// No description provided for @plainNoteSummary.
   ///

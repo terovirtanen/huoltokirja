@@ -47,6 +47,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dependantDetails => 'Target details';
 
   @override
+  String get group => 'Group';
+
+  @override
+  String get noGroup => 'No group';
+
+  @override
+  String get vehicleGroup => 'Vehicle';
+
+  @override
+  String get workMachineGroup => 'Work machine';
+
+  @override
+  String get deviceGroup => 'Device';
+
+  @override
+  String get animalGroup => 'Animal';
+
+  @override
   String get noRelation => 'No relation';
 
   @override
@@ -81,6 +99,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get overdueSuffix => ' (overdue)';
 
   @override
+  String get dueSoonSuffix => ' (within 2 weeks)';
+
+  @override
+  String get dueTomorrowSuffix => ' (1 day or less)';
+
+  @override
   String get newDependant => 'New target';
 
   @override
@@ -96,10 +120,52 @@ class AppLocalizationsEn extends AppLocalizations {
   String get relationOptional => 'Relation (optional)';
 
   @override
+  String get commissioningDateOptional => 'Commissioning date (optional)';
+
+  @override
+  String get birthDateOptional => 'Birth date (optional)';
+
+  @override
+  String get odometerOptional => 'Odometer (optional)';
+
+  @override
+  String get operatingHoursOptional => 'Operating hours (optional)';
+
+  @override
+  String get invalidNumber => 'Enter a valid number';
+
+  @override
   String get cancel => 'Cancel';
 
   @override
   String get save => 'Save';
+
+  @override
+  String usageEstimateLine(Object value, Object unit) {
+    return 'Estimated current reading: $value $unit';
+  }
+
+  @override
+  String initialDateValue(Object label, Object date) {
+    return '$label: $date';
+  }
+
+  @override
+  String usageValueLabel(Object label, Object value, Object unit) {
+    return '$label: $value $unit';
+  }
+
+  @override
+  String get birthDateShort => 'Birth date';
+
+  @override
+  String get commissioningDateShort => 'Commissioned';
+
+  @override
+  String get odometerShort => 'Odometer';
+
+  @override
+  String get operatingHoursShort => 'Hours';
 
   @override
   String get addNoteTitle => 'Add note';
@@ -156,6 +222,54 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editSchedulerTitle => 'Edit schedule';
 
   @override
+  String get scheduleStartDate => 'Schedule start date';
+
+  @override
+  String get calendarRule => 'Calendar rule';
+
+  @override
+  String get noCalendarRule => 'No calendar rule';
+
+  @override
+  String get yearly => 'Yearly';
+
+  @override
+  String get semiAnnual => 'Semi-annually';
+
+  @override
+  String get quarterly => 'Quarterly';
+
+  @override
+  String get customMonths => 'Custom month interval';
+
+  @override
+  String get customMonthsLabel => 'Month interval';
+
+  @override
+  String everyNMonths(Object months) {
+    return 'Every $months months';
+  }
+
+  @override
+  String get monthsMustBePositive => 'Month interval must be > 0';
+
+  @override
+  String get usageRule => 'Usage-based rule';
+
+  @override
+  String usageIntervalLabel(Object unit) {
+    return 'Interval ($unit)';
+  }
+
+  @override
+  String usageStartValueLabel(Object unit) {
+    return 'Start value ($unit)';
+  }
+
+  @override
+  String get scheduleRuleRequired => 'Select at least one schedule rule';
+
+  @override
   String get intervalDays => 'Interval in days';
 
   @override
@@ -172,6 +286,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get schedulerSaved => 'Schedule saved';
+
+  @override
+  String schedulerTypeLine(Object type) {
+    return 'Note type: $type';
+  }
+
+  @override
+  String schedulerCalendarLine(Object interval) {
+    return 'Calendar: $interval';
+  }
+
+  @override
+  String schedulerUsageLine(Object value, Object unit) {
+    return 'Usage threshold: $value $unit';
+  }
 
   @override
   String plainNoteSummary(Object date, Object body) {

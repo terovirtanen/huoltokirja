@@ -17,6 +17,12 @@
   "delete": "Delete",
   "dependantDeleted": "Target deleted",
   "dependantDetails": "Target details",
+  "group": "Group",
+  "noGroup": "No group",
+  "vehicleGroup": "Vehicle",
+  "workMachineGroup": "Work machine",
+  "deviceGroup": "Device",
+  "animalGroup": "Animal",
   "noRelation": "No relation",
   "relationLabel": "Relation: {relation}",
   "@relationLabel": {
@@ -38,13 +44,46 @@
     }
   },
   "overdueSuffix": " (overdue)",
+  "dueSoonSuffix": " (within 2 weeks)",
+  "dueTomorrowSuffix": " (1 day or less)",
   "newDependant": "New target",
   "editDependant": "Edit target",
   "name": "Name",
   "nameRequired": "Name is required",
   "relationOptional": "Relation (optional)",
+  "commissioningDateOptional": "Commissioning date (optional)",
+  "birthDateOptional": "Birth date (optional)",
+  "odometerOptional": "Odometer (optional)",
+  "operatingHoursOptional": "Operating hours (optional)",
+  "invalidNumber": "Enter a valid number",
   "cancel": "Cancel",
   "save": "Save",
+  "usageEstimateLine": "Estimated current reading: {value} {unit}",
+  "@usageEstimateLine": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "initialDateValue": "{label}: {date}",
+  "@initialDateValue": {
+    "placeholders": {
+      "label": {},
+      "date": {}
+    }
+  },
+  "usageValueLabel": "{label}: {value} {unit}",
+  "@usageValueLabel": {
+    "placeholders": {
+      "label": {},
+      "value": {},
+      "unit": {}
+    }
+  },
+  "birthDateShort": "Birth date",
+  "commissioningDateShort": "Commissioned",
+  "odometerShort": "Odometer",
+  "operatingHoursShort": "Hours",
   "addNoteTitle": "Add note",
   "editNoteTitle": "Edit note",
   "plainNote": "Note",
@@ -63,12 +102,60 @@
   "noteSaved": "Note saved",
   "addSchedulerTitle": "Add schedule",
   "editSchedulerTitle": "Edit schedule",
+  "scheduleStartDate": "Schedule start date",
+  "calendarRule": "Calendar rule",
+  "noCalendarRule": "No calendar rule",
+  "yearly": "Yearly",
+  "semiAnnual": "Semi-annually",
+  "quarterly": "Quarterly",
+  "customMonths": "Custom month interval",
+  "customMonthsLabel": "Month interval",
+  "everyNMonths": "Every {months} months",
+  "@everyNMonths": {
+    "placeholders": {
+      "months": {}
+    }
+  },
+  "monthsMustBePositive": "Month interval must be > 0",
+  "usageRule": "Usage-based rule",
+  "usageIntervalLabel": "Interval ({unit})",
+  "@usageIntervalLabel": {
+    "placeholders": {
+      "unit": {}
+    }
+  },
+  "usageStartValueLabel": "Start value ({unit})",
+  "@usageStartValueLabel": {
+    "placeholders": {
+      "unit": {}
+    }
+  },
+  "scheduleRuleRequired": "Select at least one schedule rule",
   "intervalDays": "Interval in days",
   "nameMissing": "Name is missing",
   "intervalMustBePositive": "Interval must be > 0",
   "lastCompletedOptional": "Last completed (optional)",
   "notSet": "Not set",
   "schedulerSaved": "Schedule saved",
+  "schedulerTypeLine": "Note type: {type}",
+  "@schedulerTypeLine": {
+    "placeholders": {
+      "type": {}
+    }
+  },
+  "schedulerCalendarLine": "Calendar: {interval}",
+  "@schedulerCalendarLine": {
+    "placeholders": {
+      "interval": {}
+    }
+  },
+  "schedulerUsageLine": "Usage threshold: {value} {unit}",
+  "@schedulerUsageLine": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
   "plainNoteSummary": "{date}{body}",
   "@plainNoteSummary": {
     "placeholders": {

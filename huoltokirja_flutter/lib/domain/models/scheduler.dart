@@ -1,10 +1,16 @@
+import '../services/counter_estimator.dart';
+import 'note.dart';
+
 class Scheduler {
   const Scheduler({
     this.id,
     required this.dependantId,
     required this.label,
-    required this.intervalDays,
-    this.lastCompletedAt,
+    required this.noteType,
+    required this.startDate,
+    this.calendarIntervalMonths,
+    this.usageInterval,
+    this.usageStartValue,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -12,24 +18,112 @@ class Scheduler {
   final int? id;
   final int dependantId;
   final String label;
-  final int intervalDays;
-  final DateTime? lastCompletedAt;
+  final NoteType noteType;
+  final DateTime startDate;
+  final int? calendarIntervalMonths;
+  final double? usageInterval;
+  final double? usageStartValue;
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  DateTime get nextScheduleAt {
-    final anchor = lastCompletedAt ?? createdAt;
-    return anchor.add(Duration(days: intervalDays));
+  bool get hasCalendarRule =>
+      calendarIntervalMonths != null && calendarIntervalMonths! > 0;
+
+  bool get hasUsageRule =>
+      usageInterval != null && usageInterval! > 0 && usageStartValue != null;
+
+  double? get nextUsageThreshold =>
+      hasUsageRule ? usageStartValue! + usageInterval! : null;
+
+  DateTime? nextCalendarScheduleAt({DateTime? referenceDate}) {
+    final intervalMonths = calendarIntervalMonths;
+    if (intervalMonths == null || intervalMonths <= 0) {
+      return null;
+    }
+
+    final reference = _dateOnly(referenceDate ?? DateTime.now());
+    var next = _dateOnly(startDate);
+    while (next.isBefore(reference)) {
+      next = _addMonths(next, intervalMonths);
+    }
+    return next;
   }
 
-  bool get isOverdue => DateTime.now().isAfter(nextScheduleAt);
+  DateTime? nextUsageScheduleAt({
+    required UsageEstimate estimate,
+    DateTime? referenceDate,
+  }) {
+    final threshold = nextUsageThreshold;
+    if (threshold == null) {
+      return null;
+    }
+
+    final reference = _dateOnly(referenceDate ?? DateTime.now());
+    if (estimate.currentValue >= threshold) {
+      return reference;
+    }
+    if (estimate.dailyIncrease <= 0) {
+      return null;
+    }
+
+    final remainingUsage = threshold - estimate.currentValue;
+    final days = (remainingUsage / estimate.dailyIncrease).ceil();
+    return reference.add(Duration(days: days < 0 ? 0 : days));
+  }
+
+  DateTime? nextScheduleAtForEstimate({
+    UsageEstimate? usageEstimate,
+    DateTime? referenceDate,
+  }) {
+    final reference = referenceDate ?? DateTime.now();
+    final calendarNext = nextCalendarScheduleAt(referenceDate: reference);
+    final usageNext = usageEstimate == null
+        ? null
+        : nextUsageScheduleAt(
+            estimate: usageEstimate,
+            referenceDate: reference,
+          );
+    final candidates = <DateTime>[];
+    if (calendarNext != null) {
+      candidates.add(calendarNext);
+    }
+    if (usageNext != null) {
+      candidates.add(usageNext);
+    }
+    candidates.sort((a, b) => a.compareTo(b));
+
+    if (candidates.isEmpty) {
+      return null;
+    }
+    return candidates.first;
+  }
+
+  DateTime get nextScheduleAt =>
+      nextScheduleAtForEstimate(referenceDate: DateTime.now()) ??
+      _dateOnly(startDate);
+
+  bool get isOverdue => nextScheduleAt.isBefore(_dateOnly(DateTime.now()));
+
+  bool get isDueSoon {
+    final days = nextScheduleAt.difference(_dateOnly(DateTime.now())).inDays;
+    return days >= 0 && days <= 14;
+  }
+
+  bool get isDueTomorrow =>
+      nextScheduleAt.difference(_dateOnly(DateTime.now())).inDays <= 1;
 
   Scheduler copyWith({
     int? id,
     int? dependantId,
     String? label,
-    int? intervalDays,
-    DateTime? lastCompletedAt,
+    NoteType? noteType,
+    DateTime? startDate,
+    int? calendarIntervalMonths,
+    bool clearCalendarIntervalMonths = false,
+    double? usageInterval,
+    bool clearUsageInterval = false,
+    double? usageStartValue,
+    bool clearUsageStartValue = false,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -37,10 +131,34 @@ class Scheduler {
       id: id ?? this.id,
       dependantId: dependantId ?? this.dependantId,
       label: label ?? this.label,
-      intervalDays: intervalDays ?? this.intervalDays,
-      lastCompletedAt: lastCompletedAt ?? this.lastCompletedAt,
+      noteType: noteType ?? this.noteType,
+      startDate: startDate ?? this.startDate,
+      calendarIntervalMonths: clearCalendarIntervalMonths
+          ? null
+          : calendarIntervalMonths ?? this.calendarIntervalMonths,
+      usageInterval: clearUsageInterval
+          ? null
+          : usageInterval ?? this.usageInterval,
+      usageStartValue: clearUsageStartValue
+          ? null
+          : usageStartValue ?? this.usageStartValue,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+}
+
+DateTime _dateOnly(DateTime value) =>
+    DateTime(value.year, value.month, value.day);
+
+DateTime _addMonths(DateTime value, int monthsToAdd) {
+  final totalMonths = value.month - 1 + monthsToAdd;
+  final year = value.year + (totalMonths ~/ 12);
+  final month = (totalMonths % 12) + 1;
+  final lastDayOfMonth = DateTime(year, month + 1, 0).day;
+  return DateTime(
+    year,
+    month,
+    value.day > lastDayOfMonth ? lastDayOfMonth : value.day,
+  );
 }

@@ -17,6 +17,12 @@
   "delete": "Poista",
   "dependantDeleted": "Kohde poistettu",
   "dependantDetails": "Kohteen tiedot",
+  "group": "Ryhmä",
+  "noGroup": "Ei ryhmää",
+  "vehicleGroup": "Ajoneuvo",
+  "workMachineGroup": "Työkone",
+  "deviceGroup": "Laite",
+  "animalGroup": "Eläin",
   "noRelation": "Ei suhdetta",
   "relationLabel": "Suhde: {relation}",
   "@relationLabel": {
@@ -27,9 +33,9 @@
   "notes": "Muistiinpanot",
   "addNote": "Lisää muistiinpano",
   "noNotes": "Ei muistiinpanoja.",
-  "schedulers": "Aikataulut",
-  "addScheduler": "Lisää aikataulu",
-  "noSchedulers": "Ei aikatauluja.",
+  "schedulers": "Ajastukset",
+  "addScheduler": "Lisää ajastus",
+  "noSchedulers": "Ei ajastuksia.",
   "nextSchedule": "Seuraava: {date}{overdue}",
   "@nextSchedule": {
     "placeholders": {
@@ -38,13 +44,46 @@
     }
   },
   "overdueSuffix": " (myöhässä)",
+  "dueSoonSuffix": " (alle 2 viikkoa)",
+  "dueTomorrowSuffix": " (1 päivä tai vähemmän)",
   "newDependant": "Uusi kohde",
   "editDependant": "Muokkaa kohdetta",
   "name": "Nimi",
   "nameRequired": "Nimi on pakollinen",
   "relationOptional": "Suhde (valinnainen)",
+  "commissioningDateOptional": "Käyttöönotto pvm (valinnainen)",
+  "birthDateOptional": "Syntymäaika (valinnainen)",
+  "odometerOptional": "Ajokilometrit (valinnainen)",
+  "operatingHoursOptional": "Käyttötunnit (valinnainen)",
+  "invalidNumber": "Anna kelvollinen numero",
   "cancel": "Peruuta",
   "save": "Tallenna",
+  "usageEstimateLine": "Arviolukema nyt: {value} {unit}",
+  "@usageEstimateLine": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "initialDateValue": "{label}: {date}",
+  "@initialDateValue": {
+    "placeholders": {
+      "label": {},
+      "date": {}
+    }
+  },
+  "usageValueLabel": "{label}: {value} {unit}",
+  "@usageValueLabel": {
+    "placeholders": {
+      "label": {},
+      "value": {},
+      "unit": {}
+    }
+  },
+  "birthDateShort": "Syntymäaika",
+  "commissioningDateShort": "Käyttöönotto",
+  "odometerShort": "Kilometrit",
+  "operatingHoursShort": "Tunnit",
   "addNoteTitle": "Lisää muistiinpano",
   "editNoteTitle": "Muokkaa muistiinpanoa",
   "plainNote": "Muistiinpano",
@@ -61,14 +100,62 @@
   "priceOptional": "Hinta € (valinnainen)",
   "approvedLabel": "Hyväksytty",
   "noteSaved": "Muistiinpano tallennettu",
-  "addSchedulerTitle": "Lisää aikataulu",
-  "editSchedulerTitle": "Muokkaa aikataulua",
+  "addSchedulerTitle": "Lisää ajastus",
+  "editSchedulerTitle": "Muokkaa ajastusta",
+  "scheduleStartDate": "Ajastuksen alkupäivä",
+  "calendarRule": "Kalenterisääntö",
+  "noCalendarRule": "Ei kalenterisääntöä",
+  "yearly": "Vuosittain",
+  "semiAnnual": "Puolivuosittain",
+  "quarterly": "Neljännesvuosittain",
+  "customMonths": "Mukautettu kuukausiväli",
+  "customMonthsLabel": "Kuukausiväli",
+  "everyNMonths": "Joka {months}. kuukausi",
+  "@everyNMonths": {
+    "placeholders": {
+      "months": {}
+    }
+  },
+  "monthsMustBePositive": "Kuukausivälin tulee olla > 0",
+  "usageRule": "Käyttömääräsääntö",
+  "usageIntervalLabel": "Väli ({unit})",
+  "@usageIntervalLabel": {
+    "placeholders": {
+      "unit": {}
+    }
+  },
+  "usageStartValueLabel": "Alkuarvo ({unit})",
+  "@usageStartValueLabel": {
+    "placeholders": {
+      "unit": {}
+    }
+  },
+  "scheduleRuleRequired": "Valitse vähintään yksi ajastussääntö",
   "intervalDays": "Väli päivinä",
   "nameMissing": "Nimi puuttuu",
   "intervalMustBePositive": "Välin tulee olla > 0",
   "lastCompletedOptional": "Viimeisin suoritus (valinnainen)",
   "notSet": "Ei asetettu",
-  "schedulerSaved": "Aikataulu tallennettu",
+  "schedulerSaved": "Ajastus tallennettu",
+  "schedulerTypeLine": "Noten tyyppi: {type}",
+  "@schedulerTypeLine": {
+    "placeholders": {
+      "type": {}
+    }
+  },
+  "schedulerCalendarLine": "Kalenteri: {interval}",
+  "@schedulerCalendarLine": {
+    "placeholders": {
+      "interval": {}
+    }
+  },
+  "schedulerUsageLine": "Käyttöraja: {value} {unit}",
+  "@schedulerUsageLine": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
   "plainNoteSummary": "{date}{body}",
   "@plainNoteSummary": {
     "placeholders": {

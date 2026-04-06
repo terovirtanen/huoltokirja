@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:huoltokirja_flutter/domain/models/dependant.dart';
+import 'package:huoltokirja_flutter/domain/models/note.dart';
 import 'package:huoltokirja_flutter/domain/models/scheduler.dart';
 import 'package:huoltokirja_flutter/domain/services/counter_estimator.dart';
 
@@ -11,16 +13,66 @@ void main() {
     expect(estimated, 120000);
   });
 
-  test('scheduler nextScheduleAt is based on interval', () {
+  test('estimateDependantUsage uses note trend from the last year', () {
+    final asOf = DateTime(2026, 4, 6);
+    final dependant = Dependant(
+      name: 'Test car',
+      dependantGroup: DependantGroup.vehicle,
+      initialDate: DateTime(2025, 4, 6),
+      usage: 1000,
+      createdAt: DateTime(2025, 4, 6),
+      updatedAt: DateTime(2025, 4, 6),
+    );
+
+    final notes = <Note>[
+      ServiceNote(
+        dependantId: 1,
+        title: 'Huolto',
+        body: '',
+        serviceDate: DateTime(2025, 10, 6),
+        estimatedCounter: 1500,
+        createdAt: DateTime(2025, 10, 6),
+        updatedAt: DateTime(2025, 10, 6),
+      ),
+      InspectionNote(
+        dependantId: 1,
+        title: 'Tarkastus',
+        body: '',
+        noteDate: DateTime(2026, 4, 6),
+        estimatedCounter: 2000,
+        createdAt: DateTime(2026, 4, 6),
+        updatedAt: DateTime(2026, 4, 6),
+      ),
+    ];
+
+    final estimate = estimateDependantUsage(
+      dependant: dependant,
+      notes: notes,
+      asOf: asOf,
+    );
+
+    expect(estimate, isNotNull);
+    expect(estimate!.currentValue, closeTo(2000, 0.01));
+    expect(estimate.dailyIncrease, greaterThan(0));
+  });
+
+  test('scheduler supports calendar and usage rules', () {
     final scheduler = Scheduler(
       dependantId: 1,
       label: 'Annual check',
-      intervalDays: 365,
-      lastCompletedAt: DateTime(2025, 1, 1),
+      noteType: NoteType.inspection,
+      startDate: DateTime(2025, 1, 1),
+      calendarIntervalMonths: 12,
+      usageInterval: 5000,
+      usageStartValue: 120000,
       createdAt: DateTime(2025, 1, 1),
       updatedAt: DateTime(2025, 1, 1),
     );
 
-    expect(scheduler.nextScheduleAt, DateTime(2026, 1, 1));
+    expect(
+      scheduler.nextCalendarScheduleAt(referenceDate: DateTime(2025, 6, 1)),
+      DateTime(2026, 1, 1),
+    );
+    expect(scheduler.nextUsageThreshold, 125000);
   });
 }
