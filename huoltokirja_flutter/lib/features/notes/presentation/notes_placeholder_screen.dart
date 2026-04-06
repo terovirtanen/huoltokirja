@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/l10n/app_localizations_ext.dart';
 import '../../../shared/widgets/state_widgets.dart';
 
 class NotesPlaceholderScreen extends StatelessWidget {
@@ -7,11 +8,12 @@ class NotesPlaceholderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    final l10n = context.l10n;
+
+    return Scaffold(
       body: EmptyState(
-        title: 'Notes placeholder',
-        subtitle:
-            'Tama naytto on korvattu dataan kytketyilla dependant-kohtaisilla note-flowlla.',
+        title: l10n.notesPlaceholderTitle,
+        subtitle: l10n.notesPlaceholderSubtitle,
       ),
     );
   }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
-class LoadingState extends StatelessWidget {
-  const LoadingState({super.key, this.message = 'Ladataan...'});
+import '../../core/l10n/app_localizations_ext.dart';
 
-  final String message;
+class LoadingState extends StatelessWidget {
+  const LoadingState({super.key, this.message});
+
+  final String? message;
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +15,7 @@ class LoadingState extends StatelessWidget {
         children: [
           const CircularProgressIndicator(),
           const SizedBox(height: 12),
-          Text(message),
+          Text(message ?? context.l10n.loading),
         ],
       ),
     );
@@ -71,13 +73,13 @@ class ErrorState extends StatelessWidget {
           children: [
             const Icon(Icons.error_outline, size: 36),
             const SizedBox(height: 12),
-            Text('Virhe: $error', textAlign: TextAlign.center),
+            Text(
+              context.l10n.errorPrefix(error.toString()),
+              textAlign: TextAlign.center,
+            ),
             if (onRetry != null) ...[
               const SizedBox(height: 12),
-              FilledButton(
-                onPressed: onRetry,
-                child: const Text('Yrita uudelleen'),
-              ),
+              FilledButton(onPressed: onRetry, child: Text(context.l10n.retry)),
             ],
           ],
         ),

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../app/providers.dart';
+import '../../../core/l10n/app_localizations_ext.dart';
 import '../../../domain/models/note.dart';
 import '../../../domain/models/scheduler.dart';
 import '../../../shared/widgets/state_widgets.dart';
@@ -17,9 +18,10 @@ class DependantDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final detailAsync = ref.watch(dependantDetailProvider(dependantId));
     final dateFormat = DateFormat('yyyy-MM-dd');
+    final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Riippuvaisen tiedot')),
+      appBar: AppBar(title: Text(l10n.dependantDetails)),
       body: detailAsync.when(
         loading: () => const LoadingState(),
         error: (error, _) => ErrorState(
@@ -35,25 +37,25 @@ class DependantDetailScreen extends ConsumerWidget {
                   title: Text(data.dependant.name),
                   subtitle: Text(
                     data.dependant.relation == null
-                        ? 'Ei suhdetta'
-                        : 'Suhde: ${data.dependant.relation}',
+                        ? l10n.noRelation
+                        : l10n.relationLabel(data.dependant.relation!),
                   ),
                 ),
               ),
               const SizedBox(height: 8),
               ListTile(
-                title: const Text('Notet'),
+                title: Text(l10n.notes),
                 trailing: FilledButton.icon(
                   onPressed: () =>
                       context.push('/dependants/$dependantId/notes/new'),
                   icon: const Icon(Icons.add),
-                  label: const Text('Lisaa note'),
+                  label: Text(l10n.addNote),
                 ),
               ),
               if (data.notes.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text('Ei noteja.'),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(l10n.noNotes),
                 ),
               ...data.notes.map(
                 (note) => _NoteTile(
@@ -70,18 +72,18 @@ class DependantDetailScreen extends ConsumerWidget {
               ),
               const Divider(height: 32),
               ListTile(
-                title: const Text('Schedulerit'),
+                title: Text(l10n.schedulers),
                 trailing: FilledButton.icon(
                   onPressed: () =>
                       context.push('/dependants/$dependantId/schedulers/new'),
                   icon: const Icon(Icons.add),
-                  label: const Text('Lisaa scheduler'),
+                  label: Text(l10n.addScheduler),
                 ),
               ),
               if (data.schedulers.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text('Ei schedulereita.'),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(l10n.noSchedulers),
                 ),
               ...data.schedulers.map(
                 (scheduler) => _SchedulerTile(
@@ -119,20 +121,38 @@ class _NoteTile extends StatelessWidget {
   final VoidCallback onEdit;
   final Future<void> Function() onDelete;
 
+  String _buildSubtitle(BuildContext context) {
+    return switch (note) {
+      ServiceNote service => context.l10n.serviceNoteSummary(
+        dateFormat.format(service.serviceDate),
+        service.estimatedCounter == null
+            ? ''
+            : context.l10n.counterEstimateSuffix(
+                service.estimatedCounter.toString(),
+              ),
+      ),
+      InspectionNote inspection => context.l10n.inspectionNoteSummary(
+        inspection.inspectorName == null || inspection.inspectorName!.isEmpty
+            ? ''
+            : context.l10n.inspectorSuffix(inspection.inspectorName!),
+      ),
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
         title: Text(note.title),
-        subtitle: Text(note.listText),
+        subtitle: Text(_buildSubtitle(context)),
         trailing: PopupMenuButton<String>(
           onSelected: (value) async {
             if (value == 'edit') onEdit();
             if (value == 'delete') await onDelete();
           },
-          itemBuilder: (_) => const [
-            PopupMenuItem(value: 'edit', child: Text('Muokkaa')),
-            PopupMenuItem(value: 'delete', child: Text('Poista')),
+          itemBuilder: (_) => [
+            PopupMenuItem(value: 'edit', child: Text(context.l10n.edit)),
+            PopupMenuItem(value: 'delete', child: Text(context.l10n.delete)),
           ],
         ),
       ),
@@ -156,20 +176,20 @@ class _SchedulerTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final nextDate = dateFormat.format(scheduler.nextScheduleAt);
-    final overdue = scheduler.isOverdue ? ' (myohassa)' : '';
+    final overdue = scheduler.isOverdue ? context.l10n.overdueSuffix : '';
 
     return Card(
       child: ListTile(
         title: Text(scheduler.label),
-        subtitle: Text('Seuraava: $nextDate$overdue'),
+        subtitle: Text(context.l10n.nextSchedule(nextDate, overdue)),
         trailing: PopupMenuButton<String>(
           onSelected: (value) async {
             if (value == 'edit') onEdit();
             if (value == 'delete') await onDelete();
           },
-          itemBuilder: (_) => const [
-            PopupMenuItem(value: 'edit', child: Text('Muokkaa')),
-            PopupMenuItem(value: 'delete', child: Text('Poista')),
+          itemBuilder: (_) => [
+            PopupMenuItem(value: 'edit', child: Text(context.l10n.edit)),
+            PopupMenuItem(value: 'delete', child: Text(context.l10n.delete)),
           ],
         ),
       ),

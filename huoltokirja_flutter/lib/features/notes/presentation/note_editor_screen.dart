@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/providers.dart';
+import '../../../core/l10n/app_localizations_ext.dart';
 import '../../../domain/models/note.dart';
 
 class NoteEditorScreen extends ConsumerStatefulWidget {
@@ -76,9 +77,13 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
+    final l10n = context.l10n;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.noteId == null ? 'Lisaa note' : 'Muokkaa notea'),
+        title: Text(
+          widget.noteId == null ? l10n.addNoteTitle : l10n.editNoteTitle,
+        ),
       ),
       body: Form(
         key: _formKey,
@@ -87,41 +92,41 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
           children: [
             DropdownButtonFormField<NoteType>(
               initialValue: _selectedType,
-              items: const [
+              items: [
                 DropdownMenuItem(
                   value: NoteType.service,
-                  child: Text('Service note'),
+                  child: Text(l10n.serviceNote),
                 ),
                 DropdownMenuItem(
                   value: NoteType.inspection,
-                  child: Text('Inspection note'),
+                  child: Text(l10n.inspectionNote),
                 ),
               ],
               onChanged: (value) {
                 if (value == null) return;
                 setState(() => _selectedType = value);
               },
-              decoration: const InputDecoration(labelText: 'Tyyppi'),
+              decoration: InputDecoration(labelText: l10n.type),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _titleController,
-              decoration: const InputDecoration(labelText: 'Otsikko'),
+              decoration: InputDecoration(labelText: l10n.title),
               validator: (value) => value == null || value.trim().isEmpty
-                  ? 'Otsikko on pakollinen'
+                  ? l10n.titleRequired
                   : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _bodyController,
-              decoration: const InputDecoration(labelText: 'Kuvaus'),
+              decoration: InputDecoration(labelText: l10n.description),
               maxLines: 3,
             ),
             const SizedBox(height: 12),
             if (_selectedType == NoteType.service) ...[
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Service date'),
+                title: Text(l10n.serviceDate),
                 subtitle: Text(_serviceDate.toIso8601String().split('T').first),
                 trailing: IconButton(
                   icon: const Icon(Icons.calendar_month),
@@ -141,20 +146,18 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
               TextFormField(
                 controller: _serviceCounterController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Counter estimate (optional)',
+                decoration: InputDecoration(
+                  labelText: l10n.counterEstimateOptional,
                 ),
               ),
             ] else ...[
               TextFormField(
                 controller: _inspectorNameController,
-                decoration: const InputDecoration(
-                  labelText: 'Tarkastaja (optional)',
-                ),
+                decoration: InputDecoration(labelText: l10n.inspectorOptional),
               ),
             ],
             const SizedBox(height: 24),
-            FilledButton(onPressed: _save, child: const Text('Tallenna')),
+            FilledButton(onPressed: _save, child: Text(l10n.save)),
           ],
         ),
       ),
@@ -224,7 +227,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     if (mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Note tallennettu')));
+      ).showSnackBar(SnackBar(content: Text(context.l10n.noteSaved)));
       context.pop();
     }
   }

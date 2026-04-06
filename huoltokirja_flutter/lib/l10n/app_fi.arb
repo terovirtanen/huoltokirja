@@ -1,0 +1,103 @@
+{
+  "@@locale": "fi",
+  "appTitle": "Huoltokirja",
+  "loading": "Ladataan...",
+  "errorPrefix": "Virhe: {error}",
+  "@errorPrefix": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "retry": "Yritä uudelleen",
+  "dependantsEmptyTitle": "Ei kohteita vielä",
+  "dependantsEmptySubtitle": "Lisää ensimmäinen kohde aloittaaksesi.",
+  "addDependant": "Lisää kohde",
+  "add": "Lisää",
+  "edit": "Muokkaa",
+  "delete": "Poista",
+  "dependantDeleted": "Kohde poistettu",
+  "dependantDetails": "Kohteen tiedot",
+  "noRelation": "Ei suhdetta",
+  "relationLabel": "Suhde: {relation}",
+  "@relationLabel": {
+    "placeholders": {
+      "relation": {}
+    }
+  },
+  "notes": "Muistiinpanot",
+  "addNote": "Lisää muistiinpano",
+  "noNotes": "Ei muistiinpanoja.",
+  "schedulers": "Aikataulut",
+  "addScheduler": "Lisää aikataulu",
+  "noSchedulers": "Ei aikatauluja.",
+  "nextSchedule": "Seuraava: {date}{overdue}",
+  "@nextSchedule": {
+    "placeholders": {
+      "date": {},
+      "overdue": {}
+    }
+  },
+  "overdueSuffix": " (myöhässä)",
+  "newDependant": "Uusi kohde",
+  "editDependant": "Muokkaa kohdetta",
+  "name": "Nimi",
+  "nameRequired": "Nimi on pakollinen",
+  "relationOptional": "Suhde (valinnainen)",
+  "cancel": "Peruuta",
+  "save": "Tallenna",
+  "addNoteTitle": "Lisää muistiinpano",
+  "editNoteTitle": "Muokkaa muistiinpanoa",
+  "serviceNote": "Huoltomuistiinpano",
+  "inspectionNote": "Tarkastusmuistiinpano",
+  "type": "Tyyppi",
+  "title": "Otsikko",
+  "titleRequired": "Otsikko on pakollinen",
+  "description": "Kuvaus",
+  "serviceDate": "Huoltopäivä",
+  "counterEstimateOptional": "Mittarilukema-arvio (valinnainen)",
+  "inspectorOptional": "Tarkastaja (valinnainen)",
+  "noteSaved": "Muistiinpano tallennettu",
+  "addSchedulerTitle": "Lisää aikataulu",
+  "editSchedulerTitle": "Muokkaa aikataulua",
+  "intervalDays": "Väli päivinä",
+  "nameMissing": "Nimi puuttuu",
+  "intervalMustBePositive": "Välin tulee olla > 0",
+  "lastCompletedOptional": "Viimeisin suoritus (valinnainen)",
+  "notSet": "Ei asetettu",
+  "schedulerSaved": "Aikataulu tallennettu",
+  "serviceNoteSummary": "Huolto {date}{counter}",
+  "@serviceNoteSummary": {
+    "placeholders": {
+      "date": {},
+      "counter": {}
+    }
+  },
+  "counterEstimateSuffix": " • km-arvio: {counter}",
+  "@counterEstimateSuffix": {
+    "placeholders": {
+      "counter": {}
+    }
+  },
+  "inspectionNoteSummary": "Tarkastus{inspector}",
+  "@inspectionNoteSummary": {
+    "placeholders": {
+      "inspector": {}
+    }
+  },
+  "inspectorSuffix": " ({name})",
+  "@inspectorSuffix": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "notesPlaceholderTitle": "Muistiinpanojen placeholder",
+  "notesPlaceholderSubtitle": "Tämä näkymä on korvattu datakytketyllä kohdekohtaisella muistiinpanopolulla.",
+  "schedulersPlaceholderTitle": "Aikataulujen placeholder",
+  "schedulersPlaceholderSubtitle": "Tämä näkymä on korvattu datakytketyllä kohdekohtaisella aikataulupolulla.",
+  "idLabel": "ID: {id}",
+  "@idLabel": {
+    "placeholders": {
+      "id": {}
+    }
+  }
+}

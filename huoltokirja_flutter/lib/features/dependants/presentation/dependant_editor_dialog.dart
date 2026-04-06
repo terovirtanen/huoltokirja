@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/l10n/app_localizations_ext.dart';
 import '../../../domain/models/dependant.dart';
 
 class DependantEditorDialog extends StatefulWidget {
@@ -34,9 +35,11 @@ class _DependantEditorDialogState extends State<DependantEditorDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return AlertDialog(
       title: Text(
-        widget.initial == null ? 'Uusi riippuvainen' : 'Muokkaa riippuvaista',
+        widget.initial == null ? l10n.newDependant : l10n.editDependant,
       ),
       content: Form(
         key: _formKey,
@@ -45,17 +48,15 @@ class _DependantEditorDialogState extends State<DependantEditorDialog> {
           children: [
             TextFormField(
               controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Nimi'),
+              decoration: InputDecoration(labelText: l10n.name),
               validator: (value) => value == null || value.trim().isEmpty
-                  ? 'Nimi on pakollinen'
+                  ? l10n.nameRequired
                   : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _relationController,
-              decoration: const InputDecoration(
-                labelText: 'Suhde (valinnainen)',
-              ),
+              decoration: InputDecoration(labelText: l10n.relationOptional),
             ),
           ],
         ),
@@ -63,7 +64,7 @@ class _DependantEditorDialogState extends State<DependantEditorDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Peruuta'),
+          child: Text(l10n.cancel),
         ),
         FilledButton(
           onPressed: () {
@@ -81,7 +82,7 @@ class _DependantEditorDialogState extends State<DependantEditorDialog> {
             );
             Navigator.of(context).pop(result);
           },
-          child: const Text('Tallenna'),
+          child: Text(l10n.save),
         ),
       ],
     );

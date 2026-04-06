@@ -1,0 +1,103 @@
+{
+  "@@locale": "en",
+  "appTitle": "Maintenance Log",
+  "loading": "Loading...",
+  "errorPrefix": "Error: {error}",
+  "@errorPrefix": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "retry": "Try again",
+  "dependantsEmptyTitle": "No targets yet",
+  "dependantsEmptySubtitle": "Add your first target to get started.",
+  "addDependant": "Add target",
+  "add": "Add",
+  "edit": "Edit",
+  "delete": "Delete",
+  "dependantDeleted": "Target deleted",
+  "dependantDetails": "Target details",
+  "noRelation": "No relation",
+  "relationLabel": "Relation: {relation}",
+  "@relationLabel": {
+    "placeholders": {
+      "relation": {}
+    }
+  },
+  "notes": "Notes",
+  "addNote": "Add note",
+  "noNotes": "No notes.",
+  "schedulers": "Schedules",
+  "addScheduler": "Add schedule",
+  "noSchedulers": "No schedules.",
+  "nextSchedule": "Next: {date}{overdue}",
+  "@nextSchedule": {
+    "placeholders": {
+      "date": {},
+      "overdue": {}
+    }
+  },
+  "overdueSuffix": " (overdue)",
+  "newDependant": "New target",
+  "editDependant": "Edit target",
+  "name": "Name",
+  "nameRequired": "Name is required",
+  "relationOptional": "Relation (optional)",
+  "cancel": "Cancel",
+  "save": "Save",
+  "addNoteTitle": "Add note",
+  "editNoteTitle": "Edit note",
+  "serviceNote": "Service note",
+  "inspectionNote": "Inspection note",
+  "type": "Type",
+  "title": "Title",
+  "titleRequired": "Title is required",
+  "description": "Description",
+  "serviceDate": "Service date",
+  "counterEstimateOptional": "Counter estimate (optional)",
+  "inspectorOptional": "Inspector (optional)",
+  "noteSaved": "Note saved",
+  "addSchedulerTitle": "Add schedule",
+  "editSchedulerTitle": "Edit schedule",
+  "intervalDays": "Interval in days",
+  "nameMissing": "Name is missing",
+  "intervalMustBePositive": "Interval must be > 0",
+  "lastCompletedOptional": "Last completed (optional)",
+  "notSet": "Not set",
+  "schedulerSaved": "Schedule saved",
+  "serviceNoteSummary": "Service {date}{counter}",
+  "@serviceNoteSummary": {
+    "placeholders": {
+      "date": {},
+      "counter": {}
+    }
+  },
+  "counterEstimateSuffix": " • Counter estimate: {counter}",
+  "@counterEstimateSuffix": {
+    "placeholders": {
+      "counter": {}
+    }
+  },
+  "inspectionNoteSummary": "Inspection{inspector}",
+  "@inspectionNoteSummary": {
+    "placeholders": {
+      "inspector": {}
+    }
+  },
+  "inspectorSuffix": " ({name})",
+  "@inspectorSuffix": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "notesPlaceholderTitle": "Notes placeholder",
+  "notesPlaceholderSubtitle": "This view has been replaced by a data-bound target-specific note flow.",
+  "schedulersPlaceholderTitle": "Schedulers placeholder",
+  "schedulersPlaceholderSubtitle": "This view has been replaced by a data-bound target-specific schedule flow.",
+  "idLabel": "ID: {id}",
+  "@idLabel": {
+    "placeholders": {
+      "id": {}
+    }
+  }
+}

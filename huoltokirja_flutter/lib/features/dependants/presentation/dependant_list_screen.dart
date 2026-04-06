@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/providers.dart';
+import '../../../core/l10n/app_localizations_ext.dart';
 import '../../../domain/models/dependant.dart';
 import '../../../shared/widgets/state_widgets.dart';
 import 'dependant_editor_dialog.dart';
@@ -13,19 +14,20 @@ class DependantListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dependantsAsync = ref.watch(dependantListControllerProvider);
+    final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Huoltokirja')),
+      appBar: AppBar(title: Text(l10n.appTitle)),
       body: dependantsAsync.when(
         data: (dependants) {
           if (dependants.isEmpty) {
             return EmptyState(
-              title: 'Ei riippuvaisia viela',
-              subtitle: 'Lisaa ensimmainen riippuvainen aloittaaksesi.',
+              title: l10n.dependantsEmptyTitle,
+              subtitle: l10n.dependantsEmptySubtitle,
               action: FilledButton.icon(
                 onPressed: () => _showAddDialog(context, ref),
                 icon: const Icon(Icons.person_add),
-                label: const Text('Lisaa riippuvainen'),
+                label: Text(l10n.addDependant),
               ),
             );
           }
@@ -40,7 +42,7 @@ class DependantListScreen extends ConsumerWidget {
                 return Card(
                   child: ListTile(
                     title: Text(dependant.listTitle),
-                    subtitle: Text('ID: ${dependant.id}'),
+                    subtitle: Text(l10n.idLabel(dependant.id ?? '—')),
                     onTap: () => context.push('/dependants/${dependant.id}'),
                     trailing: PopupMenuButton<String>(
                       onSelected: (value) {
@@ -51,9 +53,12 @@ class DependantListScreen extends ConsumerWidget {
                           _deleteDependant(context, ref, dependant.id!);
                         }
                       },
-                      itemBuilder: (context) => const [
-                        PopupMenuItem(value: 'edit', child: Text('Muokkaa')),
-                        PopupMenuItem(value: 'delete', child: Text('Poista')),
+                      itemBuilder: (context) => [
+                        PopupMenuItem(value: 'edit', child: Text(l10n.edit)),
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: Text(l10n.delete),
+                        ),
                       ],
                     ),
                   ),
@@ -72,7 +77,7 @@ class DependantListScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showAddDialog(context, ref),
         icon: const Icon(Icons.add),
-        label: const Text('Lisaa'),
+        label: Text(l10n.add),
       ),
     );
   }
@@ -114,7 +119,7 @@ class DependantListScreen extends ConsumerWidget {
     if (context.mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Riippuvainen poistettu')));
+      ).showSnackBar(SnackBar(content: Text(context.l10n.dependantDeleted)));
     }
   }
 }

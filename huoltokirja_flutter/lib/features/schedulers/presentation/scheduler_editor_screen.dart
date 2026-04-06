@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/providers.dart';
+import '../../../core/l10n/app_localizations_ext.dart';
 import '../../../domain/models/scheduler.dart';
 
 class SchedulerEditorScreen extends ConsumerStatefulWidget {
@@ -69,12 +70,14 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
+    final l10n = context.l10n;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
           widget.schedulerId == null
-              ? 'Lisaa scheduler'
-              : 'Muokkaa scheduleria',
+              ? l10n.addSchedulerTitle
+              : l10n.editSchedulerTitle,
         ),
       ),
       body: Form(
@@ -84,19 +87,20 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
           children: [
             TextFormField(
               controller: _labelController,
-              decoration: const InputDecoration(labelText: 'Nimi'),
-              validator: (value) =>
-                  value == null || value.trim().isEmpty ? 'Nimi puuttuu' : null,
+              decoration: InputDecoration(labelText: l10n.name),
+              validator: (value) => value == null || value.trim().isEmpty
+                  ? l10n.nameMissing
+                  : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _intervalController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Vali paivina'),
+              decoration: InputDecoration(labelText: l10n.intervalDays),
               validator: (value) {
                 final parsed = int.tryParse(value ?? '');
                 if (parsed == null || parsed <= 0) {
-                  return 'Valin tulee olla > 0';
+                  return l10n.intervalMustBePositive;
                 }
                 return null;
               },
@@ -104,10 +108,10 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
             const SizedBox(height: 12),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: const Text('Viimeisin suoritus (optional)'),
+              title: Text(l10n.lastCompletedOptional),
               subtitle: Text(
                 _lastCompletedAt == null
-                    ? 'Ei asetettu'
+                    ? l10n.notSet
                     : _lastCompletedAt!.toIso8601String().split('T').first,
               ),
               trailing: IconButton(
@@ -126,7 +130,7 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            FilledButton(onPressed: _save, child: const Text('Tallenna')),
+            FilledButton(onPressed: _save, child: Text(l10n.save)),
           ],
         ),
       ),
@@ -157,7 +161,7 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
     if (mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Scheduler tallennettu')));
+      ).showSnackBar(SnackBar(content: Text(context.l10n.schedulerSaved)));
       context.pop();
     }
   }
