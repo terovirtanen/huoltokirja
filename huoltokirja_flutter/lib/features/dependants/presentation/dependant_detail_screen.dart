@@ -121,20 +121,42 @@ class _NoteTile extends StatelessWidget {
   final VoidCallback onEdit;
   final Future<void> Function() onDelete;
 
+  String _buildDetails(BuildContext context, Note note) {
+    final buffer = StringBuffer();
+
+    if (note.estimatedCounter != null) {
+      buffer.write(
+        context.l10n.counterEstimateSuffix(note.estimatedCounter.toString()),
+      );
+    }
+    if (note.performerName != null && note.performerName!.trim().isNotEmpty) {
+      buffer.write(context.l10n.inspectorSuffix(note.performerName!.trim()));
+    }
+    if (note.price != null) {
+      buffer.write(context.l10n.priceSuffix(note.price!.toStringAsFixed(2)));
+    }
+    if (note.isApproved) {
+      buffer.write(context.l10n.approvedSuffix);
+    }
+
+    return buffer.toString();
+  }
+
   String _buildSubtitle(BuildContext context) {
     return switch (note) {
+      PlainNote plain => context.l10n.plainNoteSummary(
+        dateFormat.format(plain.noteDate),
+        plain.body.trim().isEmpty
+            ? ''
+            : context.l10n.noteBodySuffix(plain.body.trim()),
+      ),
       ServiceNote service => context.l10n.serviceNoteSummary(
         dateFormat.format(service.serviceDate),
-        service.estimatedCounter == null
-            ? ''
-            : context.l10n.counterEstimateSuffix(
-                service.estimatedCounter.toString(),
-              ),
+        _buildDetails(context, service),
       ),
       InspectionNote inspection => context.l10n.inspectionNoteSummary(
-        inspection.inspectorName == null || inspection.inspectorName!.isEmpty
-            ? ''
-            : context.l10n.inspectorSuffix(inspection.inspectorName!),
+        dateFormat.format(inspection.noteDate),
+        _buildDetails(context, inspection),
       ),
     };
   }

@@ -23,6 +23,8 @@ CREATE TABLE notes (
   service_date TEXT,
   inspector_name TEXT,
   estimated_counter INTEGER,
+  price REAL,
+  approved INTEGER NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL,
   FOREIGN KEY(dependant_id) REFERENCES dependants(id) ON DELETE CASCADE

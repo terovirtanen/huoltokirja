@@ -22,15 +22,7 @@ class HuoltokirjaApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      localeListResolutionCallback: (locales, _) {
-        final languageCodes =
-            locales?.map((locale) => locale.languageCode).toSet() ??
-            const <String>{};
-        if (languageCodes.contains('en')) {
-          return const Locale('en');
-        }
-        return const Locale('fi');
-      },
+      locale: const Locale('fi'),
     );
   }
 }

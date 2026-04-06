@@ -281,6 +281,12 @@ abstract class AppLocalizations {
   /// **'Edit note'**
   String get editNoteTitle;
 
+  /// No description provided for @plainNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get plainNote;
+
   /// No description provided for @serviceNote.
   ///
   /// In en, this message translates to:
@@ -298,6 +304,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Type'**
   String get type;
+
+  /// No description provided for @noteDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get noteDate;
 
   /// No description provided for @title.
   ///
@@ -332,8 +344,20 @@ abstract class AppLocalizations {
   /// No description provided for @inspectorOptional.
   ///
   /// In en, this message translates to:
-  /// **'Inspector (optional)'**
+  /// **'Performer (optional)'**
   String get inspectorOptional;
+
+  /// No description provided for @priceOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Price € (optional)'**
+  String get priceOptional;
+
+  /// No description provided for @approvedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get approvedLabel;
 
   /// No description provided for @noteSaved.
   ///
@@ -389,6 +413,18 @@ abstract class AppLocalizations {
   /// **'Schedule saved'**
   String get schedulerSaved;
 
+  /// No description provided for @plainNoteSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{date}{body}'**
+  String plainNoteSummary(Object date, Object body);
+
+  /// No description provided for @noteBodySuffix.
+  ///
+  /// In en, this message translates to:
+  /// **' • {body}'**
+  String noteBodySuffix(Object body);
+
   /// No description provided for @serviceNoteSummary.
   ///
   /// In en, this message translates to:
@@ -401,16 +437,28 @@ abstract class AppLocalizations {
   /// **' • Counter estimate: {counter}'**
   String counterEstimateSuffix(Object counter);
 
+  /// No description provided for @priceSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **' • price: {price} €'**
+  String priceSuffix(Object price);
+
+  /// No description provided for @approvedSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **' • approved'**
+  String get approvedSuffix;
+
   /// No description provided for @inspectionNoteSummary.
   ///
   /// In en, this message translates to:
-  /// **'Inspection{inspector}'**
-  String inspectionNoteSummary(Object inspector);
+  /// **'Inspection {date}{inspector}'**
+  String inspectionNoteSummary(Object date, Object inspector);
 
   /// No description provided for @inspectorSuffix.
   ///
   /// In en, this message translates to:
-  /// **' ({name})'**
+  /// **' • performer: {name}'**
   String inspectorSuffix(Object name);
 
   /// No description provided for @notesPlaceholderTitle.

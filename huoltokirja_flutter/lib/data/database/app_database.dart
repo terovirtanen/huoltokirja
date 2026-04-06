@@ -27,7 +27,10 @@ class AppDatabase {
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2 && newVersion >= 2) {
-          // Future migration placeholder.
+          await db.execute('ALTER TABLE notes ADD COLUMN price REAL');
+          await db.execute(
+            'ALTER TABLE notes ADD COLUMN approved INTEGER NOT NULL DEFAULT 0',
+          );
         }
       },
     );

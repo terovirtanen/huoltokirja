@@ -108,6 +108,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editNoteTitle => 'Edit note';
 
   @override
+  String get plainNote => 'Note';
+
+  @override
   String get serviceNote => 'Service note';
 
   @override
@@ -115,6 +118,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get type => 'Type';
+
+  @override
+  String get noteDate => 'Date';
 
   @override
   String get title => 'Title';
@@ -132,7 +138,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get counterEstimateOptional => 'Counter estimate (optional)';
 
   @override
-  String get inspectorOptional => 'Inspector (optional)';
+  String get inspectorOptional => 'Performer (optional)';
+
+  @override
+  String get priceOptional => 'Price € (optional)';
+
+  @override
+  String get approvedLabel => 'Approved';
 
   @override
   String get noteSaved => 'Note saved';
@@ -162,6 +174,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get schedulerSaved => 'Schedule saved';
 
   @override
+  String plainNoteSummary(Object date, Object body) {
+    return '$date$body';
+  }
+
+  @override
+  String noteBodySuffix(Object body) {
+    return ' • $body';
+  }
+
+  @override
   String serviceNoteSummary(Object date, Object counter) {
     return 'Service $date$counter';
   }
@@ -172,13 +194,21 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String inspectionNoteSummary(Object inspector) {
-    return 'Inspection$inspector';
+  String priceSuffix(Object price) {
+    return ' • price: $price €';
+  }
+
+  @override
+  String get approvedSuffix => ' • approved';
+
+  @override
+  String inspectionNoteSummary(Object date, Object inspector) {
+    return 'Inspection $date$inspector';
   }
 
   @override
   String inspectorSuffix(Object name) {
-    return ' ($name)';
+    return ' • performer: $name';
   }
 
   @override

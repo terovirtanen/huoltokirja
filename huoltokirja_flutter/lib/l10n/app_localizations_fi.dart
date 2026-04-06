@@ -108,6 +108,9 @@ class AppLocalizationsFi extends AppLocalizations {
   String get editNoteTitle => 'Muokkaa muistiinpanoa';
 
   @override
+  String get plainNote => 'Muistiinpano';
+
+  @override
   String get serviceNote => 'Huoltomuistiinpano';
 
   @override
@@ -115,6 +118,9 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get type => 'Tyyppi';
+
+  @override
+  String get noteDate => 'Päivämäärä';
 
   @override
   String get title => 'Otsikko';
@@ -132,7 +138,13 @@ class AppLocalizationsFi extends AppLocalizations {
   String get counterEstimateOptional => 'Mittarilukema-arvio (valinnainen)';
 
   @override
-  String get inspectorOptional => 'Tarkastaja (valinnainen)';
+  String get inspectorOptional => 'Tekijä (valinnainen)';
+
+  @override
+  String get priceOptional => 'Hinta € (valinnainen)';
+
+  @override
+  String get approvedLabel => 'Hyväksytty';
 
   @override
   String get noteSaved => 'Muistiinpano tallennettu';
@@ -162,6 +174,16 @@ class AppLocalizationsFi extends AppLocalizations {
   String get schedulerSaved => 'Aikataulu tallennettu';
 
   @override
+  String plainNoteSummary(Object date, Object body) {
+    return '$date$body';
+  }
+
+  @override
+  String noteBodySuffix(Object body) {
+    return ' • $body';
+  }
+
+  @override
   String serviceNoteSummary(Object date, Object counter) {
     return 'Huolto $date$counter';
   }
@@ -172,13 +194,21 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String inspectionNoteSummary(Object inspector) {
-    return 'Tarkastus$inspector';
+  String priceSuffix(Object price) {
+    return ' • hinta: $price €';
+  }
+
+  @override
+  String get approvedSuffix => ' • hyväksytty';
+
+  @override
+  String inspectionNoteSummary(Object date, Object inspector) {
+    return 'Tarkastus $date$inspector';
   }
 
   @override
   String inspectorSuffix(Object name) {
-    return ' ($name)';
+    return ' • tekijä: $name';
   }
 
   @override

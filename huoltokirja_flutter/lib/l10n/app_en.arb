@@ -47,15 +47,19 @@
   "save": "Save",
   "addNoteTitle": "Add note",
   "editNoteTitle": "Edit note",
+  "plainNote": "Note",
   "serviceNote": "Service note",
   "inspectionNote": "Inspection note",
   "type": "Type",
+  "noteDate": "Date",
   "title": "Title",
   "titleRequired": "Title is required",
   "description": "Description",
   "serviceDate": "Service date",
   "counterEstimateOptional": "Counter estimate (optional)",
-  "inspectorOptional": "Inspector (optional)",
+  "inspectorOptional": "Performer (optional)",
+  "priceOptional": "Price € (optional)",
+  "approvedLabel": "Approved",
   "noteSaved": "Note saved",
   "addSchedulerTitle": "Add schedule",
   "editSchedulerTitle": "Edit schedule",
@@ -65,6 +69,19 @@
   "lastCompletedOptional": "Last completed (optional)",
   "notSet": "Not set",
   "schedulerSaved": "Schedule saved",
+  "plainNoteSummary": "{date}{body}",
+  "@plainNoteSummary": {
+    "placeholders": {
+      "date": {},
+      "body": {}
+    }
+  },
+  "noteBodySuffix": " • {body}",
+  "@noteBodySuffix": {
+    "placeholders": {
+      "body": {}
+    }
+  },
   "serviceNoteSummary": "Service {date}{counter}",
   "@serviceNoteSummary": {
     "placeholders": {
@@ -78,13 +95,21 @@
       "counter": {}
     }
   },
-  "inspectionNoteSummary": "Inspection{inspector}",
+  "priceSuffix": " • price: {price} €",
+  "@priceSuffix": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+  "approvedSuffix": " • approved",
+  "inspectionNoteSummary": "Inspection {date}{inspector}",
   "@inspectionNoteSummary": {
     "placeholders": {
+      "date": {},
       "inspector": {}
     }
   },
-  "inspectorSuffix": " ({name})",
+  "inspectorSuffix": " • performer: {name}",
   "@inspectorSuffix": {
     "placeholders": {
       "name": {}

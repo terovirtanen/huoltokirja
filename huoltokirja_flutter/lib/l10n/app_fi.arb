@@ -47,15 +47,19 @@
   "save": "Tallenna",
   "addNoteTitle": "Lisää muistiinpano",
   "editNoteTitle": "Muokkaa muistiinpanoa",
+  "plainNote": "Muistiinpano",
   "serviceNote": "Huoltomuistiinpano",
   "inspectionNote": "Tarkastusmuistiinpano",
   "type": "Tyyppi",
+  "noteDate": "Päivämäärä",
   "title": "Otsikko",
   "titleRequired": "Otsikko on pakollinen",
   "description": "Kuvaus",
   "serviceDate": "Huoltopäivä",
   "counterEstimateOptional": "Mittarilukema-arvio (valinnainen)",
-  "inspectorOptional": "Tarkastaja (valinnainen)",
+  "inspectorOptional": "Tekijä (valinnainen)",
+  "priceOptional": "Hinta € (valinnainen)",
+  "approvedLabel": "Hyväksytty",
   "noteSaved": "Muistiinpano tallennettu",
   "addSchedulerTitle": "Lisää aikataulu",
   "editSchedulerTitle": "Muokkaa aikataulua",
@@ -65,6 +69,19 @@
   "lastCompletedOptional": "Viimeisin suoritus (valinnainen)",
   "notSet": "Ei asetettu",
   "schedulerSaved": "Aikataulu tallennettu",
+  "plainNoteSummary": "{date}{body}",
+  "@plainNoteSummary": {
+    "placeholders": {
+      "date": {},
+      "body": {}
+    }
+  },
+  "noteBodySuffix": " • {body}",
+  "@noteBodySuffix": {
+    "placeholders": {
+      "body": {}
+    }
+  },
   "serviceNoteSummary": "Huolto {date}{counter}",
   "@serviceNoteSummary": {
     "placeholders": {
@@ -78,13 +95,21 @@
       "counter": {}
     }
   },
-  "inspectionNoteSummary": "Tarkastus{inspector}",
+  "priceSuffix": " • hinta: {price} €",
+  "@priceSuffix": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+  "approvedSuffix": " • hyväksytty",
+  "inspectionNoteSummary": "Tarkastus {date}{inspector}",
   "@inspectionNoteSummary": {
     "placeholders": {
+      "date": {},
       "inspector": {}
     }
   },
-  "inspectorSuffix": " ({name})",
+  "inspectorSuffix": " • tekijä: {name}",
   "@inspectorSuffix": {
     "placeholders": {
       "name": {}

@@ -14,6 +14,15 @@ class SqfliteNoteRepository implements NoteRepository {
   Future<Note> create(Note note) async {
     final now = DateTime.now();
     final toInsert = switch (note) {
+      PlainNote plain => PlainNote(
+        id: plain.id,
+        dependantId: plain.dependantId,
+        title: plain.title,
+        body: plain.body,
+        noteDate: plain.noteDate,
+        createdAt: now,
+        updatedAt: now,
+      ),
       ServiceNote service => ServiceNote(
         id: service.id,
         dependantId: service.dependantId,
@@ -21,6 +30,8 @@ class SqfliteNoteRepository implements NoteRepository {
         body: service.body,
         serviceDate: service.serviceDate,
         estimatedCounter: service.estimatedCounter,
+        performerName: service.performerName,
+        price: service.price,
         createdAt: now,
         updatedAt: now,
       ),
@@ -29,7 +40,11 @@ class SqfliteNoteRepository implements NoteRepository {
         dependantId: inspection.dependantId,
         title: inspection.title,
         body: inspection.body,
-        inspectorName: inspection.inspectorName,
+        noteDate: inspection.noteDate,
+        estimatedCounter: inspection.estimatedCounter,
+        performerName: inspection.performerName,
+        price: inspection.price,
+        isApproved: inspection.isApproved,
         createdAt: now,
         updatedAt: now,
       ),
@@ -39,6 +54,15 @@ class SqfliteNoteRepository implements NoteRepository {
     final id = await _database.raw.insert(notesTable, row);
 
     return switch (toInsert) {
+      PlainNote plain => PlainNote(
+        id: id,
+        dependantId: plain.dependantId,
+        title: plain.title,
+        body: plain.body,
+        noteDate: plain.noteDate,
+        createdAt: plain.createdAt,
+        updatedAt: plain.updatedAt,
+      ),
       ServiceNote service => ServiceNote(
         id: id,
         dependantId: service.dependantId,
@@ -46,6 +70,8 @@ class SqfliteNoteRepository implements NoteRepository {
         body: service.body,
         serviceDate: service.serviceDate,
         estimatedCounter: service.estimatedCounter,
+        performerName: service.performerName,
+        price: service.price,
         createdAt: service.createdAt,
         updatedAt: service.updatedAt,
       ),
@@ -54,7 +80,11 @@ class SqfliteNoteRepository implements NoteRepository {
         dependantId: inspection.dependantId,
         title: inspection.title,
         body: inspection.body,
-        inspectorName: inspection.inspectorName,
+        noteDate: inspection.noteDate,
+        estimatedCounter: inspection.estimatedCounter,
+        performerName: inspection.performerName,
+        price: inspection.price,
+        isApproved: inspection.isApproved,
         createdAt: inspection.createdAt,
         updatedAt: inspection.updatedAt,
       ),
@@ -92,6 +122,15 @@ class SqfliteNoteRepository implements NoteRepository {
   @override
   Future<Note> update(Note note) async {
     final row = _mapper.toRow(switch (note) {
+      PlainNote plain => PlainNote(
+        id: plain.id,
+        dependantId: plain.dependantId,
+        title: plain.title,
+        body: plain.body,
+        noteDate: plain.noteDate,
+        createdAt: plain.createdAt,
+        updatedAt: DateTime.now(),
+      ),
       ServiceNote service => ServiceNote(
         id: service.id,
         dependantId: service.dependantId,
@@ -99,6 +138,8 @@ class SqfliteNoteRepository implements NoteRepository {
         body: service.body,
         serviceDate: service.serviceDate,
         estimatedCounter: service.estimatedCounter,
+        performerName: service.performerName,
+        price: service.price,
         createdAt: service.createdAt,
         updatedAt: DateTime.now(),
       ),
@@ -107,7 +148,11 @@ class SqfliteNoteRepository implements NoteRepository {
         dependantId: inspection.dependantId,
         title: inspection.title,
         body: inspection.body,
-        inspectorName: inspection.inspectorName,
+        noteDate: inspection.noteDate,
+        estimatedCounter: inspection.estimatedCounter,
+        performerName: inspection.performerName,
+        price: inspection.price,
+        isApproved: inspection.isApproved,
         createdAt: inspection.createdAt,
         updatedAt: DateTime.now(),
       ),

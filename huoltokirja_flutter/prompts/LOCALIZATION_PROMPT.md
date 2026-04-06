@@ -10,8 +10,11 @@ Vaatimukset:
 - käytä `AppLocalizations.of(context)!` tai `context.l10n`
 - pidä termit johdonmukaisina koko sovelluksessa
 - päivitä myös virhe-, tyhjätila- ja snackbar-tekstit
+- käytä termiä `kohde` vanhan `riippuvainen`-termin sijasta
+- muistiinpanoihin liittyvät toiminnalliset vaatimukset on kuvattu tiedostossa `prompts/NOTES_PROMPT.md`
 
 Tarkistus:
 - `flutter pub get`
 - `flutter gen-l10n` (tai automaattinen generointi)
 - `flutter analyze`
+- `flutter test`

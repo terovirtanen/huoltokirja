@@ -46,17 +46,27 @@ void main() {
 
     expect(createdDependant.id, isNotNull);
 
+    final noteDate = DateTime(2026, 4, 6);
     final note = await noteRepo.create(
-      ServiceNote(
+      InspectionNote(
         dependantId: createdDependant.id!,
-        title: 'Service note',
+        title: 'Inspection note',
         body: 'Done',
-        serviceDate: DateTime.now(),
+        noteDate: noteDate,
+        performerName: 'Tekijä Testi',
         estimatedCounter: 100,
+        price: 59.90,
+        isApproved: true,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       ),
     );
+
+    expect(note, isA<InspectionNote>());
+    expect(note.noteDate, noteDate);
+    expect((note as InspectionNote).performerName, 'Tekijä Testi');
+    expect(note.price, 59.90);
+    expect(note.isApproved, isTrue);
 
     final scheduler = await schedulerRepo.create(
       Scheduler(

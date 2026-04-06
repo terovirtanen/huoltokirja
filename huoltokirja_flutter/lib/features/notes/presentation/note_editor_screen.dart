@@ -21,9 +21,11 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   final _titleController = TextEditingController();
   final _bodyController = TextEditingController();
   final _serviceCounterController = TextEditingController();
-  final _inspectorNameController = TextEditingController();
-  NoteType _selectedType = NoteType.service;
-  DateTime _serviceDate = DateTime.now();
+  final _performerController = TextEditingController();
+  final _priceController = TextEditingController();
+  NoteType _selectedType = NoteType.plain;
+  DateTime _noteDate = DateTime.now();
+  bool _isApproved = false;
   bool _loading = true;
 
   @override
@@ -48,16 +50,13 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
 
     _titleController.text = existing.title;
     _bodyController.text = existing.body;
-    switch (existing) {
-      case ServiceNote service:
-        _selectedType = NoteType.service;
-        _serviceDate = service.serviceDate;
-        _serviceCounterController.text =
-            service.estimatedCounter?.toString() ?? '';
-      case InspectionNote inspection:
-        _selectedType = NoteType.inspection;
-        _inspectorNameController.text = inspection.inspectorName ?? '';
-    }
+    _selectedType = existing.type;
+    _noteDate = existing.noteDate;
+    _serviceCounterController.text =
+        existing.estimatedCounter?.toString() ?? '';
+    _performerController.text = existing.performerName ?? '';
+    _priceController.text = existing.price?.toString() ?? '';
+    _isApproved = existing.isApproved;
 
     setState(() => _loading = false);
   }
@@ -67,7 +66,8 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     _titleController.dispose();
     _bodyController.dispose();
     _serviceCounterController.dispose();
-    _inspectorNameController.dispose();
+    _performerController.dispose();
+    _priceController.dispose();
     super.dispose();
   }
 
@@ -93,6 +93,10 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
             DropdownButtonFormField<NoteType>(
               initialValue: _selectedType,
               items: [
+                DropdownMenuItem(
+                  value: NoteType.plain,
+                  child: Text(l10n.plainNote),
+                ),
                 DropdownMenuItem(
                   value: NoteType.service,
                   child: Text(l10n.serviceNote),
@@ -123,26 +127,27 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
               maxLines: 3,
             ),
             const SizedBox(height: 12),
-            if (_selectedType == NoteType.service) ...[
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(l10n.serviceDate),
-                subtitle: Text(_serviceDate.toIso8601String().split('T').first),
-                trailing: IconButton(
-                  icon: const Icon(Icons.calendar_month),
-                  onPressed: () async {
-                    final picked = await showDatePicker(
-                      context: context,
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2100),
-                      initialDate: _serviceDate,
-                    );
-                    if (picked != null) {
-                      setState(() => _serviceDate = picked);
-                    }
-                  },
-                ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.noteDate),
+              subtitle: Text(_noteDate.toIso8601String().split('T').first),
+              trailing: IconButton(
+                icon: const Icon(Icons.calendar_month),
+                onPressed: () async {
+                  final picked = await showDatePicker(
+                    context: context,
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2100),
+                    initialDate: _noteDate,
+                  );
+                  if (picked != null) {
+                    setState(() => _noteDate = picked);
+                  }
+                },
               ),
+            ),
+            if (_selectedType == NoteType.service ||
+                _selectedType == NoteType.inspection) ...[
               TextFormField(
                 controller: _serviceCounterController,
                 keyboardType: TextInputType.number,
@@ -150,11 +155,29 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                   labelText: l10n.counterEstimateOptional,
                 ),
               ),
-            ] else ...[
+              const SizedBox(height: 12),
               TextFormField(
-                controller: _inspectorNameController,
+                controller: _performerController,
                 decoration: InputDecoration(labelText: l10n.inspectorOptional),
               ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _priceController,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                decoration: InputDecoration(labelText: l10n.priceOptional),
+              ),
+              if (_selectedType == NoteType.inspection)
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  value: _isApproved,
+                  onChanged: (value) {
+                    setState(() => _isApproved = value ?? false);
+                  },
+                  title: Text(l10n.approvedLabel),
+                  controlAffinity: ListTileControlAffinity.leading,
+                ),
             ],
             const SizedBox(height: 24),
             FilledButton(onPressed: _save, child: Text(l10n.save)),
@@ -169,13 +192,28 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
 
     final now = DateTime.now();
     final note = switch (_selectedType) {
+      NoteType.plain => PlainNote(
+        id: widget.noteId,
+        dependantId: widget.dependantId,
+        title: _titleController.text.trim(),
+        body: _bodyController.text.trim(),
+        noteDate: _noteDate,
+        createdAt: now,
+        updatedAt: now,
+      ),
       NoteType.service => ServiceNote(
         id: widget.noteId,
         dependantId: widget.dependantId,
         title: _titleController.text.trim(),
         body: _bodyController.text.trim(),
-        serviceDate: _serviceDate,
+        serviceDate: _noteDate,
         estimatedCounter: int.tryParse(_serviceCounterController.text.trim()),
+        performerName: _performerController.text.trim().isEmpty
+            ? null
+            : _performerController.text.trim(),
+        price: double.tryParse(
+          _priceController.text.trim().replaceAll(',', '.'),
+        ),
         createdAt: now,
         updatedAt: now,
       ),
@@ -184,9 +222,15 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         dependantId: widget.dependantId,
         title: _titleController.text.trim(),
         body: _bodyController.text.trim(),
-        inspectorName: _inspectorNameController.text.trim().isEmpty
+        noteDate: _noteDate,
+        estimatedCounter: int.tryParse(_serviceCounterController.text.trim()),
+        performerName: _performerController.text.trim().isEmpty
             ? null
-            : _inspectorNameController.text.trim(),
+            : _performerController.text.trim(),
+        price: double.tryParse(
+          _priceController.text.trim().replaceAll(',', '.'),
+        ),
+        isApproved: _isApproved,
         createdAt: now,
         updatedAt: now,
       ),
@@ -200,6 +244,15 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
           .getById(widget.noteId!);
       if (existing == null) return;
       final updatedNote = switch (note) {
+        PlainNote plain => PlainNote(
+          id: widget.noteId,
+          dependantId: widget.dependantId,
+          title: plain.title,
+          body: plain.body,
+          noteDate: plain.noteDate,
+          createdAt: existing.createdAt,
+          updatedAt: now,
+        ),
         ServiceNote service => ServiceNote(
           id: widget.noteId,
           dependantId: widget.dependantId,
@@ -207,6 +260,8 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
           body: service.body,
           serviceDate: service.serviceDate,
           estimatedCounter: service.estimatedCounter,
+          performerName: service.performerName,
+          price: service.price,
           createdAt: existing.createdAt,
           updatedAt: now,
         ),
@@ -215,7 +270,11 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
           dependantId: widget.dependantId,
           title: inspection.title,
           body: inspection.body,
-          inspectorName: inspection.inspectorName,
+          noteDate: inspection.noteDate,
+          estimatedCounter: inspection.estimatedCounter,
+          performerName: inspection.performerName,
+          price: inspection.price,
+          isApproved: inspection.isApproved,
           createdAt: existing.createdAt,
           updatedAt: now,
         ),
