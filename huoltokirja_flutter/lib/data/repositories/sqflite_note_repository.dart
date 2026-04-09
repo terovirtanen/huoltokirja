@@ -109,12 +109,21 @@ class SqfliteNoteRepository implements NoteRepository {
   }
 
   @override
+  Future<List<Note>> listAll() async {
+    final rows = await _database.raw.query(
+      notesTable,
+      orderBy: 'service_date DESC, created_at DESC',
+    );
+    return rows.map(_mapper.fromRow).toList(growable: false);
+  }
+
+  @override
   Future<List<Note>> listByDependant(int dependantId) async {
     final rows = await _database.raw.query(
       notesTable,
       where: 'dependant_id = ?',
       whereArgs: [dependantId],
-      orderBy: 'created_at DESC',
+      orderBy: 'service_date DESC, created_at DESC',
     );
     return rows.map(_mapper.fromRow).toList(growable: false);
   }

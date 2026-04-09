@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
 
 import '../../features/dependants/presentation/dependant_detail_screen.dart';
-import '../../features/dependants/presentation/dependant_list_screen.dart';
+import '../../features/home/presentation/home_screen.dart';
 import '../../features/notes/presentation/note_editor_screen.dart';
 import '../../features/schedulers/presentation/scheduler_editor_screen.dart';
 
@@ -10,7 +10,7 @@ final GoRouter appRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (_, _) => const DependantListScreen(),
+      builder: (_, _) => const HomeScreen(),
       routes: [
         GoRoute(
           path: 'dependants/:id',

@@ -40,6 +40,44 @@ final schedulerRepositoryProvider = Provider<SchedulerRepository>((ref) {
   );
 });
 
+class AllNotesFeedItem {
+  const AllNotesFeedItem({required this.note, required this.dependant});
+
+  final Note note;
+  final Dependant dependant;
+}
+
+final allNotesFeedProvider = FutureProvider.autoDispose<List<AllNotesFeedItem>>(
+  (ref) async {
+    final dependants = await ref.read(dependantRepositoryProvider).getAll();
+    final notes = await ref.read(noteRepositoryProvider).listAll();
+    final dependantsById = {
+      for (final dependant in dependants)
+        if (dependant.id != null) dependant.id!: dependant,
+    };
+
+    final items = notes
+        .where((note) => dependantsById.containsKey(note.dependantId))
+        .map(
+          (note) => AllNotesFeedItem(
+            note: note,
+            dependant: dependantsById[note.dependantId]!,
+          ),
+        )
+        .toList(growable: false);
+
+    items.sort((a, b) {
+      final dateComparison = b.note.noteDate.compareTo(a.note.noteDate);
+      if (dateComparison != 0) {
+        return dateComparison;
+      }
+      return b.note.createdAt.compareTo(a.note.createdAt);
+    });
+
+    return items;
+  },
+);
+
 final dependantNotesProvider = FutureProvider.autoDispose
     .family<List<Note>, int>((ref, dependantId) {
       return ref.read(noteRepositoryProvider).listByDependant(dependantId);

@@ -76,6 +76,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notes => 'Notes';
 
   @override
+  String get allNotesTitle => 'All notes';
+
+  @override
+  String get allNotesEmptyTitle => 'No notes yet';
+
+  @override
+  String get allNotesEmptySubtitle => 'When you add notes to targets, they will appear here.';
+
+  @override
+  String targetNameLabel(Object name) {
+    return 'Target: $name';
+  }
+
+  @override
   String get addNote => 'Add note';
 
   @override

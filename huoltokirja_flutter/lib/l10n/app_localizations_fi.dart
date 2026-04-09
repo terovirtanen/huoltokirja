@@ -76,6 +76,20 @@ class AppLocalizationsFi extends AppLocalizations {
   String get notes => 'Muistiinpanot';
 
   @override
+  String get allNotesTitle => 'Kaikki muistiinpanot';
+
+  @override
+  String get allNotesEmptyTitle => 'Ei muistiinpanoja vielä';
+
+  @override
+  String get allNotesEmptySubtitle => 'Kun lisäät muistiinpanoja kohteille, ne näkyvät täällä.';
+
+  @override
+  String targetNameLabel(Object name) {
+    return 'Kohde: $name';
+  }
+
+  @override
   String get addNote => 'Lisää muistiinpano';
 
   @override

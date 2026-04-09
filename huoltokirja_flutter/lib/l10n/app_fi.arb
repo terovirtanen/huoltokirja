@@ -31,6 +31,15 @@
     }
   },
   "notes": "Muistiinpanot",
+  "allNotesTitle": "Kaikki muistiinpanot",
+  "allNotesEmptyTitle": "Ei muistiinpanoja vielä",
+  "allNotesEmptySubtitle": "Kun lisäät muistiinpanoja kohteille, ne näkyvät täällä.",
+  "targetNameLabel": "Kohde: {name}",
+  "@targetNameLabel": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "addNote": "Lisää muistiinpano",
   "noNotes": "Ei muistiinpanoja.",
   "schedulers": "Ajastukset",

@@ -31,6 +31,15 @@
     }
   },
   "notes": "Notes",
+  "allNotesTitle": "All notes",
+  "allNotesEmptyTitle": "No notes yet",
+  "allNotesEmptySubtitle": "When you add notes to targets, they will appear here.",
+  "targetNameLabel": "Target: {name}",
+  "@targetNameLabel": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "addNote": "Add note",
   "noNotes": "No notes.",
   "schedulers": "Schedules",

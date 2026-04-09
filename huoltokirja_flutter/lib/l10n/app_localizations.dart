@@ -221,6 +221,30 @@ abstract class AppLocalizations {
   /// **'Notes'**
   String get notes;
 
+  /// No description provided for @allNotesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'All notes'**
+  String get allNotesTitle;
+
+  /// No description provided for @allNotesEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No notes yet'**
+  String get allNotesEmptyTitle;
+
+  /// No description provided for @allNotesEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When you add notes to targets, they will appear here.'**
+  String get allNotesEmptySubtitle;
+
+  /// No description provided for @targetNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Target: {name}'**
+  String targetNameLabel(Object name);
+
   /// No description provided for @addNote.
   ///
   /// In en, this message translates to:

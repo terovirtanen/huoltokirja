@@ -50,6 +50,50 @@ void main() {
     expect(fetched.supportsUsage, isFalse);
   });
 
+  test('listAll returns notes newest first across all targets', () async {
+    final firstDependant = await dependantRepo.create(
+      Dependant(
+        name: 'First target',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+    final secondDependant = await dependantRepo.create(
+      Dependant(
+        name: 'Second target',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+
+    await noteRepo.create(
+      PlainNote(
+        dependantId: firstDependant.id!,
+        title: 'Older note',
+        body: '',
+        noteDate: DateTime(2026, 1, 1),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+    await noteRepo.create(
+      PlainNote(
+        dependantId: secondDependant.id!,
+        title: 'Newest note',
+        body: '',
+        noteDate: DateTime(2026, 2, 1),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+
+    final allNotes = await noteRepo.listAll();
+
+    expect(allNotes, hasLength(2));
+    expect(allNotes.first.title, 'Newest note');
+    expect(allNotes.last.title, 'Older note');
+  });
+
   test('CRUD works for dependant, note and scheduler', () async {
     final createdDependant = await dependantRepo.create(
       Dependant(
