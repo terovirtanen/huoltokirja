@@ -431,6 +431,54 @@ abstract class AppLocalizations {
   /// **'Name is required'**
   String get nameRequired;
 
+  /// No description provided for @tagOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags (optional)'**
+  String get tagOptional;
+
+  /// No description provided for @filterTagsAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter tags'**
+  String get filterTagsAction;
+
+  /// No description provided for @filterTagsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select tags'**
+  String get filterTagsTitle;
+
+  /// No description provided for @noTagsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No tags yet.'**
+  String get noTagsAvailable;
+
+  /// No description provided for @showAllTargets.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filter'**
+  String get showAllTargets;
+
+  /// No description provided for @applyFilterAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get applyFilterAction;
+
+  /// No description provided for @noMatchingTagsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches for selected tags'**
+  String get noMatchingTagsTitle;
+
+  /// No description provided for @noMatchingTagsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the selected tags or show all targets.'**
+  String get noMatchingTagsSubtitle;
+
   /// No description provided for @relationOptional.
   ///
   /// In en, this message translates to:

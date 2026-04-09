@@ -10,6 +10,9 @@ class DependantMapper {
       dependantGroup: DependantGroup.fromStorage(row['dependant_group']),
       initialDate: _parseDate(row['initial_date'] ?? row['birth_date']),
       usage: _parseDouble(row['usage']),
+      tag: (row['tag'] as String?)?.trim().isEmpty ?? true
+          ? null
+          : (row['tag'] as String).trim(),
       createdAt: DateTime.parse(row['created_at'] as String),
       updatedAt: DateTime.parse(row['updated_at'] as String),
     );
@@ -22,6 +25,7 @@ class DependantMapper {
       'dependant_group': model.dependantGroup.storageValue,
       'initial_date': model.initialDate?.toIso8601String(),
       'usage': model.usage,
+      'tag': model.tag?.trim().isEmpty ?? true ? null : model.tag!.trim(),
       'created_at': model.createdAt.toIso8601String(),
       'updated_at': model.updatedAt.toIso8601String(),
     };

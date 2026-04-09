@@ -18,6 +18,7 @@ class DependantEditorDialog extends ConsumerStatefulWidget {
 class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
+  late final TextEditingController _tagController;
   late final TextEditingController _usageController;
   late DependantGroup _selectedGroup;
   DateTime? _initialDate;
@@ -26,6 +27,7 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.initial?.name ?? '');
+    _tagController = TextEditingController(text: widget.initial?.tag ?? '');
     _usageController = TextEditingController(
       text: widget.initial?.usage == null
           ? ''
@@ -38,6 +40,7 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
   @override
   void dispose() {
     _nameController.dispose();
+    _tagController.dispose();
     _usageController.dispose();
     super.dispose();
   }
@@ -65,6 +68,11 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
                 validator: (value) => value == null || value.trim().isEmpty
                     ? l10n.nameRequired
                     : null,
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _tagController,
+                decoration: InputDecoration(labelText: l10n.tagOptional),
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<DependantGroup>(
@@ -180,6 +188,7 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
             if (!_formKey.currentState!.validate()) return;
             final now = DateTime.now();
             final usageText = _usageController.text.trim().replaceAll(',', '.');
+            final tagText = _tagController.text.trim();
             final result = Dependant(
               id: widget.initial?.id,
               name: _nameController.text.trim(),
@@ -190,6 +199,7 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
               usage: _selectedGroup.supportsUsage && usageText.isNotEmpty
                   ? double.parse(usageText)
                   : null,
+              tag: tagText.isEmpty ? null : tagText,
               createdAt: widget.initial?.createdAt ?? now,
               updatedAt: now,
             );

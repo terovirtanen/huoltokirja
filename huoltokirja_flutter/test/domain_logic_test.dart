@@ -3,6 +3,7 @@ import 'package:huoltokirja_flutter/domain/models/dependant.dart';
 import 'package:huoltokirja_flutter/domain/models/note.dart';
 import 'package:huoltokirja_flutter/domain/models/scheduler.dart';
 import 'package:huoltokirja_flutter/domain/services/counter_estimator.dart';
+import 'package:huoltokirja_flutter/domain/services/dependant_tag_utils.dart';
 import 'package:huoltokirja_flutter/features/notes/presentation/note_display_utils.dart';
 
 void main() {
@@ -57,33 +58,57 @@ void main() {
     expect(estimate.dailyIncrease, greaterThan(0));
   });
 
-  test('animal note pages hide the counter field for service and inspection', () {
-    expect(
-      shouldShowCounterField(
-        dependantGroup: DependantGroup.animal,
-        noteType: NoteType.service,
-      ),
-      isFalse,
-    );
-    expect(
-      shouldShowCounterField(
-        dependantGroup: DependantGroup.animal,
-        noteType: NoteType.inspection,
-      ),
-      isFalse,
-    );
-    expect(
-      shouldShowCounterField(
-        dependantGroup: DependantGroup.vehicle,
-        noteType: NoteType.service,
-      ),
-      isTrue,
-    );
-  });
+  test(
+    'animal note pages hide the counter field for service and inspection',
+    () {
+      expect(
+        shouldShowCounterField(
+          dependantGroup: DependantGroup.animal,
+          noteType: NoteType.service,
+        ),
+        isFalse,
+      );
+      expect(
+        shouldShowCounterField(
+          dependantGroup: DependantGroup.animal,
+          noteType: NoteType.inspection,
+        ),
+        isFalse,
+      );
+      expect(
+        shouldShowCounterField(
+          dependantGroup: DependantGroup.vehicle,
+          noteType: NoteType.service,
+        ),
+        isTrue,
+      );
+    },
+  );
 
   test('animal targets use care-note wording for service notes', () {
     expect(serviceNoteLabelKey(DependantGroup.animal), 'care');
     expect(serviceNoteLabelKey(DependantGroup.vehicle), 'service');
+  });
+
+  test('tag words are split by spaces and commas uniquely', () {
+    expect(extractTagWords('kesä, vene trailer  vene'), [
+      'kesä',
+      'vene',
+      'trailer',
+    ]);
+  });
+
+  test('selected tags match dependant tag words', () {
+    final dependant = Dependant(
+      name: 'Test target',
+      tag: 'kesä, vene trailer',
+      createdAt: DateTime(2025, 1, 1),
+      updatedAt: DateTime(2025, 1, 1),
+    );
+
+    expect(matchesSelectedTags(dependant, {'vene'}), isTrue);
+    expect(matchesSelectedTags(dependant, {'talvi'}), isFalse);
+    expect(matchesSelectedTags(dependant, {}), isTrue);
   });
 
   test('scheduler supports calendar and usage rules', () {

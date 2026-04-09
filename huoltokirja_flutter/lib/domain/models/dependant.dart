@@ -36,6 +36,7 @@ class Dependant {
     this.dependantGroup = DependantGroup.none,
     this.initialDate,
     this.usage,
+    this.tag,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -45,6 +46,7 @@ class Dependant {
   final DependantGroup dependantGroup;
   final DateTime? initialDate;
   final double? usage;
+  final String? tag;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -86,6 +88,8 @@ class Dependant {
     bool clearInitialDate = false,
     double? usage,
     bool clearUsage = false,
+    String? tag,
+    bool clearTag = false,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -95,6 +99,7 @@ class Dependant {
       dependantGroup: dependantGroup ?? this.dependantGroup,
       initialDate: clearInitialDate ? null : initialDate ?? this.initialDate,
       usage: clearUsage ? null : usage ?? this.usage,
+      tag: clearTag ? null : tag ?? this.tag,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

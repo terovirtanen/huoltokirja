@@ -37,7 +37,32 @@ Toteuta kohteen luonti, muokkaus, tallennus ja listaus johdonmukaisesti Flutter-
 - Lisämääreitä varten kohteella on kentät:
   - `initialYear` (päivämäärä)
   - `usage` (float)
+  - `tag` (vapaavalintainen tekstikenttä)
 - `usage` tarkoittaa ryhmästä riippuen joko ajokilometrejä tai käyttötunteja.
+- `tag` voi sisältää yhden tai useamman sanan.
+- Tagien sanojen erottimena toimii joko tyhjämerkki tai pilkku.
+
+### Tagit ja filtteröinti pääsivulla
+
+- Kohteelle voi antaa vapaan `tag`-kentän jo luonti- ja muokkausnäkymässä.
+- Pääsivun vasempaan alareunaan lisätään filtteröintipainike.
+- Filtteri toimii kummassakin pääsivun näkymässä, eli:
+  - kohdelistassa
+  - notes-/muistiinpanonäkymässä
+- Filtteristä voidaan valita yksi tai useampi tagi.
+- Valinnat muodostetaan hakemalla kaikkien kohteiden `tag`-kentistä yksittäiset sanat.
+- Jos useammassa kohteessa on sama tagisana, se näytetään filtterissä vain kerran.
+- Filtterissä pitää voida valita yksittäisiä sanoja monivalintana.
+- Jos mitään tagia ei ole valittuna, näytetään kaikki kohteet.
+- Jos tageja on valittuna, näytetään vain ne kohteet, joilla on vähintään yksi valituista tageista.
+- Sama aktiivinen filtterivalinta vaikuttaa molempiin pääsivun näkymiin yhtenäisesti.
+
+### Pääsivun kohdelista
+
+- Pääsivun kohdelistalla ei enää näytetä `id`-tietoa.
+- Pääsivun kohdelistalla ei enää näytetä ryhmän nimeä tekstinä.
+- Ryhmä ilmaistaan vain kuvakkeella.
+- `id`- ja ryhmätekstin sijaan listalla näytetään kohteen `tag`-kenttä.
 
 ### Arviolukeman laskenta
 

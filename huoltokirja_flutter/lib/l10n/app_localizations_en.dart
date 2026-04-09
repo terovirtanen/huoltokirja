@@ -197,6 +197,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nameRequired => 'Name is required';
 
   @override
+  String get tagOptional => 'Tags (optional)';
+
+  @override
+  String get filterTagsAction => 'Filter tags';
+
+  @override
+  String get filterTagsTitle => 'Select tags';
+
+  @override
+  String get noTagsAvailable => 'No tags yet.';
+
+  @override
+  String get showAllTargets => 'Clear filter';
+
+  @override
+  String get applyFilterAction => 'Filter';
+
+  @override
+  String get noMatchingTagsTitle => 'No matches for selected tags';
+
+  @override
+  String get noMatchingTagsSubtitle => 'Change the selected tags or show all targets.';
+
+  @override
   String get relationOptional => 'Relation (optional)';
 
   @override

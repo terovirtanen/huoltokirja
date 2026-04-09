@@ -9,6 +9,7 @@ CREATE TABLE dependants (
   dependant_group TEXT NOT NULL DEFAULT 'none',
   initial_date TEXT,
   usage REAL,
+  tag TEXT,
   birth_date TEXT,
   relation TEXT,
   created_at TEXT NOT NULL,

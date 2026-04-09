@@ -50,6 +50,22 @@ void main() {
     expect(fetched.supportsUsage, isFalse);
   });
 
+  test('dependant tag is stored and loaded', () async {
+    final createdDependant = await dependantRepo.create(
+      Dependant(
+        name: 'Tagged target',
+        tag: 'kesä, mökki',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+
+    final fetched = await dependantRepo.getById(createdDependant.id!);
+
+    expect(fetched, isNotNull);
+    expect(fetched!.tag, 'kesä, mökki');
+  });
+
   test('listAll returns notes newest first across all targets', () async {
     final firstDependant = await dependantRepo.create(
       Dependant(

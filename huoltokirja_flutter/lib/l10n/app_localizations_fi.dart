@@ -197,6 +197,30 @@ class AppLocalizationsFi extends AppLocalizations {
   String get nameRequired => 'Nimi on pakollinen';
 
   @override
+  String get tagOptional => 'Leima (valinnainen)';
+
+  @override
+  String get filterTagsAction => 'Suodata leimoja';
+
+  @override
+  String get filterTagsTitle => 'Valitse leimat';
+
+  @override
+  String get noTagsAvailable => 'Ei leimoja vielä.';
+
+  @override
+  String get showAllTargets => 'Tyhjennä suodatus';
+
+  @override
+  String get applyFilterAction => 'Suodata';
+
+  @override
+  String get noMatchingTagsTitle => 'Ei osumia valituilla leimoilla';
+
+  @override
+  String get noMatchingTagsSubtitle => 'Muuta leimoja tai näytä kaikki kohteet.';
+
+  @override
   String get relationOptional => 'Suhde (valinnainen)';
 
   @override

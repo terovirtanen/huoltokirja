@@ -5,12 +5,15 @@ import 'package:go_router/go_router.dart';
 import '../../../app/providers.dart';
 import '../../../core/l10n/app_localizations_ext.dart';
 import '../../../domain/models/dependant.dart';
+import '../../../domain/services/dependant_tag_utils.dart';
 import '../../../shared/widgets/app_menu_button.dart';
 import '../../../shared/widgets/state_widgets.dart';
 import 'dependant_editor_dialog.dart';
 
 class DependantListScreen extends ConsumerWidget {
-  const DependantListScreen({super.key});
+  const DependantListScreen({super.key, this.selectedTags = const {}});
+
+  final Set<String> selectedTags;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,14 +40,29 @@ class DependantListScreen extends ConsumerWidget {
             );
           }
 
+          final filteredDependants = dependants
+              .where(
+                (dependant) => matchesSelectedTags(dependant, selectedTags),
+              )
+              .toList(growable: false);
+
+          if (filteredDependants.isEmpty) {
+            return EmptyState(
+              title: l10n.noMatchingTagsTitle,
+              subtitle: l10n.noMatchingTagsSubtitle,
+            );
+          }
+
           return RefreshIndicator(
             onRefresh: () =>
                 ref.read(dependantListControllerProvider.notifier).refresh(),
             child: ListView.builder(
-              itemCount: dependants.length,
+              itemCount: filteredDependants.length,
               itemBuilder: (context, index) {
-                final dependant = dependants[index];
+                final dependant = filteredDependants[index];
                 final palette = _targetPalette();
+
+                final subtitle = _buildSubtitle(dependant);
 
                 return Card(
                   color: palette.background,
@@ -66,7 +84,7 @@ class DependantListScreen extends ConsumerWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    subtitle: Text(_buildSubtitle(context, dependant)),
+                    subtitle: subtitle == null ? null : Text(subtitle),
                     onTap: () => context.push('/dependants/${dependant.id}'),
                     trailing: PopupMenuButton<String>(
                       onSelected: (value) {
@@ -105,27 +123,22 @@ class DependantListScreen extends ConsumerWidget {
     );
   }
 
-  String _buildSubtitle(BuildContext context, Dependant dependant) {
-    final l10n = context.l10n;
-    final parts = <String>[
-      switch (dependant.dependantGroup) {
-        DependantGroup.none => l10n.noGroup,
-        DependantGroup.vehicle => l10n.vehicleGroup,
-        DependantGroup.workMachine => l10n.workMachineGroup,
-        DependantGroup.device => l10n.deviceGroup,
-        DependantGroup.animal => l10n.animalGroup,
-      },
-      l10n.idLabel(dependant.id ?? '—'),
-    ];
+  String? _buildSubtitle(Dependant dependant) {
+    final parts = <String>[];
+
+    final tag = dependant.tag?.trim();
+    if (tag != null && tag.isNotEmpty) {
+      parts.add(tag);
+    }
 
     if (dependant.usage != null && dependant.usageUnit != null) {
       final formatted = dependant.usage == dependant.usage!.roundToDouble()
           ? dependant.usage!.toStringAsFixed(0)
           : dependant.usage!.toStringAsFixed(1);
-      parts.insert(1, '$formatted ${dependant.usageUnit}');
+      parts.add('$formatted ${dependant.usageUnit}');
     }
 
-    return parts.join(' • ');
+    return parts.isEmpty ? null : parts.join(' • ');
   }
 
   _TargetCardPalette _targetPalette() {

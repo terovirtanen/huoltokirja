@@ -7,21 +7,23 @@ import '../../../app/providers.dart';
 import '../../../core/l10n/app_localizations_ext.dart';
 import '../../../domain/models/dependant.dart';
 import '../../../domain/models/note.dart';
+import '../../../domain/services/dependant_tag_utils.dart';
 import '../../notes/presentation/note_display_utils.dart';
 import '../../../shared/widgets/app_menu_button.dart';
 import '../../../shared/widgets/state_widgets.dart';
 import '../../dependants/presentation/dependant_list_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   late final PageController _pageController;
   int _currentPage = 0;
+  Set<String> _selectedTags = <String>{};
 
   @override
   void initState() {
@@ -37,12 +39,41 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final dependantsAsync = ref.watch(dependantListControllerProvider);
+    final availableTags = dependantsAsync.maybeWhen(
+      data: collectAvailableTags,
+      orElse: () => const <String>[],
+    );
+
     return Stack(
       children: [
         PageView(
           controller: _pageController,
           onPageChanged: (index) => setState(() => _currentPage = index),
-          children: const [DependantListScreen(), _AllNotesPage()],
+          children: [
+            DependantListScreen(selectedTags: _selectedTags),
+            _AllNotesPage(selectedTags: _selectedTags),
+          ],
+        ),
+        Positioned(
+          left: 16,
+          bottom: 12,
+          child: SafeArea(
+            top: false,
+            child: FloatingActionButton.small(
+              heroTag: 'home-filter-fab',
+              tooltip: context.l10n.filterTagsAction,
+              backgroundColor: _selectedTags.isEmpty
+                  ? null
+                  : Theme.of(context).colorScheme.secondaryContainer,
+              onPressed: () => _showTagFilterSheet(availableTags),
+              child: Icon(
+                _selectedTags.isEmpty
+                    ? Icons.filter_alt_outlined
+                    : Icons.filter_alt,
+              ),
+            ),
+          ),
         ),
         Positioned(
           left: 0,
@@ -91,10 +122,86 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
+
+  Future<void> _showTagFilterSheet(List<String> availableTags) async {
+    final selectedTags = await showModalBottomSheet<Set<String>>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) {
+        final tempSelection = Set<String>.from(_selectedTags);
+        final l10n = context.l10n;
+
+        return StatefulBuilder(
+          builder: (context, setSheetState) {
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.filterTagsTitle,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 12),
+                  if (availableTags.isEmpty)
+                    Text(l10n.noTagsAvailable)
+                  else
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: availableTags
+                          .map(
+                            (tag) => FilterChip(
+                              label: Text(tag),
+                              selected: tempSelection.contains(tag),
+                              onSelected: (selected) {
+                                setSheetState(() {
+                                  if (selected) {
+                                    tempSelection.add(tag);
+                                  } else {
+                                    tempSelection.remove(tag);
+                                  }
+                                });
+                              },
+                            ),
+                          )
+                          .toList(growable: false),
+                    ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      FilledButton.tonal(
+                        onPressed: () => Navigator.of(context).pop(<String>{}),
+                        child: Text(l10n.showAllTargets),
+                      ),
+                      const Spacer(),
+                      FilledButton(
+                        onPressed: () => Navigator.of(
+                          context,
+                        ).pop(Set<String>.from(tempSelection)),
+                        child: Text(l10n.applyFilterAction),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    if (selectedTags != null && mounted) {
+      setState(() => _selectedTags = selectedTags);
+    }
+  }
 }
 
 class _AllNotesPage extends ConsumerWidget {
-  const _AllNotesPage();
+  const _AllNotesPage({required this.selectedTags});
+
+  final Set<String> selectedTags;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -122,13 +229,26 @@ class _AllNotesPage extends ConsumerWidget {
             );
           }
 
+          final filteredItems = items
+              .where(
+                (item) => matchesSelectedTags(item.dependant, selectedTags),
+              )
+              .toList(growable: false);
+
+          if (filteredItems.isEmpty) {
+            return EmptyState(
+              title: l10n.noMatchingTagsTitle,
+              subtitle: l10n.noMatchingTagsSubtitle,
+            );
+          }
+
           return RefreshIndicator(
             onRefresh: () async => ref.invalidate(allNotesFeedProvider),
             child: ListView.builder(
               physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: items.length,
+              itemCount: filteredItems.length,
               itemBuilder: (context, index) {
-                final item = items[index];
+                final item = filteredItems[index];
                 final palette = _notePalette(context, item.note.noteDate);
                 final subtitleLines = <String>[
                   dateFormat.format(item.note.noteDate),

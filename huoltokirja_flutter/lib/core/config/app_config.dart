@@ -6,5 +6,5 @@ class AppConfig {
     defaultValue: '2026-04-09',
   );
   static const dbName = 'huoltokirja.db';
-  static const dbVersion = 3;
+  static const dbVersion = 4;
 }

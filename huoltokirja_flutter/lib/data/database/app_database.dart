@@ -73,6 +73,10 @@ class AppDatabase {
             WHERE calendar_interval_months IS NULL
             ''');
         }
+
+        if (oldVersion < 4 && newVersion >= 4) {
+          await db.execute('ALTER TABLE dependants ADD COLUMN tag TEXT');
+        }
       },
     );
 
