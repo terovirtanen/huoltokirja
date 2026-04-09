@@ -137,6 +137,18 @@ abstract class AppLocalizations {
   /// **'Change language'**
   String get changeLanguageAction;
 
+  /// No description provided for @aboutAction.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get aboutAction;
+
+  /// No description provided for @aboutSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show software version and build date'**
+  String get aboutSubtitle;
+
   /// No description provided for @currentSelectionLabel.
   ///
   /// In en, this message translates to:
@@ -178,6 +190,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'PDF report ready: {fileName}'**
   String pdfExportReady(Object fileName);
+
+  /// No description provided for @versionValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String versionValue(Object version);
+
+  /// No description provided for @buildDateValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Build {date}'**
+  String buildDateValue(Object date);
 
   /// No description provided for @exportFailed.
   ///
@@ -521,6 +545,12 @@ abstract class AppLocalizations {
   /// **'Service note'**
   String get serviceNote;
 
+  /// No description provided for @careNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Care note'**
+  String get careNote;
+
   /// No description provided for @inspectionNote.
   ///
   /// In en, this message translates to:
@@ -760,6 +790,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Service {date}{counter}'**
   String serviceNoteSummary(Object date, Object counter);
+
+  /// No description provided for @careNoteSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Care {date}{counter}'**
+  String careNoteSummary(Object date, Object counter);
 
   /// No description provided for @counterEstimateSuffix.
   ///

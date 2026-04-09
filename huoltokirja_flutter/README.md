@@ -55,6 +55,13 @@ Tarkista Xcode-ympäristö seuraavilla komennoilla:
 - `sudo xcodebuild -runFirstLaunch`
 - `flutter doctor`
 
+## Build-metatieto
+
+Jos haluat asettaa build-päivämäärän dynaamisesti buildin aikana, anna se `--dart-define`-parametrilla:
+
+- `flutter build apk --dart-define=APP_BUILD_DATE=$(date +%F)`
+- `flutter build ios --dart-define=APP_BUILD_DATE=$(date +%F)`
+
 ## Lisätietoa
 
 - Flutterin virallinen dokumentaatio: https://docs.flutter.dev/

@@ -30,6 +30,12 @@ class AppLocalizationsFi extends AppLocalizations {
   String get changeLanguageAction => 'Vaihda kieli';
 
   @override
+  String get aboutAction => 'Tietoja';
+
+  @override
+  String get aboutSubtitle => 'Näytä ohjelmiston versio ja build-päivämäärä';
+
+  @override
   String currentSelectionLabel(Object value) {
     return 'Nykyinen: $value';
   }
@@ -54,6 +60,16 @@ class AppLocalizationsFi extends AppLocalizations {
   @override
   String pdfExportReady(Object fileName) {
     return 'PDF-raportti valmis: $fileName';
+  }
+
+  @override
+  String versionValue(Object version) {
+    return 'Versio $version';
+  }
+
+  @override
+  String buildDateValue(Object date) {
+    return 'Build $date';
   }
 
   @override
@@ -244,6 +260,9 @@ class AppLocalizationsFi extends AppLocalizations {
   String get serviceNote => 'Huoltomuistiinpano';
 
   @override
+  String get careNote => 'Hoitomuistiinpano';
+
+  @override
   String get inspectionNote => 'Tarkastusmuistiinpano';
 
   @override
@@ -379,6 +398,11 @@ class AppLocalizationsFi extends AppLocalizations {
   @override
   String serviceNoteSummary(Object date, Object counter) {
     return 'Huolto $date$counter';
+  }
+
+  @override
+  String careNoteSummary(Object date, Object counter) {
+    return 'Hoito $date$counter';
   }
 
   @override

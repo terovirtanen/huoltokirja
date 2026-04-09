@@ -30,6 +30,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get changeLanguageAction => 'Change language';
 
   @override
+  String get aboutAction => 'About';
+
+  @override
+  String get aboutSubtitle => 'Show software version and build date';
+
+  @override
   String currentSelectionLabel(Object value) {
     return 'Current: $value';
   }
@@ -54,6 +60,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String pdfExportReady(Object fileName) {
     return 'PDF report ready: $fileName';
+  }
+
+  @override
+  String versionValue(Object version) {
+    return 'Version $version';
+  }
+
+  @override
+  String buildDateValue(Object date) {
+    return 'Build $date';
   }
 
   @override
@@ -244,6 +260,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get serviceNote => 'Service note';
 
   @override
+  String get careNote => 'Care note';
+
+  @override
   String get inspectionNote => 'Inspection note';
 
   @override
@@ -379,6 +398,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String serviceNoteSummary(Object date, Object counter) {
     return 'Service $date$counter';
+  }
+
+  @override
+  String careNoteSummary(Object date, Object counter) {
+    return 'Care $date$counter';
   }
 
   @override

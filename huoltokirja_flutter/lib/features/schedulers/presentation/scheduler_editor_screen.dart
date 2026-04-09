@@ -4,9 +4,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/providers.dart';
 import '../../../core/l10n/app_localizations_ext.dart';
+import '../../../domain/models/dependant.dart';
 import '../../../domain/models/note.dart';
 import '../../../domain/models/scheduler.dart';
 import '../../../domain/services/counter_estimator.dart';
+import '../../notes/presentation/note_display_utils.dart';
 
 class SchedulerEditorScreen extends ConsumerStatefulWidget {
   const SchedulerEditorScreen({
@@ -141,15 +143,33 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
               items: [
                 DropdownMenuItem(
                   value: NoteType.plain,
-                  child: Text(l10n.plainNote),
+                  child: Text(
+                    localizedNoteTypeLabel(
+                      l10n,
+                      NoteType.plain,
+                      dependant?.dependantGroup ?? DependantGroup.none,
+                    ),
+                  ),
                 ),
                 DropdownMenuItem(
                   value: NoteType.service,
-                  child: Text(l10n.serviceNote),
+                  child: Text(
+                    localizedNoteTypeLabel(
+                      l10n,
+                      NoteType.service,
+                      dependant?.dependantGroup ?? DependantGroup.none,
+                    ),
+                  ),
                 ),
                 DropdownMenuItem(
                   value: NoteType.inspection,
-                  child: Text(l10n.inspectionNote),
+                  child: Text(
+                    localizedNoteTypeLabel(
+                      l10n,
+                      NoteType.inspection,
+                      dependant?.dependantGroup ?? DependantGroup.none,
+                    ),
+                  ),
                 ),
               ],
               onChanged: (value) {

@@ -44,9 +44,28 @@ class DependantListScreen extends ConsumerWidget {
               itemCount: dependants.length,
               itemBuilder: (context, index) {
                 final dependant = dependants[index];
+                final palette = _targetPalette();
+
                 return Card(
+                  color: palette.background,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(color: palette.border),
+                  ),
                   child: ListTile(
-                    title: Text(dependant.listTitle),
+                    leading: CircleAvatar(
+                      backgroundColor: palette.accent.withValues(alpha: 0.14),
+                      child: Icon(
+                        _groupIcon(dependant.dependantGroup),
+                        color: palette.accent,
+                      ),
+                    ),
+                    title: Text(
+                      dependant.listTitle,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     subtitle: Text(_buildSubtitle(context, dependant)),
                     onTap: () => context.push('/dependants/${dependant.id}'),
                     trailing: PopupMenuButton<String>(
@@ -79,10 +98,9 @@ class DependantListScreen extends ConsumerWidget {
         ),
         loading: () => const LoadingState(),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddDialog(context, ref),
-        icon: const Icon(Icons.add),
-        label: Text(l10n.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -108,6 +126,24 @@ class DependantListScreen extends ConsumerWidget {
     }
 
     return parts.join(' • ');
+  }
+
+  _TargetCardPalette _targetPalette() {
+    return const _TargetCardPalette(
+      background: Color(0xFFEAF4FF),
+      border: Color(0xFF90CAF9),
+      accent: Color(0xFF1565C0),
+    );
+  }
+
+  IconData _groupIcon(DependantGroup group) {
+    return switch (group) {
+      DependantGroup.none => Icons.folder_outlined,
+      DependantGroup.vehicle => Icons.directions_car_outlined,
+      DependantGroup.workMachine => Icons.precision_manufacturing_outlined,
+      DependantGroup.device => Icons.devices_other_outlined,
+      DependantGroup.animal => Icons.pets_outlined,
+    };
   }
 
   Future<void> _showAddDialog(BuildContext context, WidgetRef ref) async {
@@ -150,4 +186,16 @@ class DependantListScreen extends ConsumerWidget {
       ).showSnackBar(SnackBar(content: Text(context.l10n.dependantDeleted)));
     }
   }
+}
+
+class _TargetCardPalette {
+  const _TargetCardPalette({
+    required this.background,
+    required this.border,
+    required this.accent,
+  });
+
+  final Color background;
+  final Color border;
+  final Color accent;
 }

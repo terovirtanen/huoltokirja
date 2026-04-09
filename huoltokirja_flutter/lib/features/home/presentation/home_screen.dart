@@ -5,7 +5,9 @@ import 'package:intl/intl.dart';
 
 import '../../../app/providers.dart';
 import '../../../core/l10n/app_localizations_ext.dart';
+import '../../../domain/models/dependant.dart';
 import '../../../domain/models/note.dart';
+import '../../notes/presentation/note_display_utils.dart';
 import '../../../shared/widgets/app_menu_button.dart';
 import '../../../shared/widgets/state_widgets.dart';
 import '../../dependants/presentation/dependant_list_screen.dart';
@@ -127,17 +129,43 @@ class _AllNotesPage extends ConsumerWidget {
               itemCount: items.length,
               itemBuilder: (context, index) {
                 final item = items[index];
+                final palette = _notePalette(context, item.note.noteDate);
                 final subtitleLines = <String>[
                   dateFormat.format(item.note.noteDate),
                   l10n.targetNameLabel(item.dependant.name),
-                  _noteTypeLabel(context, item.note.type),
+                  _noteTypeLabel(
+                    context,
+                    item.note.type,
+                    item.dependant.dependantGroup,
+                  ),
                   if (item.note.body.trim().isNotEmpty) item.note.body.trim(),
                 ];
 
                 return Card(
+                  color: palette.background,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(color: palette.border),
+                  ),
                   child: ListTile(
-                    title: Text(item.note.title),
-                    subtitle: Text(subtitleLines.join('\n')),
+                    leading: CircleAvatar(
+                      backgroundColor: palette.accent.withValues(alpha: 0.14),
+                      child: Icon(
+                        _noteTypeIcon(item.note.type),
+                        color: palette.accent,
+                      ),
+                    ),
+                    title: Text(
+                      item.note.title,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(subtitleLines.join('\n')),
+                    ),
+                    trailing: Icon(Icons.chevron_right, color: palette.accent),
                     onTap: item.note.id == null || item.dependant.id == null
                         ? null
                         : () => context.push(
@@ -153,12 +181,50 @@ class _AllNotesPage extends ConsumerWidget {
     );
   }
 
-  String _noteTypeLabel(BuildContext context, NoteType type) {
+  String _noteTypeLabel(
+    BuildContext context,
+    NoteType type,
+    DependantGroup dependantGroup,
+  ) {
     final l10n = context.l10n;
+    return localizedNoteTypeLabel(l10n, type, dependantGroup);
+  }
+
+  IconData _noteTypeIcon(NoteType type) {
     return switch (type) {
-      NoteType.plain => l10n.plainNote,
-      NoteType.service => l10n.serviceNote,
-      NoteType.inspection => l10n.inspectionNote,
+      NoteType.plain => Icons.sticky_note_2_outlined,
+      NoteType.service => Icons.build_circle_outlined,
+      NoteType.inspection => Icons.fact_check_outlined,
     };
   }
+
+  _NoteCardPalette _notePalette(BuildContext context, DateTime noteDate) {
+    final scheme = Theme.of(context).colorScheme;
+
+    if (noteDate.isAfter(DateTime.now())) {
+      return _NoteCardPalette(
+        background: Colors.green.shade50,
+        border: Colors.green.shade300,
+        accent: Colors.green.shade700,
+      );
+    }
+
+    return _NoteCardPalette(
+      background: scheme.primaryContainer.withValues(alpha: 0.45),
+      border: scheme.primary.withValues(alpha: 0.35),
+      accent: scheme.primary,
+    );
+  }
+}
+
+class _NoteCardPalette {
+  const _NoteCardPalette({
+    required this.background,
+    required this.border,
+    required this.accent,
+  });
+
+  final Color background;
+  final Color border;
+  final Color accent;
 }

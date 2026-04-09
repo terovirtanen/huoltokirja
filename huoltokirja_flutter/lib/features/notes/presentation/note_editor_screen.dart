@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/providers.dart';
 import '../../../core/l10n/app_localizations_ext.dart';
+import '../../../domain/models/dependant.dart';
 import '../../../domain/models/note.dart';
+import 'note_display_utils.dart';
 
 class NoteEditorScreen extends ConsumerStatefulWidget {
   const NoteEditorScreen({super.key, required this.dependantId, this.noteId});
@@ -27,6 +29,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   DateTime _noteDate = DateTime.now();
   bool _isApproved = false;
   bool _loading = true;
+  DependantGroup _dependantGroup = DependantGroup.none;
 
   @override
   void initState() {
@@ -35,6 +38,11 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   }
 
   Future<void> _loadInitial() async {
+    final dependant = await ref
+        .read(dependantRepositoryProvider)
+        .getById(widget.dependantId);
+    _dependantGroup = dependant?.dependantGroup ?? DependantGroup.none;
+
     if (widget.noteId == null) {
       setState(() => _loading = false);
       return;
@@ -78,6 +86,10 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     }
 
     final l10n = context.l10n;
+    final showCounterField = shouldShowCounterField(
+      dependantGroup: _dependantGroup,
+      noteType: _selectedType,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -95,15 +107,33 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
               items: [
                 DropdownMenuItem(
                   value: NoteType.plain,
-                  child: Text(l10n.plainNote),
+                  child: Text(
+                    localizedNoteTypeLabel(
+                      l10n,
+                      NoteType.plain,
+                      _dependantGroup,
+                    ),
+                  ),
                 ),
                 DropdownMenuItem(
                   value: NoteType.service,
-                  child: Text(l10n.serviceNote),
+                  child: Text(
+                    localizedNoteTypeLabel(
+                      l10n,
+                      NoteType.service,
+                      _dependantGroup,
+                    ),
+                  ),
                 ),
                 DropdownMenuItem(
                   value: NoteType.inspection,
-                  child: Text(l10n.inspectionNote),
+                  child: Text(
+                    localizedNoteTypeLabel(
+                      l10n,
+                      NoteType.inspection,
+                      _dependantGroup,
+                    ),
+                  ),
                 ),
               ],
               onChanged: (value) {
@@ -148,14 +178,16 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
             ),
             if (_selectedType == NoteType.service ||
                 _selectedType == NoteType.inspection) ...[
-              TextFormField(
-                controller: _serviceCounterController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: l10n.counterEstimateOptional,
+              if (showCounterField) ...[
+                TextFormField(
+                  controller: _serviceCounterController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: l10n.counterEstimateOptional,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
+                const SizedBox(height: 12),
+              ],
               TextFormField(
                 controller: _performerController,
                 decoration: InputDecoration(labelText: l10n.inspectorOptional),
@@ -191,6 +223,14 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     final now = DateTime.now();
+    final estimatedCounter =
+        shouldShowCounterField(
+          dependantGroup: _dependantGroup,
+          noteType: _selectedType,
+        )
+        ? int.tryParse(_serviceCounterController.text.trim())
+        : null;
+
     final note = switch (_selectedType) {
       NoteType.plain => PlainNote(
         id: widget.noteId,
@@ -207,7 +247,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         title: _titleController.text.trim(),
         body: _bodyController.text.trim(),
         serviceDate: _noteDate,
-        estimatedCounter: int.tryParse(_serviceCounterController.text.trim()),
+        estimatedCounter: estimatedCounter,
         performerName: _performerController.text.trim().isEmpty
             ? null
             : _performerController.text.trim(),
@@ -223,7 +263,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         title: _titleController.text.trim(),
         body: _bodyController.text.trim(),
         noteDate: _noteDate,
-        estimatedCounter: int.tryParse(_serviceCounterController.text.trim()),
+        estimatedCounter: estimatedCounter,
         performerName: _performerController.text.trim().isEmpty
             ? null
             : _performerController.text.trim(),

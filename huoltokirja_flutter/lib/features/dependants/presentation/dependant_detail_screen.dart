@@ -10,15 +10,46 @@ import '../../../domain/models/note.dart';
 import '../../../domain/models/scheduler.dart';
 import '../../../domain/services/counter_estimator.dart';
 import '../../../shared/widgets/state_widgets.dart';
+import '../../notes/presentation/note_display_utils.dart';
 
-class DependantDetailScreen extends ConsumerWidget {
+class DependantDetailScreen extends ConsumerStatefulWidget {
   const DependantDetailScreen({super.key, required this.dependantId});
 
   final int dependantId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final detailAsync = ref.watch(dependantDetailProvider(dependantId));
+  ConsumerState<DependantDetailScreen> createState() =>
+      _DependantDetailScreenState();
+}
+
+class _DependantDetailScreenState extends ConsumerState<DependantDetailScreen> {
+  late final PageController _pageController;
+  int _currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _animateToPage(int index) {
+    setState(() => _currentPage = index);
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final detailAsync = ref.watch(dependantDetailProvider(widget.dependantId));
     final dateFormat = DateFormat('yyyy-MM-dd');
     final l10n = context.l10n;
 
@@ -28,7 +59,8 @@ class DependantDetailScreen extends ConsumerWidget {
         loading: () => const LoadingState(),
         error: (error, _) => ErrorState(
           error: error,
-          onRetry: () => ref.invalidate(dependantDetailProvider(dependantId)),
+          onRetry: () =>
+              ref.invalidate(dependantDetailProvider(widget.dependantId)),
         ),
         data: (data) {
           final usageEstimate = estimateDependantUsage(
@@ -36,80 +68,85 @@ class DependantDetailScreen extends ConsumerWidget {
             notes: data.notes,
           );
 
-          return ListView(
-            padding: const EdgeInsets.only(bottom: 24),
+          return Column(
             children: [
-              Card(
-                child: ListTile(
-                  title: Text(data.dependant.name),
-                  subtitle: Text(
-                    _buildDependantSubtitle(
-                      context,
-                      data.dependant,
-                      usageEstimate,
-                      dateFormat,
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
+                child: Card(
+                  child: ListTile(
+                    title: Text(data.dependant.name),
+                    subtitle: Text(
+                      _buildDependantSubtitle(
+                        context,
+                        data.dependant,
+                        usageEstimate,
+                        dateFormat,
+                      ),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
-              ListTile(
-                title: Text(l10n.notes),
-                trailing: FilledButton.icon(
-                  onPressed: () =>
-                      context.push('/dependants/$dependantId/notes/new'),
-                  icon: const Icon(Icons.add),
-                  label: Text(l10n.addNote),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 4, 12, 8),
+                child: _DetailPageSwitcher(
+                  currentPage: _currentPage,
+                  notesLabel: l10n.notes,
+                  schedulersLabel: l10n.schedulers,
+                  onSelected: _animateToPage,
                 ),
               ),
-              if (data.notes.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(l10n.noNotes),
-                ),
-              ...data.notes.map(
-                (note) => _NoteTile(
-                  note: note,
-                  dateFormat: dateFormat,
-                  onEdit: () => context.push(
-                    '/dependants/$dependantId/notes/${note.id}/edit',
-                  ),
-                  onDelete: () async {
-                    await ref.read(noteRepositoryProvider).delete(note.id!);
-                    ref.invalidate(dependantDetailProvider(dependantId));
-                  },
-                ),
-              ),
-              const Divider(height: 32),
-              ListTile(
-                title: Text(l10n.schedulers),
-                trailing: FilledButton.icon(
-                  onPressed: () =>
-                      context.push('/dependants/$dependantId/schedulers/new'),
-                  icon: const Icon(Icons.add),
-                  label: Text(l10n.addScheduler),
-                ),
-              ),
-              if (data.schedulers.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(l10n.noSchedulers),
-                ),
-              ...data.schedulers.map(
-                (scheduler) => _SchedulerTile(
-                  scheduler: scheduler,
-                  usageEstimate: usageEstimate,
-                  usageUnit: data.dependant.usageUnit,
-                  dateFormat: dateFormat,
-                  onEdit: () => context.push(
-                    '/dependants/$dependantId/schedulers/${scheduler.id}/edit',
-                  ),
-                  onDelete: () async {
-                    await ref
-                        .read(schedulerRepositoryProvider)
-                        .delete(scheduler.id!);
-                    ref.invalidate(dependantDetailProvider(dependantId));
-                  },
+              Expanded(
+                child: PageView(
+                  controller: _pageController,
+                  reverse: true,
+                  onPageChanged: (index) =>
+                      setState(() => _currentPage = index),
+                  children: [
+                    _NotesPage(
+                      notes: data.notes,
+                      dependantGroup: data.dependant.dependantGroup,
+                      dateFormat: dateFormat,
+                      onRefresh: () => ref.invalidate(
+                        dependantDetailProvider(widget.dependantId),
+                      ),
+                      onAdd: () => context.push(
+                        '/dependants/${widget.dependantId}/notes/new',
+                      ),
+                      onEdit: (note) => context.push(
+                        '/dependants/${widget.dependantId}/notes/${note.id}/edit',
+                      ),
+                      onDelete: (note) async {
+                        await ref.read(noteRepositoryProvider).delete(note.id!);
+                        ref.invalidate(
+                          dependantDetailProvider(widget.dependantId),
+                        );
+                      },
+                    ),
+                    _SchedulersPage(
+                      dependantGroup: data.dependant.dependantGroup,
+                      schedulers: data.schedulers,
+                      usageEstimate: usageEstimate,
+                      usageUnit: data.dependant.usageUnit,
+                      dateFormat: dateFormat,
+                      onRefresh: () => ref.invalidate(
+                        dependantDetailProvider(widget.dependantId),
+                      ),
+                      onAdd: () => context.push(
+                        '/dependants/${widget.dependantId}/schedulers/new',
+                      ),
+                      onEdit: (scheduler) => context.push(
+                        '/dependants/${widget.dependantId}/schedulers/${scheduler.id}/edit',
+                      ),
+                      onDelete: (scheduler) async {
+                        await ref
+                            .read(schedulerRepositoryProvider)
+                            .delete(scheduler.id!);
+                        ref.invalidate(
+                          dependantDetailProvider(widget.dependantId),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -120,15 +157,262 @@ class DependantDetailScreen extends ConsumerWidget {
   }
 }
 
+class _DetailPageSwitcher extends StatelessWidget {
+  const _DetailPageSwitcher({
+    required this.currentPage,
+    required this.notesLabel,
+    required this.schedulersLabel,
+    required this.onSelected,
+  });
+
+  final int currentPage;
+  final String notesLabel;
+  final String schedulersLabel;
+  final ValueChanged<int> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Row(
+          children: [
+            Expanded(
+              child: _DetailPageTab(
+                label: notesLabel,
+                icon: Icons.sticky_note_2_outlined,
+                selected: currentPage == 0,
+                onTap: () => onSelected(0),
+              ),
+            ),
+            Expanded(
+              child: _DetailPageTab(
+                label: schedulersLabel,
+                icon: Icons.event_repeat_outlined,
+                selected: currentPage == 1,
+                onTap: () => onSelected(1),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DetailPageTab extends StatelessWidget {
+  const _DetailPageTab({
+    required this.label,
+    required this.icon,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 180),
+      decoration: BoxDecoration(
+        color: selected ? scheme.primary : Colors.transparent,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(999),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 18,
+                color: selected ? scheme.onPrimary : scheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: selected ? scheme.onPrimary : scheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NotesPage extends StatelessWidget {
+  const _NotesPage({
+    required this.notes,
+    required this.dependantGroup,
+    required this.dateFormat,
+    required this.onRefresh,
+    required this.onAdd,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  final List<Note> notes;
+  final DependantGroup dependantGroup;
+  final DateFormat dateFormat;
+  final VoidCallback onRefresh;
+  final VoidCallback onAdd;
+  final void Function(Note note) onEdit;
+  final Future<void> Function(Note note) onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    return Stack(
+      children: [
+        RefreshIndicator(
+          onRefresh: () async => onRefresh(),
+          child: ListView(
+            key: const PageStorageKey('dependant-notes-page'),
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.only(bottom: 96),
+            children: [
+              if (notes.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(l10n.noNotes),
+                ),
+              ...notes.map(
+                (note) => _NoteTile(
+                  note: note,
+                  dependantGroup: dependantGroup,
+                  dateFormat: dateFormat,
+                  onEdit: () => onEdit(note),
+                  onDelete: () => onDelete(note),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 16,
+          child: SafeArea(
+            top: false,
+            child: Center(
+              child: FloatingActionButton(
+                heroTag: 'dependant-notes-add',
+                onPressed: onAdd,
+                child: const Icon(Icons.add),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SchedulersPage extends StatelessWidget {
+  const _SchedulersPage({
+    required this.dependantGroup,
+    required this.schedulers,
+    required this.usageEstimate,
+    required this.usageUnit,
+    required this.dateFormat,
+    required this.onRefresh,
+    required this.onAdd,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  final DependantGroup dependantGroup;
+  final List<Scheduler> schedulers;
+  final UsageEstimate? usageEstimate;
+  final String? usageUnit;
+  final DateFormat dateFormat;
+  final VoidCallback onRefresh;
+  final VoidCallback onAdd;
+  final void Function(Scheduler scheduler) onEdit;
+  final Future<void> Function(Scheduler scheduler) onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    return Stack(
+      children: [
+        RefreshIndicator(
+          onRefresh: () async => onRefresh(),
+          child: ListView(
+            key: const PageStorageKey('dependant-schedulers-page'),
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.only(bottom: 96),
+            children: [
+              if (schedulers.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(l10n.noSchedulers),
+                ),
+              ...schedulers.map(
+                (scheduler) => _SchedulerTile(
+                  scheduler: scheduler,
+                  dependantGroup: dependantGroup,
+                  usageEstimate: usageEstimate,
+                  usageUnit: usageUnit,
+                  dateFormat: dateFormat,
+                  onEdit: () => onEdit(scheduler),
+                  onDelete: () => onDelete(scheduler),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 16,
+          child: SafeArea(
+            top: false,
+            child: Center(
+              child: FloatingActionButton(
+                heroTag: 'dependant-schedulers-add',
+                onPressed: onAdd,
+                child: const Icon(Icons.add),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _NoteTile extends StatelessWidget {
   const _NoteTile({
     required this.note,
+    required this.dependantGroup,
     required this.dateFormat,
     required this.onEdit,
     required this.onDelete,
   });
 
   final Note note;
+  final DependantGroup dependantGroup;
   final DateFormat dateFormat;
   final VoidCallback onEdit;
   final Future<void> Function() onDelete;
@@ -136,7 +420,11 @@ class _NoteTile extends StatelessWidget {
   String _buildDetails(BuildContext context, Note note) {
     final buffer = StringBuffer();
 
-    if (note.estimatedCounter != null) {
+    if (note.estimatedCounter != null &&
+        shouldShowCounterField(
+          dependantGroup: dependantGroup,
+          noteType: note.type,
+        )) {
       buffer.write(
         context.l10n.counterEstimateSuffix(note.estimatedCounter.toString()),
       );
@@ -162,9 +450,11 @@ class _NoteTile extends StatelessWidget {
             ? ''
             : context.l10n.noteBodySuffix(plain.body.trim()),
       ),
-      ServiceNote service => context.l10n.serviceNoteSummary(
-        dateFormat.format(service.serviceDate),
-        _buildDetails(context, service),
+      ServiceNote service => localizedServiceNoteSummary(
+        context.l10n,
+        dependantGroup: dependantGroup,
+        date: dateFormat.format(service.serviceDate),
+        details: _buildDetails(context, service),
       ),
       InspectionNote inspection => context.l10n.inspectionNoteSummary(
         dateFormat.format(inspection.noteDate),
@@ -175,9 +465,25 @@ class _NoteTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = _notePalette(context, note.noteDate);
+
     return Card(
+      color: palette.background,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: palette.border),
+      ),
       child: ListTile(
-        title: Text(note.title),
+        leading: CircleAvatar(
+          backgroundColor: palette.accent.withValues(alpha: 0.14),
+          child: Icon(_noteTypeIcon(note.type), color: palette.accent),
+        ),
+        title: Text(
+          note.title,
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+        ),
         subtitle: Text(_buildSubtitle(context)),
         trailing: PopupMenuButton<String>(
           onSelected: (value) async {
@@ -190,6 +496,32 @@ class _NoteTile extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  IconData _noteTypeIcon(NoteType type) {
+    return switch (type) {
+      NoteType.plain => Icons.sticky_note_2_outlined,
+      NoteType.service => Icons.build_circle_outlined,
+      NoteType.inspection => Icons.fact_check_outlined,
+    };
+  }
+
+  _DetailCardPalette _notePalette(BuildContext context, DateTime noteDate) {
+    final scheme = Theme.of(context).colorScheme;
+
+    if (noteDate.isAfter(DateTime.now())) {
+      return _DetailCardPalette(
+        background: Colors.green.shade50,
+        border: Colors.green.shade300,
+        accent: Colors.green.shade700,
+      );
+    }
+
+    return _DetailCardPalette(
+      background: scheme.primaryContainer.withValues(alpha: 0.45),
+      border: scheme.primary.withValues(alpha: 0.35),
+      accent: scheme.primary,
     );
   }
 }
@@ -253,6 +585,7 @@ String _formatUsage(double value) {
 class _SchedulerTile extends StatelessWidget {
   const _SchedulerTile({
     required this.scheduler,
+    required this.dependantGroup,
     required this.usageEstimate,
     required this.usageUnit,
     required this.dateFormat,
@@ -261,6 +594,7 @@ class _SchedulerTile extends StatelessWidget {
   });
 
   final Scheduler scheduler;
+  final DependantGroup dependantGroup;
   final UsageEstimate? usageEstimate;
   final String? usageUnit;
   final DateFormat dateFormat;
@@ -308,9 +642,29 @@ class _SchedulerTile extends StatelessWidget {
       ),
     ];
 
+    const palette = _DetailCardPalette(
+      background: Color(0xFFEAF8EC),
+      border: Color(0xFFA5D6A7),
+      accent: Color(0xFF2E7D32),
+    );
+
     return Card(
+      color: palette.background,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: palette.border),
+      ),
       child: ListTile(
-        title: Text(scheduler.label),
+        leading: CircleAvatar(
+          backgroundColor: palette.accent.withValues(alpha: 0.14),
+          child: Icon(Icons.event_repeat_outlined, color: palette.accent),
+        ),
+        title: Text(
+          scheduler.label,
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+        ),
         subtitle: Text(details.join('\n')),
         trailing: PopupMenuButton<String>(
           onSelected: (value) async {
@@ -328,11 +682,7 @@ class _SchedulerTile extends StatelessWidget {
 
   String _noteTypeLabel(BuildContext context, NoteType type) {
     final l10n = context.l10n;
-    return switch (type) {
-      NoteType.plain => l10n.plainNote,
-      NoteType.service => l10n.serviceNote,
-      NoteType.inspection => l10n.inspectionNote,
-    };
+    return localizedNoteTypeLabel(l10n, type, dependantGroup);
   }
 
   String _calendarIntervalLabel(BuildContext context, int months) {
@@ -344,4 +694,16 @@ class _SchedulerTile extends StatelessWidget {
       _ => l10n.everyNMonths(months),
     };
   }
+}
+
+class _DetailCardPalette {
+  const _DetailCardPalette({
+    required this.background,
+    required this.border,
+    required this.accent,
+  });
+
+  final Color background;
+  final Color border;
+  final Color accent;
 }

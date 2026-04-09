@@ -7,6 +7,8 @@
   "exportPdfAction": "Tulosta PDF-raportti",
   "exportPdfSubtitle": "Luo ja jaa luettava raportti kohteista",
   "changeLanguageAction": "Vaihda kieli",
+  "aboutAction": "Tietoja",
+  "aboutSubtitle": "Näytä ohjelmiston versio ja build-päivämäärä",
   "currentSelectionLabel": "Nykyinen: {value}",
   "@currentSelectionLabel": {
     "placeholders": {
@@ -27,6 +29,18 @@
   "@pdfExportReady": {
     "placeholders": {
       "fileName": {}
+    }
+  },
+  "versionValue": "Versio {version}",
+  "@versionValue": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "buildDateValue": "Build {date}",
+  "@buildDateValue": {
+    "placeholders": {
+      "date": {}
     }
   },
   "exportFailed": "Vienti epäonnistui: {error}",
@@ -131,6 +145,7 @@
   "editNoteTitle": "Muokkaa muistiinpanoa",
   "plainNote": "Muistiinpano",
   "serviceNote": "Huoltomuistiinpano",
+  "careNote": "Hoitomuistiinpano",
   "inspectionNote": "Tarkastusmuistiinpano",
   "type": "Tyyppi",
   "noteDate": "Päivämäärä",
@@ -214,6 +229,13 @@
   },
   "serviceNoteSummary": "Huolto {date}{counter}",
   "@serviceNoteSummary": {
+    "placeholders": {
+      "date": {},
+      "counter": {}
+    }
+  },
+  "careNoteSummary": "Hoito {date}{counter}",
+  "@careNoteSummary": {
     "placeholders": {
       "date": {},
       "counter": {}

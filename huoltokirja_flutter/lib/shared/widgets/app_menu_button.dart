@@ -5,10 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../app/providers.dart';
+import '../../core/config/app_config.dart';
 import '../../core/l10n/app_localizations_ext.dart';
 import '../../l10n/app_localizations.dart';
 
-enum _AppMenuAction { exportCsv, exportPdf, changeLanguage }
+enum _AppMenuAction { exportCsv, exportPdf, changeLanguage, about }
 
 class AppMenuButton extends StatelessWidget {
   const AppMenuButton({super.key});
@@ -43,25 +44,25 @@ class AppMenuDrawer extends ConsumerWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            DrawerHeader(
-              margin: EdgeInsets.zero,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(
                     Icons.menu,
-                    size: 32,
+                    size: 24,
                     color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    l10n.menu,
-                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: 8),
                   Text(
+                    l10n.menu,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
                     l10n.currentSelectionLabel(currentLanguage),
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
               ),
@@ -103,6 +104,14 @@ class AppMenuDrawer extends ConsumerWidget {
                 );
               },
             ),
+            const Divider(height: 1),
+            _MenuActionTile(
+              icon: Icons.info_outline,
+              title: l10n.aboutAction,
+              onTap: () async {
+                await _runActionFromDrawer(context, ref, _AppMenuAction.about);
+              },
+            ),
           ],
         ),
       ),
@@ -139,6 +148,8 @@ class AppMenuDrawer extends ConsumerWidget {
         );
       case _AppMenuAction.changeLanguage:
         await _showLanguageDialog(context, ref);
+      case _AppMenuAction.about:
+        await _showAboutDialog(context);
     }
   }
 
@@ -214,6 +225,39 @@ class AppMenuDrawer extends ConsumerWidget {
     );
   }
 
+  Future<void> _showAboutDialog(BuildContext context) async {
+    final l10n = context.l10n;
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(l10n.aboutAction),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.appTitle,
+                style: Theme.of(dialogContext).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+              Text(l10n.versionValue(AppConfig.appVersion)),
+              const SizedBox(height: 4),
+              Text(l10n.buildDateValue(AppConfig.appBuildDate)),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(l10n.cancel),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   String _currentLanguageLabel(AppLocalizations l10n, Locale? locale) {
     return switch (locale?.languageCode) {
       'fi' => l10n.finnishLanguage,
@@ -227,23 +271,26 @@ class _MenuActionTile extends StatelessWidget {
   const _MenuActionTile({
     required this.icon,
     required this.title,
-    required this.subtitle,
+    this.subtitle,
     required this.onTap,
     this.trailing,
   });
 
   final IconData icon;
   final String title;
-  final String subtitle;
+  final String? subtitle;
   final Future<void> Function() onTap;
   final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      dense: true,
+      visualDensity: const VisualDensity(horizontal: 0, vertical: -2),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
       leading: Icon(icon),
       title: Text(title),
-      subtitle: Text(subtitle),
+      subtitle: subtitle == null ? null : Text(subtitle!),
       trailing: trailing,
       onTap: () {
         onTap();

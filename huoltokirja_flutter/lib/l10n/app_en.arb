@@ -7,6 +7,8 @@
   "exportPdfAction": "Create PDF report",
   "exportPdfSubtitle": "Generate and share a readable target report",
   "changeLanguageAction": "Change language",
+  "aboutAction": "About",
+  "aboutSubtitle": "Show software version and build date",
   "currentSelectionLabel": "Current: {value}",
   "@currentSelectionLabel": {
     "placeholders": {
@@ -27,6 +29,18 @@
   "@pdfExportReady": {
     "placeholders": {
       "fileName": {}
+    }
+  },
+  "versionValue": "Version {version}",
+  "@versionValue": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "buildDateValue": "Build {date}",
+  "@buildDateValue": {
+    "placeholders": {
+      "date": {}
     }
   },
   "exportFailed": "Export failed: {error}",
@@ -131,6 +145,7 @@
   "editNoteTitle": "Edit note",
   "plainNote": "Note",
   "serviceNote": "Service note",
+  "careNote": "Care note",
   "inspectionNote": "Inspection note",
   "type": "Type",
   "noteDate": "Date",
@@ -214,6 +229,13 @@
   },
   "serviceNoteSummary": "Service {date}{counter}",
   "@serviceNoteSummary": {
+    "placeholders": {
+      "date": {},
+      "counter": {}
+    }
+  },
+  "careNoteSummary": "Care {date}{counter}",
+  "@careNoteSummary": {
     "placeholders": {
       "date": {},
       "counter": {}
