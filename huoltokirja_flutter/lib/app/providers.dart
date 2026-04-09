@@ -1,4 +1,8 @@
+import 'dart:async';
+import 'dart:ui';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/database/app_database.dart';
 import '../data/mappers/dependant_mapper.dart';
@@ -7,6 +11,7 @@ import '../data/mappers/scheduler_mapper.dart';
 import '../data/repositories/sqflite_dependant_repository.dart';
 import '../data/repositories/sqflite_note_repository.dart';
 import '../data/repositories/sqflite_scheduler_repository.dart';
+import '../data/services/export_service.dart';
 import '../domain/models/dependant.dart';
 import '../domain/models/note.dart';
 import '../domain/models/scheduler.dart';
@@ -19,6 +24,46 @@ final appDatabaseProvider = Provider<AppDatabase>((_) {
   throw UnimplementedError('AppDatabase must be overridden in main.dart');
 });
 
+final appLocaleControllerProvider =
+    NotifierProvider<AppLocaleController, Locale?>(AppLocaleController.new);
+
+class AppLocaleController extends Notifier<Locale?> {
+  static const _preferenceKey = 'selected_locale';
+  SharedPreferences? _preferences;
+
+  @override
+  Locale? build() {
+    unawaited(_loadSavedLocale());
+    return null;
+  }
+
+  Future<void> _loadSavedLocale() async {
+    final preferences = await _getPreferences();
+    final languageCode = preferences.getString(_preferenceKey);
+    if (languageCode == null || languageCode.isEmpty) {
+      state = null;
+      return;
+    }
+    state = Locale(languageCode);
+  }
+
+  Future<void> useSystemLocale() async {
+    final preferences = await _getPreferences();
+    await preferences.remove(_preferenceKey);
+    state = null;
+  }
+
+  Future<void> setLocale(Locale locale) async {
+    final preferences = await _getPreferences();
+    await preferences.setString(_preferenceKey, locale.languageCode);
+    state = locale;
+  }
+
+  Future<SharedPreferences> _getPreferences() async {
+    return _preferences ??= await SharedPreferences.getInstance();
+  }
+}
+
 final dependantRepositoryProvider = Provider<DependantRepository>((ref) {
   return SqfliteDependantRepository(
     ref.watch(appDatabaseProvider),
@@ -30,6 +75,13 @@ final noteRepositoryProvider = Provider<NoteRepository>((ref) {
   return SqfliteNoteRepository(
     ref.watch(appDatabaseProvider),
     const NoteMapper(),
+  );
+});
+
+final exportServiceProvider = Provider<AppExportService>((ref) {
+  return AppExportService(
+    dependantRepository: ref.watch(dependantRepositoryProvider),
+    noteRepository: ref.watch(noteRepositoryProvider),
   );
 });
 

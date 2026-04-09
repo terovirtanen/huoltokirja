@@ -1,6 +1,40 @@
 {
   "@@locale": "fi",
   "appTitle": "Huoltokirja",
+  "menu": "Valikko",
+  "exportCsvAction": "Vie tiedot CSV-tiedostoon",
+  "exportCsvSubtitle": "Vie kohteet ja muistiinpanot taulukkomuotoon",
+  "exportPdfAction": "Tulosta PDF-raportti",
+  "exportPdfSubtitle": "Luo ja jaa luettava raportti kohteista",
+  "changeLanguageAction": "Vaihda kieli",
+  "currentSelectionLabel": "Nykyinen: {value}",
+  "@currentSelectionLabel": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "chooseLanguage": "Valitse kieli",
+  "useDeviceLanguage": "Käytä puhelimen kieltä",
+  "finnishLanguage": "Suomi",
+  "englishLanguage": "Englanti",
+  "csvExportReady": "CSV-vienti valmis: {fileName}",
+  "@csvExportReady": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "pdfExportReady": "PDF-raportti valmis: {fileName}",
+  "@pdfExportReady": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "exportFailed": "Vienti epäonnistui: {error}",
+  "@exportFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "loading": "Ladataan...",
   "errorPrefix": "Virhe: {error}",
   "@errorPrefix": {

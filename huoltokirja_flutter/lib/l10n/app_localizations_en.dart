@@ -12,6 +12,56 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Maintenance Log';
 
   @override
+  String get menu => 'Menu';
+
+  @override
+  String get exportCsvAction => 'Export data to CSV';
+
+  @override
+  String get exportCsvSubtitle => 'Export targets and notes into a table file';
+
+  @override
+  String get exportPdfAction => 'Create PDF report';
+
+  @override
+  String get exportPdfSubtitle => 'Generate and share a readable target report';
+
+  @override
+  String get changeLanguageAction => 'Change language';
+
+  @override
+  String currentSelectionLabel(Object value) {
+    return 'Current: $value';
+  }
+
+  @override
+  String get chooseLanguage => 'Choose language';
+
+  @override
+  String get useDeviceLanguage => 'Use device language';
+
+  @override
+  String get finnishLanguage => 'Finnish';
+
+  @override
+  String get englishLanguage => 'English';
+
+  @override
+  String csvExportReady(Object fileName) {
+    return 'CSV export ready: $fileName';
+  }
+
+  @override
+  String pdfExportReady(Object fileName) {
+    return 'PDF report ready: $fileName';
+  }
+
+  @override
+  String exportFailed(Object error) {
+    return 'Export failed: $error';
+  }
+
+  @override
   String get loading => 'Loading...';
 
   @override

@@ -101,6 +101,90 @@ abstract class AppLocalizations {
   /// **'Maintenance Log'**
   String get appTitle;
 
+  /// No description provided for @menu.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu'**
+  String get menu;
+
+  /// No description provided for @exportCsvAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Export data to CSV'**
+  String get exportCsvAction;
+
+  /// No description provided for @exportCsvSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export targets and notes into a table file'**
+  String get exportCsvSubtitle;
+
+  /// No description provided for @exportPdfAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create PDF report'**
+  String get exportPdfAction;
+
+  /// No description provided for @exportPdfSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate and share a readable target report'**
+  String get exportPdfSubtitle;
+
+  /// No description provided for @changeLanguageAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Change language'**
+  String get changeLanguageAction;
+
+  /// No description provided for @currentSelectionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current: {value}'**
+  String currentSelectionLabel(Object value);
+
+  /// No description provided for @chooseLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose language'**
+  String get chooseLanguage;
+
+  /// No description provided for @useDeviceLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Use device language'**
+  String get useDeviceLanguage;
+
+  /// No description provided for @finnishLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Finnish'**
+  String get finnishLanguage;
+
+  /// No description provided for @englishLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get englishLanguage;
+
+  /// No description provided for @csvExportReady.
+  ///
+  /// In en, this message translates to:
+  /// **'CSV export ready: {fileName}'**
+  String csvExportReady(Object fileName);
+
+  /// No description provided for @pdfExportReady.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF report ready: {fileName}'**
+  String pdfExportReady(Object fileName);
+
+  /// No description provided for @exportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Export failed: {error}'**
+  String exportFailed(Object error);
+
   /// No description provided for @loading.
   ///
   /// In en, this message translates to:

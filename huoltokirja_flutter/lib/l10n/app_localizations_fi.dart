@@ -12,6 +12,56 @@ class AppLocalizationsFi extends AppLocalizations {
   String get appTitle => 'Huoltokirja';
 
   @override
+  String get menu => 'Valikko';
+
+  @override
+  String get exportCsvAction => 'Vie tiedot CSV-tiedostoon';
+
+  @override
+  String get exportCsvSubtitle => 'Vie kohteet ja muistiinpanot taulukkomuotoon';
+
+  @override
+  String get exportPdfAction => 'Tulosta PDF-raportti';
+
+  @override
+  String get exportPdfSubtitle => 'Luo ja jaa luettava raportti kohteista';
+
+  @override
+  String get changeLanguageAction => 'Vaihda kieli';
+
+  @override
+  String currentSelectionLabel(Object value) {
+    return 'Nykyinen: $value';
+  }
+
+  @override
+  String get chooseLanguage => 'Valitse kieli';
+
+  @override
+  String get useDeviceLanguage => 'Käytä puhelimen kieltä';
+
+  @override
+  String get finnishLanguage => 'Suomi';
+
+  @override
+  String get englishLanguage => 'Englanti';
+
+  @override
+  String csvExportReady(Object fileName) {
+    return 'CSV-vienti valmis: $fileName';
+  }
+
+  @override
+  String pdfExportReady(Object fileName) {
+    return 'PDF-raportti valmis: $fileName';
+  }
+
+  @override
+  String exportFailed(Object error) {
+    return 'Vienti epäonnistui: $error';
+  }
+
+  @override
   String get loading => 'Ladataan...';
 
   @override

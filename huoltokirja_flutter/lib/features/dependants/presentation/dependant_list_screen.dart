@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/providers.dart';
 import '../../../core/l10n/app_localizations_ext.dart';
 import '../../../domain/models/dependant.dart';
+import '../../../shared/widgets/app_menu_button.dart';
 import '../../../shared/widgets/state_widgets.dart';
 import 'dependant_editor_dialog.dart';
 
@@ -17,7 +18,11 @@ class DependantListScreen extends ConsumerWidget {
     final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.appTitle)),
+      drawer: const AppMenuDrawer(),
+      appBar: AppBar(
+        title: Text(l10n.appTitle),
+        leading: const AppMenuButton(),
+      ),
       body: dependantsAsync.when(
         data: (dependants) {
           if (dependants.isEmpty) {

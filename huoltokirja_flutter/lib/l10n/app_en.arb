@@ -1,6 +1,40 @@
 {
   "@@locale": "en",
   "appTitle": "Maintenance Log",
+  "menu": "Menu",
+  "exportCsvAction": "Export data to CSV",
+  "exportCsvSubtitle": "Export targets and notes into a table file",
+  "exportPdfAction": "Create PDF report",
+  "exportPdfSubtitle": "Generate and share a readable target report",
+  "changeLanguageAction": "Change language",
+  "currentSelectionLabel": "Current: {value}",
+  "@currentSelectionLabel": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "chooseLanguage": "Choose language",
+  "useDeviceLanguage": "Use device language",
+  "finnishLanguage": "Finnish",
+  "englishLanguage": "English",
+  "csvExportReady": "CSV export ready: {fileName}",
+  "@csvExportReady": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "pdfExportReady": "PDF report ready: {fileName}",
+  "@pdfExportReady": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "exportFailed": "Export failed: {error}",
+  "@exportFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "loading": "Loading...",
   "errorPrefix": "Error: {error}",
   "@errorPrefix": {

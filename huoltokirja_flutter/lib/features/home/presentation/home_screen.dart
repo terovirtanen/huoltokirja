@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../../../app/providers.dart';
 import '../../../core/l10n/app_localizations_ext.dart';
 import '../../../domain/models/note.dart';
+import '../../../shared/widgets/app_menu_button.dart';
 import '../../../shared/widgets/state_widgets.dart';
 import '../../dependants/presentation/dependant_list_screen.dart';
 
@@ -100,7 +101,11 @@ class _AllNotesPage extends ConsumerWidget {
     final dateFormat = DateFormat('yyyy-MM-dd');
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.allNotesTitle)),
+      drawer: const AppMenuDrawer(),
+      appBar: AppBar(
+        title: Text(l10n.allNotesTitle),
+        leading: const AppMenuButton(),
+      ),
       body: allNotesAsync.when(
         loading: () => const LoadingState(),
         error: (error, _) => ErrorState(
