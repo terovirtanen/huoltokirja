@@ -105,11 +105,22 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
     final usageEstimate = dependant == null || detail == null
         ? null
         : estimateDependantUsage(dependant: dependant, notes: detail.notes);
+    final latestUsage = dependant == null || detail == null
+        ? null
+        : latestRecordedUsage(dependant: dependant, notes: detail.notes);
+    final visibleUsageEstimate = usageEstimate != null && dependant != null
+        ? (shouldShowUsageEstimate(
+                dependant: dependant,
+                estimate: usageEstimate,
+              )
+              ? usageEstimate
+              : null)
+        : null;
     final supportsUsage = dependant?.supportsUsage ?? false;
     final usageUnit = dependant?.usageUnit ?? '';
 
     if (supportsUsage && !_usageStartPrefilled) {
-      final defaultUsage = usageEstimate?.currentValue ?? dependant?.usage;
+      final defaultUsage = latestUsage ?? dependant?.usage;
       if (defaultUsage != null) {
         _usageStartController.text = _formatNumber(defaultUsage);
       }
@@ -182,7 +193,7 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(l10n.scheduleStartDate),
-              subtitle: Text(_startDate.toIso8601String().split('T').first),
+              subtitle: Text(context.formatDate(_startDate)),
               trailing: IconButton(
                 icon: const Icon(Icons.calendar_month),
                 onPressed: () async {
@@ -254,11 +265,11 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
               SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
                 title: Text(l10n.usageRule),
-                subtitle: usageEstimate == null
+                subtitle: visibleUsageEstimate == null
                     ? null
                     : Text(
                         l10n.usageEstimateLine(
-                          _formatNumber(usageEstimate.currentValue),
+                          _formatNumber(visibleUsageEstimate.currentValue),
                           usageUnit,
                         ),
                       ),

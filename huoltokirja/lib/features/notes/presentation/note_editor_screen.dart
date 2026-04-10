@@ -160,7 +160,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(l10n.noteDate),
-              subtitle: Text(_noteDate.toIso8601String().split('T').first),
+              subtitle: Text(context.formatDate(_noteDate)),
               trailing: IconButton(
                 icon: const Icon(Icons.calendar_month),
                 onPressed: () async {

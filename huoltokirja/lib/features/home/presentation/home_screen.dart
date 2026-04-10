@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../../../app/providers.dart';
 import '../../../core/l10n/app_localizations_ext.dart';
@@ -207,7 +206,6 @@ class _AllNotesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final allNotesAsync = ref.watch(allNotesFeedProvider);
-    final dateFormat = DateFormat('yyyy-MM-dd');
 
     return Scaffold(
       drawer: const AppMenuDrawer(),
@@ -251,7 +249,7 @@ class _AllNotesPage extends ConsumerWidget {
                 final item = filteredItems[index];
                 final palette = _notePalette(context, item.note);
                 final subtitleLines = <String>[
-                  dateFormat.format(item.note.noteDate),
+                  context.formatDate(item.note.noteDate),
                   l10n.targetNameLabel(item.dependant.name),
                   _noteTypeLabel(
                     context,

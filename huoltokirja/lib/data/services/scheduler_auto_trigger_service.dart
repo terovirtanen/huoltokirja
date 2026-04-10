@@ -99,13 +99,11 @@ class SchedulerAutoTriggerService {
         continue;
       }
 
-      final nextScheduleAt =
-          scheduler.nextScheduleAtForEstimate(
-            usageEstimate: usageEstimate,
-            referenceDate: referenceDate,
-          ) ??
-          scheduler.startDate;
-      if (nextScheduleAt.isAfter(triggerThreshold)) {
+      final nextScheduleAt = scheduler.nextScheduleAtForEstimate(
+        usageEstimate: usageEstimate,
+        referenceDate: referenceDate,
+      );
+      if (nextScheduleAt == null || nextScheduleAt.isAfter(triggerThreshold)) {
         continue;
       }
 

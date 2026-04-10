@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 enum NoteType { plain, service, inspection }
 
 sealed class Note {
@@ -55,7 +57,7 @@ class PlainNote extends Note {
 
   @override
   String get listText {
-    final dateText = noteDate.toIso8601String().split('T').first;
+    final dateText = _formatDate(noteDate);
     final trimmedBody = body.trim();
     return trimmedBody.isEmpty ? dateText : '$dateText • $trimmedBody';
   }
@@ -101,7 +103,7 @@ class ServiceNote extends Note {
     }
     if (price != null) parts.add('hinta: ${price!.toStringAsFixed(2)} €');
     final suffix = parts.isEmpty ? '' : ' • ${parts.join(' • ')}';
-    return 'Huolto ${serviceDate.toIso8601String().split('T').first}$suffix';
+    return 'Huolto ${_formatDate(serviceDate)}$suffix';
   }
 
   int estimateCounter(int currentCounter) {
@@ -146,7 +148,7 @@ class InspectionNote extends Note {
 
   @override
   String get listText {
-    final dateText = noteDate.toIso8601String().split('T').first;
+    final dateText = _formatDate(noteDate);
     final parts = <String>[];
     if (estimatedCounter != null) parts.add('km-arvio: $estimatedCounter');
     if (performerName != null && performerName!.isNotEmpty) {
@@ -158,3 +160,5 @@ class InspectionNote extends Note {
     return 'Tarkastus $dateText$suffix';
   }
 }
+
+String _formatDate(DateTime date) => DateFormat.yMd().format(date);

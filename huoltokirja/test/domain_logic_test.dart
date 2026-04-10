@@ -59,6 +59,86 @@ void main() {
   });
 
   test(
+    'usage estimate stays hidden when current reading is already higher',
+    () {
+      final dependant = Dependant(
+        name: 'Truck',
+        dependantGroup: DependantGroup.workMachine,
+        usage: 2500,
+        createdAt: DateTime(2026, 1, 1),
+        updatedAt: DateTime(2026, 1, 1),
+      );
+      final estimate = UsageEstimate(
+        currentValue: 2400,
+        dailyIncrease: 5,
+        lastReadingDate: DateTime(2026, 1, 1),
+      );
+
+      expect(
+        shouldShowUsageEstimate(dependant: dependant, estimate: estimate),
+        isFalse,
+      );
+    },
+  );
+
+  test('latest usage reading comes from the newest note entry', () {
+    final dependant = Dependant(
+      name: 'Car',
+      dependantGroup: DependantGroup.vehicle,
+      initialDate: DateTime(2025, 1, 1),
+      usage: 12000,
+      createdAt: DateTime(2025, 1, 1),
+      updatedAt: DateTime(2025, 1, 1),
+    );
+    final notes = <Note>[
+      ServiceNote(
+        dependantId: 1,
+        title: 'Huolto',
+        body: '',
+        serviceDate: DateTime(2025, 6, 1),
+        estimatedCounter: 15000,
+        createdAt: DateTime(2025, 6, 1),
+        updatedAt: DateTime(2025, 6, 1),
+      ),
+      InspectionNote(
+        dependantId: 1,
+        title: 'Tarkastus',
+        body: '',
+        noteDate: DateTime(2026, 3, 1),
+        estimatedCounter: 18000,
+        createdAt: DateTime(2026, 3, 1),
+        updatedAt: DateTime(2026, 3, 1),
+      ),
+    ];
+
+    expect(latestRecordedUsage(dependant: dependant, notes: notes), 18000);
+  });
+
+  test('usage scheduler finds the next matching threshold for estimate', () {
+    final scheduler = Scheduler(
+      dependantId: 1,
+      label: '5000 km huolto',
+      noteType: NoteType.service,
+      startDate: DateTime(2026, 1, 1),
+      usageInterval: 5000,
+      usageStartValue: 12000,
+      createdAt: DateTime(2026, 1, 1),
+      updatedAt: DateTime(2026, 1, 1),
+    );
+
+    final nextDate = scheduler.nextUsageScheduleAt(
+      estimate: UsageEstimate(
+        currentValue: 20000,
+        dailyIncrease: 100,
+        lastReadingDate: DateTime(2026, 4, 1),
+      ),
+      referenceDate: DateTime(2026, 4, 10),
+    );
+
+    expect(nextDate, DateTime(2026, 4, 30));
+  });
+
+  test(
     'animal note pages hide the counter field for service and inspection',
     () {
       expect(
@@ -185,5 +265,45 @@ void main() {
       DateTime(2026, 1, 1),
     );
     expect(scheduler.nextUsageThreshold, 125000);
+  });
+
+  test('usage threshold uses the first boundary above estimate', () {
+    final scheduler = Scheduler(
+      dependantId: 1,
+      label: '5000 km huolto',
+      noteType: NoteType.service,
+      startDate: DateTime(2026, 1, 1),
+      usageInterval: 5000,
+      usageStartValue: 12000,
+      createdAt: DateTime(2026, 1, 1),
+      updatedAt: DateTime(2026, 1, 1),
+    );
+
+    final threshold = scheduler.nextUsageThresholdForEstimate(
+      UsageEstimate(
+        currentValue: 20000,
+        dailyIncrease: 50,
+        lastReadingDate: DateTime(2026, 4, 1),
+      ),
+    );
+
+    expect(threshold, 22000);
+  });
+
+  test('calendar rule starting today points to the next interval', () {
+    final scheduler = Scheduler(
+      dependantId: 1,
+      label: 'Vuosihuolto',
+      noteType: NoteType.service,
+      startDate: DateTime(2026, 4, 10),
+      calendarIntervalMonths: 12,
+      createdAt: DateTime(2026, 4, 10),
+      updatedAt: DateTime(2026, 4, 10),
+    );
+
+    expect(
+      scheduler.nextCalendarScheduleAt(referenceDate: DateTime(2026, 4, 10)),
+      DateTime(2027, 4, 10),
+    );
   });
 }

@@ -50,7 +50,9 @@ class _DependantDetailScreenState extends ConsumerState<DependantDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final detailAsync = ref.watch(dependantDetailProvider(widget.dependantId));
-    final dateFormat = DateFormat('yyyy-MM-dd');
+    final dateFormat = DateFormat.yMd(
+      Localizations.localeOf(context).toLanguageTag(),
+    );
     final l10n = context.l10n;
 
     return Scaffold(
@@ -588,7 +590,9 @@ String _buildDependantSubtitle(
       ),
     );
   }
-  if (usageEstimate != null && dependant.usageUnit != null) {
+  if (usageEstimate != null &&
+      dependant.usageUnit != null &&
+      shouldShowUsageEstimate(dependant: dependant, estimate: usageEstimate)) {
     parts.add(
       l10n.usageEstimateLine(
         _formatUsage(usageEstimate.currentValue),
@@ -647,6 +651,9 @@ class _SchedulerTile extends StatelessWidget {
         ? context.l10n.dueSoonSuffix
         : '';
 
+    final nextUsageThreshold = scheduler.nextUsageThresholdForEstimate(
+      usageEstimate,
+    );
     final details = <String>[
       context.l10n.schedulerTypeLine(
         _noteTypeLabel(context, scheduler.noteType),
@@ -655,9 +662,9 @@ class _SchedulerTile extends StatelessWidget {
         context.l10n.schedulerCalendarLine(
           _calendarIntervalLabel(context, scheduler.calendarIntervalMonths!),
         ),
-      if (scheduler.nextUsageThreshold != null && usageUnit != null)
+      if (nextUsageThreshold != null && usageUnit != null)
         context.l10n.schedulerUsageLine(
-          _formatUsage(scheduler.nextUsageThreshold!),
+          _formatUsage(nextUsageThreshold),
           usageUnit!,
         ),
       context.l10n.nextSchedule(

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/providers.dart';
 import '../../../core/l10n/app_localizations_ext.dart';
 import '../../../domain/models/dependant.dart';
+import '../../../domain/services/counter_estimator.dart';
 
 class DependantEditorDialog extends ConsumerStatefulWidget {
   const DependantEditorDialog({super.key, this.initial});
@@ -109,7 +110,7 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
                   subtitle: Text(
                     _initialDate == null
                         ? l10n.notSet
-                        : _initialDate!.toIso8601String().split('T').first,
+                        : context.formatDate(_initialDate!),
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.calendar_month),
@@ -152,13 +153,17 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
                 const SizedBox(height: 12),
                 usageEstimateAsync.when(
                   data: (estimate) {
-                    if (estimate == null) {
+                    final initial = widget.initial;
+                    if (estimate == null ||
+                        initial == null ||
+                        !shouldShowUsageEstimate(
+                          dependant: initial,
+                          estimate: estimate,
+                        )) {
                       return const SizedBox.shrink();
                     }
                     final unit =
-                        widget.initial?.usageUnit ??
-                        _selectedGroup.usageUnit ??
-                        '';
+                        initial.usageUnit ?? _selectedGroup.usageUnit ?? '';
                     return Align(
                       alignment: Alignment.centerLeft,
                       child: Text(

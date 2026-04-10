@@ -35,6 +35,18 @@ class Scheduler {
   double? get nextUsageThreshold =>
       hasUsageRule ? usageStartValue! + usageInterval! : null;
 
+  double? nextUsageThresholdForEstimate(UsageEstimate? usageEstimate) {
+    if (usageEstimate == null) {
+      return nextUsageThreshold;
+    }
+
+    return _nextUsageThresholdForEstimate(
+      currentValue: usageEstimate.currentValue,
+      usageStartValue: usageStartValue,
+      usageInterval: usageInterval,
+    );
+  }
+
   String get autoTriggerKey {
     return [
       label.trim(),
@@ -54,7 +66,7 @@ class Scheduler {
 
     final reference = _dateOnly(referenceDate ?? DateTime.now());
     var next = _dateOnly(startDate);
-    while (next.isBefore(reference)) {
+    while (!next.isAfter(reference)) {
       next = _addMonths(next, intervalMonths);
     }
     return next;
@@ -64,7 +76,7 @@ class Scheduler {
     required UsageEstimate estimate,
     DateTime? referenceDate,
   }) {
-    final threshold = nextUsageThreshold;
+    final threshold = nextUsageThresholdForEstimate(estimate);
     if (threshold == null) {
       return null;
     }
@@ -157,6 +169,20 @@ class Scheduler {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+}
+
+double? _nextUsageThresholdForEstimate({
+  required double currentValue,
+  required double? usageStartValue,
+  required double? usageInterval,
+}) {
+  if (usageStartValue == null || usageInterval == null || usageInterval <= 0) {
+    return null;
+  }
+
+  final progress = (currentValue - usageStartValue) / usageInterval;
+  final nextStep = (progress.floor() + 1).clamp(1, 1 << 30);
+  return usageStartValue + (nextStep * usageInterval);
 }
 
 DateTime _dateOnly(DateTime value) =>

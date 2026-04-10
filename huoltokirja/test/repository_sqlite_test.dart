@@ -153,6 +153,43 @@ void main() {
     expect(notes.single.noteDate, DateTime(2026, 4, 20));
   });
 
+  test('new yearly calendar scheduler starting today does not trigger today', () async {
+    final createdDependant = await dependantRepo.create(
+      Dependant(
+        name: 'Calendar vehicle',
+        dependantGroup: DependantGroup.vehicle,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+
+    await schedulerRepo.create(
+      Scheduler(
+        dependantId: createdDependant.id!,
+        label: 'Vuosihuolto',
+        noteType: NoteType.service,
+        startDate: DateTime(2026, 4, 10),
+        calendarIntervalMonths: 12,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+
+    final triggerService = SchedulerAutoTriggerService(
+      dependantRepository: dependantRepo,
+      noteRepository: noteRepo,
+      schedulerRepository: schedulerRepo,
+    );
+
+    await triggerService.triggerForDependant(
+      createdDependant.id!,
+      asOf: DateTime(2026, 4, 10),
+    );
+
+    final notes = await noteRepo.listByDependant(createdDependant.id!);
+    expect(notes, isEmpty);
+  });
+
   test('significant scheduler change resets untouched auto note', () async {
     final createdDependant = await dependantRepo.create(
       Dependant(
@@ -201,6 +238,49 @@ void main() {
     expect(notes.single.noteDate, DateTime(2026, 5, 20));
     expect(notes.single.schedulerTriggerKey, updatedScheduler.autoTriggerKey);
   });
+
+  test(
+    'usage-only scheduler does not trigger without enough usage notes',
+    () async {
+      final createdDependant = await dependantRepo.create(
+        Dependant(
+          name: 'Loader',
+          dependantGroup: DependantGroup.workMachine,
+          initialDate: DateTime(2026, 1, 1),
+          usage: 1000,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        ),
+      );
+
+      await schedulerRepo.create(
+        Scheduler(
+          dependantId: createdDependant.id!,
+          label: '250 h huolto',
+          noteType: NoteType.service,
+          startDate: DateTime(2026, 4, 1),
+          usageInterval: 250,
+          usageStartValue: 1000,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        ),
+      );
+
+      final triggerService = SchedulerAutoTriggerService(
+        dependantRepository: dependantRepo,
+        noteRepository: noteRepo,
+        schedulerRepository: schedulerRepo,
+      );
+
+      await triggerService.triggerForDependant(
+        createdDependant.id!,
+        asOf: DateTime(2026, 4, 10),
+      );
+
+      final notes = await noteRepo.listByDependant(createdDependant.id!);
+      expect(notes, isEmpty);
+    },
+  );
 
   test('CRUD works for dependant, note and scheduler', () async {
     final createdDependant = await dependantRepo.create(

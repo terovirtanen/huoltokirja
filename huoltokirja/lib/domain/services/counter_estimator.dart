@@ -18,11 +18,43 @@ class UsageEstimate {
   final DateTime lastReadingDate;
 }
 
+bool shouldShowUsageEstimate({
+  required Dependant dependant,
+  required UsageEstimate estimate,
+}) {
+  if (!dependant.supportsUsage) {
+    return false;
+  }
+
+  final currentUsage = dependant.usage;
+  if (currentUsage == null) {
+    return true;
+  }
+
+  return estimate.currentValue > currentUsage;
+}
+
 class _UsagePoint {
   const _UsagePoint({required this.date, required this.value});
 
   final DateTime date;
   final double value;
+}
+
+double? latestRecordedUsage({
+  required Dependant dependant,
+  required List<Note> notes,
+}) {
+  if (!dependant.supportsUsage) {
+    return null;
+  }
+
+  final points = _collectUsagePoints(dependant: dependant, notes: notes);
+  if (points.isEmpty) {
+    return null;
+  }
+
+  return points.last.value;
 }
 
 UsageEstimate? estimateDependantUsage({
@@ -40,18 +72,7 @@ UsageEstimate? estimateDependantUsage({
     (asOf ?? DateTime.now()).day,
   );
 
-  final points = <_UsagePoint>[
-    if (dependant.initialDate != null && dependant.usage != null)
-      _UsagePoint(date: dependant.initialDate!, value: dependant.usage!),
-    ...notes
-        .where((note) => note.estimatedCounter != null)
-        .map(
-          (note) => _UsagePoint(
-            date: note.noteDate,
-            value: note.estimatedCounter!.toDouble(),
-          ),
-        ),
-  ]..sort((a, b) => a.date.compareTo(b.date));
+  final points = _collectUsagePoints(dependant: dependant, notes: notes);
 
   if (points.length < 2) {
     return null;
@@ -88,4 +109,22 @@ UsageEstimate? estimateDependantUsage({
     dailyIncrease: clampedDailyIncrease,
     lastReadingDate: last.date,
   );
+}
+
+List<_UsagePoint> _collectUsagePoints({
+  required Dependant dependant,
+  required List<Note> notes,
+}) {
+  return <_UsagePoint>[
+    if (dependant.initialDate != null && dependant.usage != null)
+      _UsagePoint(date: dependant.initialDate!, value: dependant.usage!),
+    ...notes
+        .where((note) => note.estimatedCounter != null)
+        .map(
+          (note) => _UsagePoint(
+            date: note.noteDate,
+            value: note.estimatedCounter!.toDouble(),
+          ),
+        ),
+  ]..sort((a, b) => a.date.compareTo(b.date));
 }

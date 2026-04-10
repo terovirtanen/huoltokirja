@@ -35,7 +35,7 @@ class AppExportService {
   Future<File> exportPdfReport() async {
     final dependants = await _dependantRepository.getAll();
     final notes = await _noteRepository.listAll();
-    final dateFormat = DateFormat('yyyy-MM-dd');
+    final dateFormat = DateFormat.yMd();
     final notesByDependant = <int, List<Note>>{};
 
     for (final note in notes) {
@@ -152,7 +152,7 @@ class AppExportService {
           '${dependant?.id ?? note.dependantId}',
           dependant?.name ?? '',
           dependant?.dependantGroup.storageValue ?? '',
-          DateFormat('yyyy-MM-dd').format(note.noteDate),
+          DateFormat.yMd().format(note.noteDate),
           note.type.name,
           note.title,
           note.body,
