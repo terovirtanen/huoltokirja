@@ -81,6 +81,7 @@ class _DependantDetailScreenState extends ConsumerState<DependantDetailScreen> {
                       _buildDependantSubtitle(
                         context,
                         data.dependant,
+                        data.notes,
                         usageEstimate,
                         dateFormat,
                       ),
@@ -555,19 +556,17 @@ class _NoteTile extends StatelessWidget {
 String _buildDependantSubtitle(
   BuildContext context,
   Dependant dependant,
+  List<Note> notes,
   UsageEstimate? usageEstimate,
   DateFormat dateFormat,
 ) {
   final l10n = context.l10n;
-  final parts = <String>[
-    switch (dependant.dependantGroup) {
-      DependantGroup.none => l10n.noGroup,
-      DependantGroup.vehicle => l10n.vehicleGroup,
-      DependantGroup.workMachine => l10n.workMachineGroup,
-      DependantGroup.device => l10n.deviceGroup,
-      DependantGroup.animal => l10n.animalGroup,
-    },
-  ];
+  final parts = <String>[];
+
+  final tag = dependant.tag?.trim();
+  if (tag != null && tag.isNotEmpty) {
+    parts.add(tag);
+  }
 
   if (dependant.initialDate != null) {
     parts.add(
@@ -579,20 +578,13 @@ String _buildDependantSubtitle(
       ),
     );
   }
-  if (dependant.usage != null && dependant.usageUnit != null) {
-    parts.add(
-      l10n.usageValueLabel(
-        dependant.dependantGroup == DependantGroup.vehicle
-            ? l10n.odometerShort
-            : l10n.operatingHoursShort,
-        _formatUsage(dependant.usage!),
-        dependant.usageUnit!,
-      ),
-    );
-  }
   if (usageEstimate != null &&
       dependant.usageUnit != null &&
-      shouldShowUsageEstimate(dependant: dependant, estimate: usageEstimate)) {
+      shouldShowUsageEstimate(
+        dependant: dependant,
+        estimate: usageEstimate,
+        notes: notes,
+      )) {
     parts.add(
       l10n.usageEstimateLine(
         _formatUsage(usageEstimate.currentValue),

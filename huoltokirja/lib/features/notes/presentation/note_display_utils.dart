@@ -2,6 +2,28 @@ import '../../../domain/models/dependant.dart';
 import '../../../domain/models/note.dart';
 import '../../../l10n/app_localizations.dart';
 
+List<NoteType> availableNoteTypesForDependantGroup(
+  DependantGroup dependantGroup,
+) {
+  if (dependantGroup == DependantGroup.animal) {
+    return const [NoteType.plain, NoteType.service];
+  }
+
+  return NoteType.values;
+}
+
+NoteType normalizeNoteTypeForDependantGroup(
+  DependantGroup dependantGroup,
+  NoteType noteType,
+) {
+  if (dependantGroup == DependantGroup.animal &&
+      noteType == NoteType.inspection) {
+    return NoteType.service;
+  }
+
+  return noteType;
+}
+
 bool shouldShowCounterField({
   required DependantGroup dependantGroup,
   required NoteType noteType,

@@ -86,9 +86,16 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     }
 
     final l10n = context.l10n;
+    final availableNoteTypes = availableNoteTypesForDependantGroup(
+      _dependantGroup,
+    );
+    final selectedType = normalizeNoteTypeForDependantGroup(
+      _dependantGroup,
+      _selectedType,
+    );
     final showCounterField = shouldShowCounterField(
       dependantGroup: _dependantGroup,
-      noteType: _selectedType,
+      noteType: selectedType,
     );
 
     return Scaffold(
@@ -103,39 +110,17 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
           padding: const EdgeInsets.all(16),
           children: [
             DropdownButtonFormField<NoteType>(
-              initialValue: _selectedType,
-              items: [
-                DropdownMenuItem(
-                  value: NoteType.plain,
-                  child: Text(
-                    localizedNoteTypeLabel(
-                      l10n,
-                      NoteType.plain,
-                      _dependantGroup,
+              initialValue: selectedType,
+              items: availableNoteTypes
+                  .map(
+                    (type) => DropdownMenuItem(
+                      value: type,
+                      child: Text(
+                        localizedNoteTypeLabel(l10n, type, _dependantGroup),
+                      ),
                     ),
-                  ),
-                ),
-                DropdownMenuItem(
-                  value: NoteType.service,
-                  child: Text(
-                    localizedNoteTypeLabel(
-                      l10n,
-                      NoteType.service,
-                      _dependantGroup,
-                    ),
-                  ),
-                ),
-                DropdownMenuItem(
-                  value: NoteType.inspection,
-                  child: Text(
-                    localizedNoteTypeLabel(
-                      l10n,
-                      NoteType.inspection,
-                      _dependantGroup,
-                    ),
-                  ),
-                ),
-              ],
+                  )
+                  .toList(growable: false),
               onChanged: (value) {
                 if (value == null) return;
                 setState(() => _selectedType = value);
@@ -176,8 +161,8 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                 },
               ),
             ),
-            if (_selectedType == NoteType.service ||
-                _selectedType == NoteType.inspection) ...[
+            if (selectedType == NoteType.service ||
+                selectedType == NoteType.inspection) ...[
               if (showCounterField) ...[
                 TextFormField(
                   controller: _serviceCounterController,
@@ -200,7 +185,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                 ),
                 decoration: InputDecoration(labelText: l10n.priceOptional),
               ),
-              if (_selectedType == NoteType.inspection)
+              if (selectedType == NoteType.inspection)
                 CheckboxListTile(
                   contentPadding: EdgeInsets.zero,
                   value: _isApproved,
@@ -223,15 +208,19 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     final now = DateTime.now();
+    final selectedType = normalizeNoteTypeForDependantGroup(
+      _dependantGroup,
+      _selectedType,
+    );
     final estimatedCounter =
         shouldShowCounterField(
           dependantGroup: _dependantGroup,
-          noteType: _selectedType,
+          noteType: selectedType,
         )
         ? int.tryParse(_serviceCounterController.text.trim())
         : null;
 
-    final note = switch (_selectedType) {
+    final note = switch (selectedType) {
       NoteType.plain => PlainNote(
         id: widget.noteId,
         dependantId: widget.dependantId,

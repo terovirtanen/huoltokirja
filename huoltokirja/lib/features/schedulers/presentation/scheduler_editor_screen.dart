@@ -108,19 +108,29 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
     final latestUsage = dependant == null || detail == null
         ? null
         : latestRecordedUsage(dependant: dependant, notes: detail.notes);
-    final visibleUsageEstimate = usageEstimate != null && dependant != null
+    final visibleUsageEstimate =
+        usageEstimate != null && dependant != null && detail != null
         ? (shouldShowUsageEstimate(
                 dependant: dependant,
                 estimate: usageEstimate,
+                notes: detail.notes,
               )
               ? usageEstimate
               : null)
         : null;
+    final dependantGroup = dependant?.dependantGroup ?? DependantGroup.none;
+    final availableNoteTypes = availableNoteTypesForDependantGroup(
+      dependantGroup,
+    );
+    final selectedNoteType = normalizeNoteTypeForDependantGroup(
+      dependantGroup,
+      _selectedNoteType,
+    );
     final supportsUsage = dependant?.supportsUsage ?? false;
     final usageUnit = dependant?.usageUnit ?? '';
 
     if (supportsUsage && !_usageStartPrefilled) {
-      final defaultUsage = latestUsage ?? dependant?.usage;
+      final defaultUsage = latestUsage;
       if (defaultUsage != null) {
         _usageStartController.text = _formatNumber(defaultUsage);
       }
@@ -149,40 +159,18 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<NoteType>(
-              initialValue: _selectedNoteType,
+              initialValue: selectedNoteType,
               decoration: InputDecoration(labelText: l10n.type),
-              items: [
-                DropdownMenuItem(
-                  value: NoteType.plain,
-                  child: Text(
-                    localizedNoteTypeLabel(
-                      l10n,
-                      NoteType.plain,
-                      dependant?.dependantGroup ?? DependantGroup.none,
+              items: availableNoteTypes
+                  .map(
+                    (type) => DropdownMenuItem(
+                      value: type,
+                      child: Text(
+                        localizedNoteTypeLabel(l10n, type, dependantGroup),
+                      ),
                     ),
-                  ),
-                ),
-                DropdownMenuItem(
-                  value: NoteType.service,
-                  child: Text(
-                    localizedNoteTypeLabel(
-                      l10n,
-                      NoteType.service,
-                      dependant?.dependantGroup ?? DependantGroup.none,
-                    ),
-                  ),
-                ),
-                DropdownMenuItem(
-                  value: NoteType.inspection,
-                  child: Text(
-                    localizedNoteTypeLabel(
-                      l10n,
-                      NoteType.inspection,
-                      dependant?.dependantGroup ?? DependantGroup.none,
-                    ),
-                  ),
-                ),
-              ],
+                  )
+                  .toList(growable: false),
               onChanged: (value) {
                 if (value != null) {
                   setState(() => _selectedNoteType = value);
@@ -336,12 +324,20 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
       return;
     }
 
+    final dependant = await ref
+        .read(dependantRepositoryProvider)
+        .getById(widget.dependantId);
+    final selectedNoteType = normalizeNoteTypeForDependantGroup(
+      dependant?.dependantGroup ?? DependantGroup.none,
+      _selectedNoteType,
+    );
+
     final now = DateTime.now();
     final scheduler = Scheduler(
       id: widget.schedulerId,
       dependantId: widget.dependantId,
       label: _labelController.text.trim(),
-      noteType: _selectedNoteType,
+      noteType: selectedNoteType,
       startDate: _startDate,
       calendarIntervalMonths: calendarIntervalMonths,
       usageInterval: _usageRuleEnabled

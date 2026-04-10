@@ -60,6 +60,18 @@ Luo tarkastusmuistiinpanot:
    - hinta: `34`
    - `approved = true`
 
+Luo ajastus:
+1. `Katsastus`
+   - tyyppi: tarkastusmuistiinpano
+   - ajastus alkaa: tasan 1 vuosi sitten
+   - sääntö: `vuosittain`
+   - aloitus pvm: tasan 5 kuukautta ja 2 viikkoa tästä hetkestä taaksepäin
+2. `Öljynvaihto huolto`
+   - tyyppi: huoltomuistiinpano
+   - käyttömääräsääntö
+   - väli: 20000
+   - alkuarvo: 190000
+
 ### Esimerkki 2: lemmikki
 
 Luo kohde:

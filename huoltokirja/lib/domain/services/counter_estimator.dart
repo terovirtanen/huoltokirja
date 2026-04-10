@@ -21,12 +21,13 @@ class UsageEstimate {
 bool shouldShowUsageEstimate({
   required Dependant dependant,
   required UsageEstimate estimate,
+  List<Note> notes = const [],
 }) {
   if (!dependant.supportsUsage) {
     return false;
   }
 
-  final currentUsage = dependant.usage;
+  final currentUsage = latestRecordedUsage(dependant: dependant, notes: notes);
   if (currentUsage == null) {
     return true;
   }
@@ -49,7 +50,7 @@ double? latestRecordedUsage({
     return null;
   }
 
-  final points = _collectUsagePoints(dependant: dependant, notes: notes);
+  final points = _collectUsagePoints(notes: notes);
   if (points.isEmpty) {
     return null;
   }
@@ -72,7 +73,7 @@ UsageEstimate? estimateDependantUsage({
     (asOf ?? DateTime.now()).day,
   );
 
-  final points = _collectUsagePoints(dependant: dependant, notes: notes);
+  final points = _collectUsagePoints(notes: notes);
 
   if (points.length < 2) {
     return null;
@@ -111,20 +112,15 @@ UsageEstimate? estimateDependantUsage({
   );
 }
 
-List<_UsagePoint> _collectUsagePoints({
-  required Dependant dependant,
-  required List<Note> notes,
-}) {
-  return <_UsagePoint>[
-    if (dependant.initialDate != null && dependant.usage != null)
-      _UsagePoint(date: dependant.initialDate!, value: dependant.usage!),
-    ...notes
-        .where((note) => note.estimatedCounter != null)
-        .map(
-          (note) => _UsagePoint(
-            date: note.noteDate,
-            value: note.estimatedCounter!.toDouble(),
-          ),
+List<_UsagePoint> _collectUsagePoints({required List<Note> notes}) {
+  return notes
+      .where((note) => note.estimatedCounter != null)
+      .map(
+        (note) => _UsagePoint(
+          date: note.noteDate,
+          value: note.estimatedCounter!.toDouble(),
         ),
-  ]..sort((a, b) => a.date.compareTo(b.date));
+      )
+      .toList()
+    ..sort((a, b) => a.date.compareTo(b.date));
 }

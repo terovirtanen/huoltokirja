@@ -20,7 +20,6 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _tagController;
-  late final TextEditingController _usageController;
   late DependantGroup _selectedGroup;
   DateTime? _initialDate;
 
@@ -29,11 +28,6 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
     super.initState();
     _nameController = TextEditingController(text: widget.initial?.name ?? '');
     _tagController = TextEditingController(text: widget.initial?.tag ?? '');
-    _usageController = TextEditingController(
-      text: widget.initial?.usage == null
-          ? ''
-          : _formatNumber(widget.initial!.usage!),
-    );
     _selectedGroup = widget.initial?.dependantGroup ?? DependantGroup.none;
     _initialDate = widget.initial?.initialDate;
   }
@@ -42,7 +36,6 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
   void dispose() {
     _nameController.dispose();
     _tagController.dispose();
-    _usageController.dispose();
     super.dispose();
   }
 
@@ -75,33 +68,30 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
                 controller: _tagController,
                 decoration: InputDecoration(labelText: l10n.tagOptional),
               ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<DependantGroup>(
-                initialValue: _selectedGroup,
-                decoration: InputDecoration(labelText: l10n.group),
-                items: DependantGroup.values
-                    .map(
-                      (group) => DropdownMenuItem(
-                        value: group,
-                        child: Text(_groupLabel(context, group)),
-                      ),
-                    )
-                    .toList(growable: false),
-                onChanged: widget.initial == null
-                    ? (value) {
-                        if (value == null) return;
-                        setState(() {
-                          _selectedGroup = value;
-                          if (value == DependantGroup.none) {
-                            _initialDate = null;
-                          }
-                          if (!value.supportsUsage) {
-                            _usageController.clear();
-                          }
-                        });
+              if (widget.initial == null) ...[
+                const SizedBox(height: 12),
+                DropdownButtonFormField<DependantGroup>(
+                  initialValue: _selectedGroup,
+                  decoration: InputDecoration(labelText: l10n.group),
+                  items: DependantGroup.values
+                      .map(
+                        (group) => DropdownMenuItem(
+                          value: group,
+                          child: Text(_groupLabel(context, group)),
+                        ),
+                      )
+                      .toList(growable: false),
+                  onChanged: (value) {
+                    if (value == null) return;
+                    setState(() {
+                      _selectedGroup = value;
+                      if (value == DependantGroup.none) {
+                        _initialDate = null;
                       }
-                    : null,
-              ),
+                    });
+                  },
+                ),
+              ],
               if (_selectedGroup != DependantGroup.none) ...[
                 const SizedBox(height: 12),
                 ListTile(
@@ -126,27 +116,6 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
                       }
                     },
                   ),
-                ),
-              ],
-              if (_selectedGroup.supportsUsage) ...[
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _usageController,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  decoration: InputDecoration(
-                    labelText: _usageFieldLabel(context, _selectedGroup),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return null;
-                    }
-                    return double.tryParse(value.trim().replaceAll(',', '.')) ==
-                            null
-                        ? l10n.invalidNumber
-                        : null;
-                  },
                 ),
               ],
               if (usageEstimateAsync != null) ...[
@@ -192,7 +161,6 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
           onPressed: () {
             if (!_formKey.currentState!.validate()) return;
             final now = DateTime.now();
-            final usageText = _usageController.text.trim().replaceAll(',', '.');
             final tagText = _tagController.text.trim();
             final result = Dependant(
               id: widget.initial?.id,
@@ -201,9 +169,7 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
               initialDate: _selectedGroup == DependantGroup.none
                   ? null
                   : _initialDate,
-              usage: _selectedGroup.supportsUsage && usageText.isNotEmpty
-                  ? double.parse(usageText)
-                  : null,
+              usage: null,
               tag: tagText.isEmpty ? null : tagText,
               createdAt: widget.initial?.createdAt ?? now,
               updatedAt: now,
@@ -234,16 +200,6 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
       DependantGroup.vehicle ||
       DependantGroup.workMachine ||
       DependantGroup.device => context.l10n.commissioningDateOptional,
-    };
-  }
-
-  String _usageFieldLabel(BuildContext context, DependantGroup group) {
-    return switch (group) {
-      DependantGroup.none => context.l10n.counterEstimateOptional,
-      DependantGroup.vehicle => context.l10n.odometerOptional,
-      DependantGroup.workMachine => context.l10n.operatingHoursOptional,
-      DependantGroup.device ||
-      DependantGroup.animal => context.l10n.counterEstimateOptional,
     };
   }
 

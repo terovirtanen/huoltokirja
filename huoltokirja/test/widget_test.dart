@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:huoltokirja/core/config/app_config.dart';
+import 'package:huoltokirja/domain/models/dependant.dart';
 import 'package:huoltokirja/features/dependants/presentation/dependant_editor_dialog.dart';
 import 'package:huoltokirja/shared/widgets/app_menu_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,6 +21,32 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Nimi on pakollinen'), findsOneWidget);
+  });
+
+  testWidgets('edit dependant dialog hides group and usage fields', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: DependantEditorDialog(
+            initial: Dependant(
+              name: 'Kaivuri',
+              dependantGroup: DependantGroup.workMachine,
+              usage: 1234,
+              tag: 'piha',
+              createdAt: DateTime(2026, 1, 1),
+              updatedAt: DateTime(2026, 1, 1),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Leima (valinnainen)'), findsOneWidget);
+    expect(find.text('Ryhmä'), findsNothing);
+    expect(find.text('Käyttötunnit (valinnainen)'), findsNothing);
+    expect(find.text('Mittarilukema (valinnainen)'), findsNothing);
   });
 
   testWidgets('menu button opens drawer-style side menu', (tester) async {

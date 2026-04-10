@@ -59,15 +59,25 @@ void main() {
   });
 
   test(
-    'usage estimate stays hidden when current reading is already higher',
+    'usage estimate stays hidden when newest note reading is already higher',
     () {
       final dependant = Dependant(
         name: 'Truck',
         dependantGroup: DependantGroup.workMachine,
-        usage: 2500,
         createdAt: DateTime(2026, 1, 1),
         updatedAt: DateTime(2026, 1, 1),
       );
+      final notes = <Note>[
+        ServiceNote(
+          dependantId: 1,
+          title: 'Huolto',
+          body: '',
+          serviceDate: DateTime(2026, 1, 1),
+          estimatedCounter: 2500,
+          createdAt: DateTime(2026, 1, 1),
+          updatedAt: DateTime(2026, 1, 1),
+        ),
+      ];
       final estimate = UsageEstimate(
         currentValue: 2400,
         dailyIncrease: 5,
@@ -75,11 +85,36 @@ void main() {
       );
 
       expect(
-        shouldShowUsageEstimate(dependant: dependant, estimate: estimate),
+        shouldShowUsageEstimate(
+          dependant: dependant,
+          estimate: estimate,
+          notes: notes,
+        ),
         isFalse,
       );
     },
   );
+
+  test('legacy target usage is ignored without note readings', () {
+    final dependant = Dependant(
+      name: 'Machine',
+      dependantGroup: DependantGroup.workMachine,
+      initialDate: DateTime(2026, 1, 1),
+      usage: 1200,
+      createdAt: DateTime(2026, 1, 1),
+      updatedAt: DateTime(2026, 1, 1),
+    );
+
+    expect(latestRecordedUsage(dependant: dependant, notes: const []), isNull);
+    expect(
+      estimateDependantUsage(
+        dependant: dependant,
+        notes: const [],
+        asOf: DateTime(2026, 4, 10),
+      ),
+      isNull,
+    );
+  });
 
   test('latest usage reading comes from the newest note entry', () {
     final dependant = Dependant(
@@ -168,6 +203,17 @@ void main() {
   test('animal targets use care-note wording for service notes', () {
     expect(serviceNoteLabelKey(DependantGroup.animal), 'care');
     expect(serviceNoteLabelKey(DependantGroup.vehicle), 'service');
+  });
+
+  test('animal targets do not offer inspection note type', () {
+    expect(
+      availableNoteTypesForDependantGroup(DependantGroup.animal),
+      isNot(contains(NoteType.inspection)),
+    );
+    expect(
+      availableNoteTypesForDependantGroup(DependantGroup.vehicle),
+      contains(NoteType.inspection),
+    );
   });
 
   test('tag words are split by spaces and commas uniquely', () {

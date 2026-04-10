@@ -131,13 +131,6 @@ class DependantListScreen extends ConsumerWidget {
       parts.add(tag);
     }
 
-    if (dependant.usage != null && dependant.usageUnit != null) {
-      final formatted = dependant.usage == dependant.usage!.roundToDouble()
-          ? dependant.usage!.toStringAsFixed(0)
-          : dependant.usage!.toStringAsFixed(1);
-      parts.add('$formatted ${dependant.usageUnit}');
-    }
-
     return parts.isEmpty ? null : parts.join(' • ');
   }
 
