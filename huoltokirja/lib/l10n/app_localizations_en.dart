@@ -320,6 +320,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get approvedLabel => 'Approved';
 
   @override
+  String get performerLabel => 'Performer';
+
+  @override
+  String get priceLabel => 'Price';
+
+  @override
+  String get yesValue => 'Yes';
+
+  @override
+  String get noValue => 'No';
+
+  @override
   String get noteSaved => 'Note saved';
 
   @override
@@ -396,7 +408,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String schedulerTypeLine(Object type) {
-    return 'Note type: $type';
+    return '$type';
   }
 
   @override

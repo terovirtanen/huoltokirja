@@ -152,9 +152,9 @@
   "addNoteTitle": "Lisää muistiinpano",
   "editNoteTitle": "Muokkaa muistiinpanoa",
   "plainNote": "Muistiinpano",
-  "serviceNote": "Huoltomuistiinpano",
+  "serviceNote": "Huolto muistiinpano",
   "careNote": "Hoitomuistiinpano",
-  "inspectionNote": "Tarkastusmuistiinpano",
+  "inspectionNote": "Tarkastus muistiinpano",
   "type": "Tyyppi",
   "noteDate": "Päivämäärä",
   "title": "Otsikko",
@@ -165,6 +165,10 @@
   "inspectorOptional": "Tekijä (valinnainen)",
   "priceOptional": "Hinta € (valinnainen)",
   "approvedLabel": "Hyväksytty",
+  "performerLabel": "Tekijä",
+  "priceLabel": "Hinta",
+  "yesValue": "Kyllä",
+  "noValue": "Ei",
   "noteSaved": "Muistiinpano tallennettu",
   "addSchedulerTitle": "Lisää ajastus",
   "editSchedulerTitle": "Muokkaa ajastusta",
@@ -183,7 +187,7 @@
     }
   },
   "monthsMustBePositive": "Kuukausivälin tulee olla > 0",
-  "usageRule": "Käyttömääräsääntö",
+  "usageRule": "Käytön mukaan",
   "usageIntervalLabel": "Väli ({unit})",
   "@usageIntervalLabel": {
     "placeholders": {
@@ -203,7 +207,7 @@
   "lastCompletedOptional": "Viimeisin suoritus (valinnainen)",
   "notSet": "Ei asetettu",
   "schedulerSaved": "Ajastus tallennettu",
-  "schedulerTypeLine": "Noten tyyppi: {type}",
+  "schedulerTypeLine": "{type}",
   "@schedulerTypeLine": {
     "placeholders": {
       "type": {}

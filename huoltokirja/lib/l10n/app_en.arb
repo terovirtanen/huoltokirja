@@ -165,6 +165,10 @@
   "inspectorOptional": "Performer (optional)",
   "priceOptional": "Price € (optional)",
   "approvedLabel": "Approved",
+  "performerLabel": "Performer",
+  "priceLabel": "Price",
+  "yesValue": "Yes",
+  "noValue": "No",
   "noteSaved": "Note saved",
   "addSchedulerTitle": "Add schedule",
   "editSchedulerTitle": "Edit schedule",
@@ -203,7 +207,7 @@
   "lastCompletedOptional": "Last completed (optional)",
   "notSet": "Not set",
   "schedulerSaved": "Schedule saved",
-  "schedulerTypeLine": "Note type: {type}",
+  "schedulerTypeLine": "{type}",
   "@schedulerTypeLine": {
     "placeholders": {
       "type": {}

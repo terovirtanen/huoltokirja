@@ -281,13 +281,13 @@ class AppLocalizationsFi extends AppLocalizations {
   String get plainNote => 'Muistiinpano';
 
   @override
-  String get serviceNote => 'Huoltomuistiinpano';
+  String get serviceNote => 'Huolto muistiinpano';
 
   @override
   String get careNote => 'Hoitomuistiinpano';
 
   @override
-  String get inspectionNote => 'Tarkastusmuistiinpano';
+  String get inspectionNote => 'Tarkastus muistiinpano';
 
   @override
   String get type => 'Tyyppi';
@@ -318,6 +318,18 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get approvedLabel => 'Hyväksytty';
+
+  @override
+  String get performerLabel => 'Tekijä';
+
+  @override
+  String get priceLabel => 'Hinta';
+
+  @override
+  String get yesValue => 'Kyllä';
+
+  @override
+  String get noValue => 'Ei';
 
   @override
   String get noteSaved => 'Muistiinpano tallennettu';
@@ -361,7 +373,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get monthsMustBePositive => 'Kuukausivälin tulee olla > 0';
 
   @override
-  String get usageRule => 'Käyttömääräsääntö';
+  String get usageRule => 'Käytön mukaan';
 
   @override
   String usageIntervalLabel(Object unit) {
@@ -396,7 +408,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String schedulerTypeLine(Object type) {
-    return 'Noten tyyppi: $type';
+    return '$type';
   }
 
   @override

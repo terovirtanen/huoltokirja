@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/providers.dart';
 import '../../../core/l10n/app_localizations_ext.dart';
-import '../../../domain/models/dependant.dart';
 import '../../../domain/models/note.dart';
 import '../../../domain/services/dependant_tag_utils.dart';
 import '../../notes/presentation/note_display_utils.dart';
@@ -208,7 +207,7 @@ class _AllNotesPage extends ConsumerWidget {
     final allNotesAsync = ref.watch(allNotesFeedProvider);
 
     return Scaffold(
-      drawer: const AppMenuDrawer(),
+      drawer: AppMenuDrawer(selectedTags: selectedTags),
       appBar: AppBar(
         title: Text(l10n.allNotesTitle),
         leading: const AppMenuButton(),
@@ -250,12 +249,7 @@ class _AllNotesPage extends ConsumerWidget {
                 final palette = _notePalette(context, item.note);
                 final subtitleLines = <String>[
                   context.formatDate(item.note.noteDate),
-                  l10n.targetNameLabel(item.dependant.name),
-                  _noteTypeLabel(
-                    context,
-                    item.note.type,
-                    item.dependant.dependantGroup,
-                  ),
+                  item.dependant.name,
                   if (item.note.body.trim().isNotEmpty) item.note.body.trim(),
                 ];
 
@@ -311,15 +305,6 @@ class _AllNotesPage extends ConsumerWidget {
         },
       ),
     );
-  }
-
-  String _noteTypeLabel(
-    BuildContext context,
-    NoteType type,
-    DependantGroup dependantGroup,
-  ) {
-    final l10n = context.l10n;
-    return localizedNoteTypeLabel(l10n, type, dependantGroup);
   }
 
   IconData _noteTypeIcon(NoteType type) {

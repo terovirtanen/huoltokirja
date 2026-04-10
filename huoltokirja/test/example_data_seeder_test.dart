@@ -7,6 +7,7 @@ import 'package:huoltokirja/data/repositories/sqflite_dependant_repository.dart'
 import 'package:huoltokirja/data/repositories/sqflite_note_repository.dart';
 import 'package:huoltokirja/data/repositories/sqflite_scheduler_repository.dart';
 import 'package:huoltokirja/data/services/example_data_seeder.dart';
+import 'package:huoltokirja/domain/models/note.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -50,11 +51,22 @@ void main() {
       (item) => item.name == 'Toyota Corolla',
     );
     final musti = dependants.firstWhere((item) => item.name == 'Musti');
+    final toyotaNotes = await noteRepo.listByDependant(toyota.id!);
+    final mustiNotes = await noteRepo.listByDependant(musti.id!);
+    final toyotaSchedulers = await schedulerRepo.listByDependant(toyota.id!);
+    final mustiSchedulers = await schedulerRepo.listByDependant(musti.id!);
 
-    expect(toyota.tag, 'autot');
-    expect(musti.tag, 'lemmikit');
-    expect(await noteRepo.listByDependant(toyota.id!), hasLength(5));
-    expect(await noteRepo.listByDependant(musti.id!), hasLength(1));
-    expect(await schedulerRepo.listByDependant(musti.id!), hasLength(1));
+    expect(toyota.tag, 'autot käyttöauto');
+    expect(toyota.usage, isNull);
+    expect(musti.tag, 'lemmikit rokotus');
+    expect(toyotaNotes, hasLength(5));
+    expect(mustiNotes, hasLength(1));
+    expect(
+      toyotaSchedulers.map((scheduler) => scheduler.label),
+      containsAll(['Katsastus', 'Öljynvaihto']),
+    );
+    expect(toyotaSchedulers, hasLength(2));
+    expect(mustiSchedulers, hasLength(1));
+    expect(mustiSchedulers.single.noteType, NoteType.service);
   });
 }

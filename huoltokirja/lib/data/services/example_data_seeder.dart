@@ -48,8 +48,7 @@ class ExampleDataSeeder {
       Dependant(
         name: 'Toyota Corolla',
         dependantGroup: DependantGroup.vehicle,
-        usage: 234000,
-        tag: 'autot',
+        tag: 'autot käyttöauto',
         createdAt: now,
         updatedAt: now,
       ),
@@ -123,12 +122,36 @@ class ExampleDataSeeder {
       ),
     );
 
+    await schedulerRepository.create(
+      Scheduler(
+        dependantId: toyota.id!,
+        label: 'Katsastus',
+        noteType: NoteType.inspection,
+        startDate: _subtractYears(now, 1),
+        calendarIntervalMonths: 12,
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+    await schedulerRepository.create(
+      Scheduler(
+        dependantId: toyota.id!,
+        label: 'Öljynvaihto',
+        noteType: NoteType.service,
+        startDate: _subtractYears(now, 1),
+        usageInterval: 20000,
+        usageStartValue: 190000,
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+
     final musti = await dependantRepository.create(
       Dependant(
         name: 'Musti',
         dependantGroup: DependantGroup.animal,
         initialDate: _subtractYears(now, 3),
-        tag: 'lemmikit',
+        tag: 'lemmikit rokotus',
         createdAt: now,
         updatedAt: now,
       ),
@@ -137,7 +160,7 @@ class ExampleDataSeeder {
     await noteRepository.create(
       ServiceNote(
         dependantId: musti.id!,
-        title: 'Eläinlääkäri käynti',
+        title: 'Eläinlääkärikäynti',
         body: 'rokotus',
         serviceDate: _subtractYears(now, 1),
         performerName: 'Leevi Eläinhoitaja',

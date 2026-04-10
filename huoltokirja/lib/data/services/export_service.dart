@@ -1,14 +1,19 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart' show Locale, MaterialLocalizations;
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 import '../../domain/models/dependant.dart';
 import '../../domain/models/note.dart';
 import '../../domain/repositories/dependant_repository.dart';
 import '../../domain/repositories/note_repository.dart';
+import '../../domain/services/dependant_tag_utils.dart';
+import '../../l10n/app_localizations.dart';
 
 class AppExportService {
   AppExportService({
@@ -20,10 +25,27 @@ class AppExportService {
   final DependantRepository _dependantRepository;
   final NoteRepository _noteRepository;
 
-  Future<File> exportCsv() async {
-    final dependants = await _dependantRepository.getAll();
-    final notes = await _noteRepository.listAll();
-    final content = buildCsvContent(dependants: dependants, notes: notes);
+  Future<File> exportCsv({
+    Set<String> selectedTags = const <String>{},
+    String? localeName,
+  }) async {
+    final allDependants = await _dependantRepository.getAll();
+    final dependants = filterDependantsForExport(
+      dependants: allDependants,
+      selectedTags: selectedTags,
+    );
+    final dependantIds = dependants
+        .where((dependant) => dependant.id != null)
+        .map((dependant) => dependant.id!)
+        .toSet();
+    final notes = (await _noteRepository.listAll())
+        .where((note) => dependantIds.contains(note.dependantId))
+        .toList(growable: false);
+    final content = buildCsvContent(
+      dependants: dependants,
+      notes: notes,
+      localeName: localeName,
+    );
 
     return _writeFile(
       extension: 'csv',
@@ -32,10 +54,31 @@ class AppExportService {
     );
   }
 
-  Future<File> exportPdfReport() async {
-    final dependants = await _dependantRepository.getAll();
-    final notes = await _noteRepository.listAll();
-    final dateFormat = DateFormat.yMd();
+  Future<File> exportPdfReport({
+    Set<String> selectedTags = const <String>{},
+    AppLocalizations? l10n,
+    MaterialLocalizations? materialLocalizations,
+  }) async {
+    final pdfL10n = l10n ?? lookupAppLocalizations(const Locale('fi'));
+    final formatDate = buildPdfDateFormatter(
+      materialLocalizations: materialLocalizations,
+      localeName: pdfL10n.localeName,
+    );
+    final allDependants = await _dependantRepository.getAll();
+    final dependants = filterDependantsForExport(
+      dependants: allDependants,
+      selectedTags: selectedTags,
+    );
+    final dependantIds = dependants
+        .where((dependant) => dependant.id != null)
+        .map((dependant) => dependant.id!)
+        .toSet();
+    final notes = filterNotesForPdfReport(
+      (await _noteRepository.listAll())
+          .where((note) => dependantIds.contains(note.dependantId))
+          .toList(growable: false),
+    );
+    final pageTheme = await _buildPdfPageTheme();
     final notesByDependant = <int, List<Note>>{};
 
     for (final note in notes) {
@@ -51,40 +94,36 @@ class AppExportService {
       });
     }
 
-    final document = pw.Document();
+    final document = pw.Document(theme: pageTheme.theme);
     document.addPage(
       pw.MultiPage(
+        pageTheme: pageTheme,
         build: (_) => [
-          pw.Header(level: 0, text: 'Huoltokirja'),
-          for (final dependant in dependants) ...[
-            pw.Header(level: 1, text: dependant.name),
-            pw.Text('Ryhmä: ${dependant.dependantGroup.storageValue}'),
-            if (dependant.initialDate != null)
-              pw.Text(
-                'Päivämäärä: ${dateFormat.format(dependant.initialDate!)}',
+          pw.Header(level: 0, text: pdfL10n.appTitle),
+          pw.SizedBox(height: 8),
+          if (dependants.isEmpty)
+            pw.Container(
+              width: double.infinity,
+              padding: const pw.EdgeInsets.all(12),
+              decoration: pw.BoxDecoration(
+                color: PdfColors.grey50,
+                border: pw.Border.all(color: PdfColors.grey300),
+                borderRadius: pw.BorderRadius.circular(6),
               ),
-            if (dependant.usage != null)
-              pw.Text(
-                'Lukema: ${dependant.usage} ${dependant.usageUnit ?? ''}',
-              ),
-            pw.SizedBox(height: 6),
-            if ((notesByDependant[dependant.id] ?? const <Note>[]).isEmpty)
-              pw.Text('Ei muistiinpanoja')
-            else
-              pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  for (final note in notesByDependant[dependant.id]!)
-                    pw.Padding(
-                      padding: const pw.EdgeInsets.only(bottom: 6),
-                      child: pw.Text(
-                        '${dateFormat.format(note.noteDate)} • ${note.type.name} • ${note.title}${note.body.trim().isEmpty ? '' : ' — ${note.body.trim()}'}',
-                      ),
-                    ),
-                ],
-              ),
-            pw.SizedBox(height: 12),
-          ],
+              child: pw.Text(pdfL10n.noMatchingTagsTitle),
+            )
+          else
+            ...dependants.expand(
+              (dependant) => [
+                _buildPdfDependantSection(
+                  dependant: dependant,
+                  notes: notesByDependant[dependant.id] ?? const <Note>[],
+                  l10n: pdfL10n,
+                  formatDate: formatDate,
+                ),
+                pw.SizedBox(height: 12),
+              ],
+            ),
         ],
       ),
     );
@@ -99,6 +138,7 @@ class AppExportService {
   String buildCsvContent({
     required List<Dependant> dependants,
     required List<Note> notes,
+    String? localeName,
   }) {
     final dependantsById = {
       for (final dependant in dependants)
@@ -112,6 +152,8 @@ class AppExportService {
         }
         return b.createdAt.compareTo(a.createdAt);
       });
+
+    final dateFormat = DateFormat.yMd(localeName);
 
     final rows = <List<String>>[
       [
@@ -152,7 +194,7 @@ class AppExportService {
           '${dependant?.id ?? note.dependantId}',
           dependant?.name ?? '',
           dependant?.dependantGroup.storageValue ?? '',
-          DateFormat.yMd().format(note.noteDate),
+          dateFormat.format(note.noteDate),
           note.type.name,
           note.title,
           note.body,
@@ -183,4 +225,193 @@ class AppExportService {
     await file.writeAsBytes(bytes, flush: true);
     return file;
   }
+}
+
+List<Dependant> filterDependantsForExport({
+  required List<Dependant> dependants,
+  Set<String> selectedTags = const <String>{},
+}) {
+  if (selectedTags.isEmpty) {
+    return List<Dependant>.from(dependants, growable: false);
+  }
+
+  return dependants
+      .where((dependant) => matchesSelectedTags(dependant, selectedTags))
+      .toList(growable: false);
+}
+
+List<Note> filterNotesForPdfReport(List<Note> notes) {
+  return notes
+      .where((note) => !note.isAutomaticallyCreated || note.isUserModified)
+      .toList(growable: false);
+}
+
+String Function(DateTime) buildPdfDateFormatter({
+  MaterialLocalizations? materialLocalizations,
+  String? localeName,
+}) {
+  final dateFormat = DateFormat.yMd(localeName);
+  return (date) =>
+      materialLocalizations?.formatShortDate(date) ?? dateFormat.format(date);
+}
+
+Future<pw.PageTheme> _buildPdfPageTheme() async {
+  final baseFont = await PdfGoogleFonts.notoSansRegular();
+  final boldFont = await PdfGoogleFonts.notoSansBold();
+  final italicFont = await PdfGoogleFonts.notoSansItalic();
+  final boldItalicFont = await PdfGoogleFonts.notoSansBoldItalic();
+
+  return pw.PageTheme(
+    margin: const pw.EdgeInsets.fromLTRB(28, 32, 28, 32),
+    theme: pw.ThemeData.withFont(
+      base: baseFont,
+      bold: boldFont,
+      italic: italicFont,
+      boldItalic: boldItalicFont,
+    ),
+  );
+}
+
+String pdfNoteTypeLabel({
+  required Note note,
+  required DependantGroup dependantGroup,
+  AppLocalizations? l10n,
+}) {
+  final pdfL10n = l10n ?? lookupAppLocalizations(const Locale('fi'));
+
+  return switch (note.type) {
+    NoteType.plain => pdfL10n.plainNote,
+    NoteType.service =>
+      dependantGroup == DependantGroup.animal
+          ? pdfL10n.careNote
+          : pdfL10n.serviceNote,
+    NoteType.inspection => pdfL10n.inspectionNote,
+  };
+}
+
+List<String> buildPdfNoteDetails({
+  required Note note,
+  required DependantGroup dependantGroup,
+  AppLocalizations? l10n,
+  String Function(DateTime)? formatDate,
+}) {
+  final pdfL10n = l10n ?? lookupAppLocalizations(const Locale('fi'));
+  final resolvedFormatDate =
+      formatDate ?? buildPdfDateFormatter(localeName: pdfL10n.localeName);
+  final details = <String>[
+    '${pdfL10n.noteDate}: ${resolvedFormatDate(note.noteDate)}',
+  ];
+
+  final body = note.body.trim();
+  if (body.isNotEmpty) {
+    details.add('${pdfL10n.description}: $body');
+  }
+  if (note.performerName != null && note.performerName!.trim().isNotEmpty) {
+    details.add('${pdfL10n.performerLabel}: ${note.performerName!.trim()}');
+  }
+  if (note.price != null) {
+    details.add('${pdfL10n.priceLabel}: ${note.price!.toStringAsFixed(2)} €');
+  }
+  if (note.type == NoteType.inspection) {
+    details.add(
+      '${pdfL10n.approvedLabel}: ${note.isApproved ? pdfL10n.yesValue : pdfL10n.noValue}',
+    );
+  }
+
+  return details;
+}
+
+pw.Widget _buildPdfDependantSection({
+  required Dependant dependant,
+  required List<Note> notes,
+  required AppLocalizations l10n,
+  required String Function(DateTime) formatDate,
+}) {
+  return pw.Column(
+    crossAxisAlignment: pw.CrossAxisAlignment.start,
+    children: [
+      pw.Container(
+        width: double.infinity,
+        padding: const pw.EdgeInsets.all(12),
+        decoration: pw.BoxDecoration(
+          color: PdfColors.white,
+          border: pw.Border.all(color: PdfColors.blueGrey100),
+          borderRadius: pw.BorderRadius.circular(8),
+        ),
+        child: pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Text(
+              dependant.name,
+              style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
+            ),
+            if (dependant.initialDate != null) ...[
+              pw.SizedBox(height: 4),
+              pw.Text(
+                '${_pdfDependantDateLabel(dependant, l10n)}: ${formatDate(dependant.initialDate!)}',
+              ),
+            ],
+          ],
+        ),
+      ),
+      pw.SizedBox(height: 8),
+      if (notes.isEmpty)
+        pw.Container(
+          width: double.infinity,
+          padding: const pw.EdgeInsets.all(10),
+          decoration: pw.BoxDecoration(
+            color: PdfColors.grey50,
+            border: pw.Border.all(color: PdfColors.grey300),
+            borderRadius: pw.BorderRadius.circular(6),
+          ),
+          child: pw.Text(
+            l10n.noNotes,
+            style: const pw.TextStyle(color: PdfColors.blueGrey700),
+          ),
+        )
+      else
+        ...notes.map(
+          (note) => pw.Container(
+            width: double.infinity,
+            margin: const pw.EdgeInsets.only(bottom: 8),
+            padding: const pw.EdgeInsets.all(10),
+            decoration: pw.BoxDecoration(
+              color: PdfColors.grey50,
+              border: pw.Border.all(color: PdfColors.grey300),
+              borderRadius: pw.BorderRadius.circular(6),
+            ),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(
+                  note.title,
+                  style: pw.TextStyle(
+                    fontSize: 13,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                ),
+                pw.SizedBox(height: 6),
+                ...buildPdfNoteDetails(
+                  note: note,
+                  dependantGroup: dependant.dependantGroup,
+                  l10n: l10n,
+                  formatDate: formatDate,
+                ).map(
+                  (line) => pw.Padding(
+                    padding: const pw.EdgeInsets.only(bottom: 2),
+                    child: pw.Text(line),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+    ],
+  );
+}
+
+String _pdfDependantDateLabel(Dependant dependant, AppLocalizations l10n) {
+  return dependant.dependantGroup == DependantGroup.animal
+      ? l10n.birthDateShort
+      : l10n.commissioningDateShort;
 }

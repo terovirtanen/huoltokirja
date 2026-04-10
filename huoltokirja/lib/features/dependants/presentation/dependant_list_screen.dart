@@ -21,7 +21,7 @@ class DependantListScreen extends ConsumerWidget {
     final l10n = context.l10n;
 
     return Scaffold(
-      drawer: const AppMenuDrawer(),
+      drawer: AppMenuDrawer(selectedTags: selectedTags),
       appBar: AppBar(
         title: Text(l10n.appTitle),
         leading: const AppMenuButton(),

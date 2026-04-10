@@ -29,7 +29,9 @@ class AppMenuButton extends StatelessWidget {
 }
 
 class AppMenuDrawer extends ConsumerWidget {
-  const AppMenuDrawer({super.key});
+  const AppMenuDrawer({super.key, this.selectedTags = const <String>{}});
+
+  final Set<String> selectedTags;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -137,13 +139,24 @@ class AppMenuDrawer extends ConsumerWidget {
       case _AppMenuAction.exportCsv:
         await _shareFile(
           context,
-          createFile: () => ref.read(exportServiceProvider).exportCsv(),
+          createFile: () => ref
+              .read(exportServiceProvider)
+              .exportCsv(
+                selectedTags: selectedTags,
+                localeName: context.l10n.localeName,
+              ),
           successMessage: (fileName) => context.l10n.csvExportReady(fileName),
         );
       case _AppMenuAction.exportPdf:
         await _shareFile(
           context,
-          createFile: () => ref.read(exportServiceProvider).exportPdfReport(),
+          createFile: () => ref
+              .read(exportServiceProvider)
+              .exportPdfReport(
+                selectedTags: selectedTags,
+                l10n: context.l10n,
+                materialLocalizations: MaterialLocalizations.of(context),
+              ),
           successMessage: (fileName) => context.l10n.pdfExportReady(fileName),
         );
       case _AppMenuAction.changeLanguage:

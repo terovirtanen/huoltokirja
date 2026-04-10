@@ -665,6 +665,30 @@ abstract class AppLocalizations {
   /// **'Approved'**
   String get approvedLabel;
 
+  /// No description provided for @performerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Performer'**
+  String get performerLabel;
+
+  /// No description provided for @priceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get priceLabel;
+
+  /// No description provided for @yesValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yesValue;
+
+  /// No description provided for @noValue.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get noValue;
+
   /// No description provided for @noteSaved.
   ///
   /// In en, this message translates to:
@@ -806,7 +830,7 @@ abstract class AppLocalizations {
   /// No description provided for @schedulerTypeLine.
   ///
   /// In en, this message translates to:
-  /// **'Note type: {type}'**
+  /// **'{type}'**
   String schedulerTypeLine(Object type);
 
   /// No description provided for @schedulerCalendarLine.
