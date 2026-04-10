@@ -35,6 +35,17 @@ class Scheduler {
   double? get nextUsageThreshold =>
       hasUsageRule ? usageStartValue! + usageInterval! : null;
 
+  String get autoTriggerKey {
+    return [
+      label.trim(),
+      noteType.name,
+      _dateOnly(startDate).toIso8601String(),
+      calendarIntervalMonths?.toString() ?? '',
+      _normalizeDouble(usageInterval),
+      _normalizeDouble(usageStartValue),
+    ].join('|');
+  }
+
   DateTime? nextCalendarScheduleAt({DateTime? referenceDate}) {
     final intervalMonths = calendarIntervalMonths;
     if (intervalMonths == null || intervalMonths <= 0) {
@@ -150,6 +161,13 @@ class Scheduler {
 
 DateTime _dateOnly(DateTime value) =>
     DateTime(value.year, value.month, value.day);
+
+String _normalizeDouble(double? value) {
+  if (value == null) return '';
+  return value == value.roundToDouble()
+      ? value.toStringAsFixed(0)
+      : value.toStringAsFixed(3);
+}
 
 DateTime _addMonths(DateTime value, int monthsToAdd) {
   final totalMonths = value.month - 1 + monthsToAdd;

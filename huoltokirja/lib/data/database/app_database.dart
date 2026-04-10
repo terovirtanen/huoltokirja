@@ -77,6 +77,22 @@ class AppDatabase {
         if (oldVersion < 4 && newVersion >= 4) {
           await db.execute('ALTER TABLE dependants ADD COLUMN tag TEXT');
         }
+
+        if (oldVersion < 5 && newVersion >= 5) {
+          await db.execute('ALTER TABLE notes ADD COLUMN scheduler_id INTEGER');
+        }
+
+        if (oldVersion < 6 && newVersion >= 6) {
+          await db.execute(
+            'ALTER TABLE notes ADD COLUMN user_modified INTEGER NOT NULL DEFAULT 0',
+          );
+        }
+
+        if (oldVersion < 7 && newVersion >= 7) {
+          await db.execute(
+            'ALTER TABLE notes ADD COLUMN scheduler_trigger_key TEXT',
+          );
+        }
       },
     );
 

@@ -16,6 +16,9 @@ class SqfliteNoteRepository implements NoteRepository {
     final toInsert = switch (note) {
       PlainNote plain => PlainNote(
         id: plain.id,
+        schedulerId: plain.schedulerId,
+        schedulerTriggerKey: plain.schedulerTriggerKey,
+        isUserModified: plain.isUserModified,
         dependantId: plain.dependantId,
         title: plain.title,
         body: plain.body,
@@ -25,6 +28,9 @@ class SqfliteNoteRepository implements NoteRepository {
       ),
       ServiceNote service => ServiceNote(
         id: service.id,
+        schedulerId: service.schedulerId,
+        schedulerTriggerKey: service.schedulerTriggerKey,
+        isUserModified: service.isUserModified,
         dependantId: service.dependantId,
         title: service.title,
         body: service.body,
@@ -37,6 +43,9 @@ class SqfliteNoteRepository implements NoteRepository {
       ),
       InspectionNote inspection => InspectionNote(
         id: inspection.id,
+        schedulerId: inspection.schedulerId,
+        schedulerTriggerKey: inspection.schedulerTriggerKey,
+        isUserModified: inspection.isUserModified,
         dependantId: inspection.dependantId,
         title: inspection.title,
         body: inspection.body,
@@ -56,6 +65,9 @@ class SqfliteNoteRepository implements NoteRepository {
     return switch (toInsert) {
       PlainNote plain => PlainNote(
         id: id,
+        schedulerId: plain.schedulerId,
+        schedulerTriggerKey: plain.schedulerTriggerKey,
+        isUserModified: plain.isUserModified,
         dependantId: plain.dependantId,
         title: plain.title,
         body: plain.body,
@@ -65,6 +77,9 @@ class SqfliteNoteRepository implements NoteRepository {
       ),
       ServiceNote service => ServiceNote(
         id: id,
+        schedulerId: service.schedulerId,
+        schedulerTriggerKey: service.schedulerTriggerKey,
+        isUserModified: service.isUserModified,
         dependantId: service.dependantId,
         title: service.title,
         body: service.body,
@@ -77,6 +92,9 @@ class SqfliteNoteRepository implements NoteRepository {
       ),
       InspectionNote inspection => InspectionNote(
         id: id,
+        schedulerId: inspection.schedulerId,
+        schedulerTriggerKey: inspection.schedulerTriggerKey,
+        isUserModified: inspection.isUserModified,
         dependantId: inspection.dependantId,
         title: inspection.title,
         body: inspection.body,
@@ -133,6 +151,9 @@ class SqfliteNoteRepository implements NoteRepository {
     final row = _mapper.toRow(switch (note) {
       PlainNote plain => PlainNote(
         id: plain.id,
+        schedulerId: plain.schedulerId,
+        schedulerTriggerKey: plain.schedulerTriggerKey,
+        isUserModified: plain.isUserModified,
         dependantId: plain.dependantId,
         title: plain.title,
         body: plain.body,
@@ -142,6 +163,9 @@ class SqfliteNoteRepository implements NoteRepository {
       ),
       ServiceNote service => ServiceNote(
         id: service.id,
+        schedulerId: service.schedulerId,
+        schedulerTriggerKey: service.schedulerTriggerKey,
+        isUserModified: service.isUserModified,
         dependantId: service.dependantId,
         title: service.title,
         body: service.body,
@@ -154,6 +178,9 @@ class SqfliteNoteRepository implements NoteRepository {
       ),
       InspectionNote inspection => InspectionNote(
         id: inspection.id,
+        schedulerId: inspection.schedulerId,
+        schedulerTriggerKey: inspection.schedulerTriggerKey,
+        isUserModified: inspection.isUserModified,
         dependantId: inspection.dependantId,
         title: inspection.title,
         body: inspection.body,

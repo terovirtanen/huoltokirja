@@ -21,6 +21,9 @@ const createNotesTable = '''
 CREATE TABLE notes (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   dependant_id INTEGER NOT NULL,
+  scheduler_id INTEGER,
+  scheduler_trigger_key TEXT,
+  user_modified INTEGER NOT NULL DEFAULT 0,
   type TEXT NOT NULL,
   title TEXT NOT NULL,
   body TEXT NOT NULL,

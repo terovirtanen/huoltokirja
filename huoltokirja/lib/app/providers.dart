@@ -12,6 +12,7 @@ import '../data/repositories/sqflite_dependant_repository.dart';
 import '../data/repositories/sqflite_note_repository.dart';
 import '../data/repositories/sqflite_scheduler_repository.dart';
 import '../data/services/export_service.dart';
+import '../data/services/scheduler_auto_trigger_service.dart';
 import '../domain/models/dependant.dart';
 import '../domain/models/note.dart';
 import '../domain/models/scheduler.dart';
@@ -91,6 +92,15 @@ final schedulerRepositoryProvider = Provider<SchedulerRepository>((ref) {
     const SchedulerMapper(),
   );
 });
+
+final schedulerAutoTriggerServiceProvider =
+    Provider<SchedulerAutoTriggerService>((ref) {
+      return SchedulerAutoTriggerService(
+        dependantRepository: ref.watch(dependantRepositoryProvider),
+        noteRepository: ref.watch(noteRepositoryProvider),
+        schedulerRepository: ref.watch(schedulerRepositoryProvider),
+      );
+    });
 
 class AllNotesFeedItem {
   const AllNotesFeedItem({required this.note, required this.dependant});

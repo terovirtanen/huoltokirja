@@ -249,7 +249,7 @@ class _AllNotesPage extends ConsumerWidget {
               itemCount: filteredItems.length,
               itemBuilder: (context, index) {
                 final item = filteredItems[index];
-                final palette = _notePalette(context, item.note.noteDate);
+                final palette = _notePalette(context, item.note);
                 final subtitleLines = <String>[
                   dateFormat.format(item.note.noteDate),
                   l10n.targetNameLabel(item.dependant.name),
@@ -275,11 +275,25 @@ class _AllNotesPage extends ConsumerWidget {
                         color: palette.accent,
                       ),
                     ),
-                    title: Text(
-                      item.note.title,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                    title: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            item.note.title,
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        if (item.note.isAutomaticallyCreated)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: Icon(
+                              Icons.schedule_rounded,
+                              size: 16,
+                              color: palette.accent,
+                            ),
+                          ),
+                      ],
                     ),
                     subtitle: Padding(
                       padding: const EdgeInsets.only(top: 4),
@@ -318,10 +332,19 @@ class _AllNotesPage extends ConsumerWidget {
     };
   }
 
-  _NoteCardPalette _notePalette(BuildContext context, DateTime noteDate) {
+  _NoteCardPalette _notePalette(BuildContext context, Note note) {
     final scheme = Theme.of(context).colorScheme;
 
-    if (noteDate.isAfter(DateTime.now())) {
+    if (isPendingAutoCreatedPastNote(note)) {
+      return _NoteCardPalette(
+        background: Colors.red.shade50,
+        border: Colors.red.shade300,
+        accent: Colors.red.shade700,
+      );
+    }
+
+    if (note.noteDate.isAfter(DateTime.now()) ||
+        isPendingAutoCreatedCurrentOrFutureNote(note)) {
       return _NoteCardPalette(
         background: Colors.green.shade50,
         border: Colors.green.shade300,

@@ -12,23 +12,34 @@ import 'data/repositories/sqflite_dependant_repository.dart';
 import 'data/repositories/sqflite_note_repository.dart';
 import 'data/repositories/sqflite_scheduler_repository.dart';
 import 'data/services/example_data_seeder.dart';
+import 'data/services/scheduler_auto_trigger_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureLogging();
   final database = await AppDatabase.open();
 
+  final dependantRepository = SqfliteDependantRepository(
+    database,
+    const DependantMapper(),
+  );
+  final noteRepository = SqfliteNoteRepository(database, const NoteMapper());
+  final schedulerRepository = SqfliteSchedulerRepository(
+    database,
+    const SchedulerMapper(),
+  );
+
   await ExampleDataSeeder(
-    dependantRepository: SqfliteDependantRepository(
-      database,
-      const DependantMapper(),
-    ),
-    noteRepository: SqfliteNoteRepository(database, const NoteMapper()),
-    schedulerRepository: SqfliteSchedulerRepository(
-      database,
-      const SchedulerMapper(),
-    ),
+    dependantRepository: dependantRepository,
+    noteRepository: noteRepository,
+    schedulerRepository: schedulerRepository,
   ).seedIfNeeded();
+
+  await SchedulerAutoTriggerService(
+    dependantRepository: dependantRepository,
+    noteRepository: noteRepository,
+    schedulerRepository: schedulerRepository,
+  ).triggerDueNotes();
 
   runApp(
     ProviderScope(

@@ -6,6 +6,7 @@ import 'package:huoltokirja/data/mappers/scheduler_mapper.dart';
 import 'package:huoltokirja/data/repositories/sqflite_dependant_repository.dart';
 import 'package:huoltokirja/data/repositories/sqflite_note_repository.dart';
 import 'package:huoltokirja/data/repositories/sqflite_scheduler_repository.dart';
+import 'package:huoltokirja/data/services/scheduler_auto_trigger_service.dart';
 import 'package:huoltokirja/domain/models/dependant.dart';
 import 'package:huoltokirja/domain/models/note.dart';
 import 'package:huoltokirja/domain/models/scheduler.dart';
@@ -108,6 +109,97 @@ void main() {
     expect(allNotes, hasLength(2));
     expect(allNotes.first.title, 'Newest note');
     expect(allNotes.last.title, 'Older note');
+  });
+
+  test('auto trigger creates only one note per scheduler', () async {
+    final createdDependant = await dependantRepo.create(
+      Dependant(
+        name: 'Due vehicle',
+        dependantGroup: DependantGroup.vehicle,
+        initialDate: DateTime(2024, 1, 1),
+        usage: 12345,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+
+    final scheduler = await schedulerRepo.create(
+      Scheduler(
+        dependantId: createdDependant.id!,
+        label: 'Öljynvaihto',
+        noteType: NoteType.service,
+        startDate: DateTime(2026, 4, 20),
+        calendarIntervalMonths: 12,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+
+    final triggerService = SchedulerAutoTriggerService(
+      dependantRepository: dependantRepo,
+      noteRepository: noteRepo,
+      schedulerRepository: schedulerRepo,
+    );
+
+    await triggerService.triggerDueNotes(asOf: DateTime(2026, 4, 10));
+    await triggerService.triggerDueNotes(asOf: DateTime(2026, 4, 10));
+
+    final notes = await noteRepo.listByDependant(createdDependant.id!);
+
+    expect(notes, hasLength(1));
+    expect(notes.single.title, 'Öljynvaihto');
+    expect(notes.single.schedulerId, scheduler.id);
+    expect(notes.single.isUserModified, isFalse);
+    expect(notes.single.noteDate, DateTime(2026, 4, 20));
+  });
+
+  test('significant scheduler change resets untouched auto note', () async {
+    final createdDependant = await dependantRepo.create(
+      Dependant(
+        name: 'Reset vehicle',
+        dependantGroup: DependantGroup.vehicle,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+
+    final originalScheduler = await schedulerRepo.create(
+      Scheduler(
+        dependantId: createdDependant.id!,
+        label: 'Keväthuolto',
+        noteType: NoteType.service,
+        startDate: DateTime(2026, 4, 20),
+        calendarIntervalMonths: 12,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+
+    final triggerService = SchedulerAutoTriggerService(
+      dependantRepository: dependantRepo,
+      noteRepository: noteRepo,
+      schedulerRepository: schedulerRepo,
+    );
+
+    await triggerService.triggerForDependant(
+      createdDependant.id!,
+      asOf: DateTime(2026, 4, 10),
+    );
+
+    final updatedScheduler = await schedulerRepo.update(
+      originalScheduler.copyWith(startDate: DateTime(2026, 5, 20)),
+    );
+
+    await triggerService.triggerForDependant(
+      createdDependant.id!,
+      asOf: DateTime(2026, 5, 10),
+    );
+
+    final notes = await noteRepo.listByDependant(createdDependant.id!);
+
+    expect(notes, hasLength(1));
+    expect(notes.single.noteDate, DateTime(2026, 5, 20));
+    expect(notes.single.schedulerTriggerKey, updatedScheduler.autoTriggerKey);
   });
 
   test('CRUD works for dependant, note and scheduler', () async {

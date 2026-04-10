@@ -283,9 +283,13 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
           .read(noteRepositoryProvider)
           .getById(widget.noteId!);
       if (existing == null) return;
+      final didUserChange = hasMeaningfulNoteChanges(existing, note);
       final updatedNote = switch (note) {
         PlainNote plain => PlainNote(
           id: widget.noteId,
+          schedulerId: existing.schedulerId,
+          schedulerTriggerKey: existing.schedulerTriggerKey,
+          isUserModified: existing.isUserModified || didUserChange,
           dependantId: widget.dependantId,
           title: plain.title,
           body: plain.body,
@@ -295,6 +299,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         ),
         ServiceNote service => ServiceNote(
           id: widget.noteId,
+          schedulerId: existing.schedulerId,
+          schedulerTriggerKey: existing.schedulerTriggerKey,
+          isUserModified: existing.isUserModified || didUserChange,
           dependantId: widget.dependantId,
           title: service.title,
           body: service.body,
@@ -307,6 +314,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         ),
         InspectionNote inspection => InspectionNote(
           id: widget.noteId,
+          schedulerId: existing.schedulerId,
+          schedulerTriggerKey: existing.schedulerTriggerKey,
+          isUserModified: existing.isUserModified || didUserChange,
           dependantId: widget.dependantId,
           title: inspection.title,
           body: inspection.body,
@@ -322,7 +332,12 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       await ref.read(noteRepositoryProvider).update(updatedNote);
     }
 
+    await ref
+        .read(schedulerAutoTriggerServiceProvider)
+        .triggerForDependant(widget.dependantId);
+
     ref.invalidate(dependantDetailProvider(widget.dependantId));
+    ref.invalidate(allNotesFeedProvider);
     if (mounted) {
       ScaffoldMessenger.of(
         context,

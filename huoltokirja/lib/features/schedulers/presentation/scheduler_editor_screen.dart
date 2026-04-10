@@ -349,7 +349,12 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
       await ref.read(schedulerRepositoryProvider).update(scheduler);
     }
 
+    await ref
+        .read(schedulerAutoTriggerServiceProvider)
+        .triggerForDependant(widget.dependantId);
+
     ref.invalidate(dependantDetailProvider(widget.dependantId));
+    ref.invalidate(allNotesFeedProvider);
     if (mounted) {
       ScaffoldMessenger.of(
         context,

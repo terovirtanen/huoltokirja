@@ -8,6 +8,9 @@ class NoteMapper {
     final createdAt = DateTime.parse(row['created_at'] as String);
     final common = (
       id: row['id'] as int,
+      schedulerId: row['scheduler_id'] as int?,
+      schedulerTriggerKey: row['scheduler_trigger_key'] as String?,
+      isUserModified: (row['user_modified'] as int? ?? 0) == 1,
       dependantId: row['dependant_id'] as int,
       title: row['title'] as String,
       body: row['body'] as String,
@@ -26,6 +29,9 @@ class NoteMapper {
       case 'plain':
         return PlainNote(
           id: common.id,
+          schedulerId: common.schedulerId,
+          schedulerTriggerKey: common.schedulerTriggerKey,
+          isUserModified: common.isUserModified,
           dependantId: common.dependantId,
           title: common.title,
           body: common.body,
@@ -36,6 +42,9 @@ class NoteMapper {
       case 'service':
         return ServiceNote(
           id: common.id,
+          schedulerId: common.schedulerId,
+          schedulerTriggerKey: common.schedulerTriggerKey,
+          isUserModified: common.isUserModified,
           dependantId: common.dependantId,
           title: common.title,
           body: common.body,
@@ -49,6 +58,9 @@ class NoteMapper {
       case 'inspection':
         return InspectionNote(
           id: common.id,
+          schedulerId: common.schedulerId,
+          schedulerTriggerKey: common.schedulerTriggerKey,
+          isUserModified: common.isUserModified,
           dependantId: common.dependantId,
           title: common.title,
           body: common.body,
@@ -68,6 +80,9 @@ class NoteMapper {
   Map<String, Object?> toRow(Note note) {
     final base = <String, Object?>{
       'id': note.id,
+      'scheduler_id': note.schedulerId,
+      'scheduler_trigger_key': note.schedulerTriggerKey,
+      'user_modified': note.isUserModified ? 1 : 0,
       'dependant_id': note.dependantId,
       'title': note.title,
       'body': note.body,

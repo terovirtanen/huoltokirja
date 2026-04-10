@@ -465,7 +465,7 @@ class _NoteTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = _notePalette(context, note.noteDate);
+    final palette = _notePalette(context, note);
 
     return Card(
       color: palette.background,
@@ -478,11 +478,26 @@ class _NoteTile extends StatelessWidget {
           backgroundColor: palette.accent.withValues(alpha: 0.14),
           child: Icon(_noteTypeIcon(note.type), color: palette.accent),
         ),
-        title: Text(
-          note.title,
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(
+                note.title,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ),
+            if (note.isAutomaticallyCreated)
+              Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: Icon(
+                  Icons.schedule_rounded,
+                  size: 16,
+                  color: palette.accent,
+                ),
+              ),
+          ],
         ),
         subtitle: Text(_buildSubtitle(context)),
         trailing: PopupMenuButton<String>(
@@ -507,10 +522,19 @@ class _NoteTile extends StatelessWidget {
     };
   }
 
-  _DetailCardPalette _notePalette(BuildContext context, DateTime noteDate) {
+  _DetailCardPalette _notePalette(BuildContext context, Note note) {
     final scheme = Theme.of(context).colorScheme;
 
-    if (noteDate.isAfter(DateTime.now())) {
+    if (isPendingAutoCreatedPastNote(note)) {
+      return _DetailCardPalette(
+        background: Colors.red.shade50,
+        border: Colors.red.shade300,
+        accent: Colors.red.shade700,
+      );
+    }
+
+    if (note.noteDate.isAfter(DateTime.now()) ||
+        isPendingAutoCreatedCurrentOrFutureNote(note)) {
       return _DetailCardPalette(
         background: Colors.green.shade50,
         border: Colors.green.shade300,

@@ -24,9 +24,10 @@ String localizedNoteTypeLabel(
 ) {
   return switch (noteType) {
     NoteType.plain => l10n.plainNote,
-    NoteType.service => dependantGroup == DependantGroup.animal
-        ? l10n.careNote
-        : l10n.serviceNote,
+    NoteType.service =>
+      dependantGroup == DependantGroup.animal
+          ? l10n.careNote
+          : l10n.serviceNote,
     NoteType.inspection => l10n.inspectionNote,
   };
 }
@@ -43,3 +44,52 @@ String localizedServiceNoteSummary(
 
   return l10n.serviceNoteSummary(date, details);
 }
+
+bool hasMeaningfulNoteChanges(Note original, Note updated) {
+  if (original.type != updated.type) {
+    return true;
+  }
+  if (original.title.trim() != updated.title.trim()) {
+    return true;
+  }
+  if (original.body.trim() != updated.body.trim()) {
+    return true;
+  }
+  if (!_isSameDay(original.noteDate, updated.noteDate)) {
+    return true;
+  }
+  if (original.estimatedCounter != updated.estimatedCounter) {
+    return true;
+  }
+  if ((original.performerName ?? '').trim() !=
+      (updated.performerName ?? '').trim()) {
+    return true;
+  }
+  if (original.price != updated.price) {
+    return true;
+  }
+  if (original.isApproved != updated.isApproved) {
+    return true;
+  }
+  return false;
+}
+
+bool isPendingAutoCreatedPastNote(Note note, {DateTime? now}) {
+  final reference = _dateOnly(now ?? DateTime.now());
+  return note.isAutomaticallyCreated &&
+      !note.isUserModified &&
+      note.noteDate.isBefore(reference);
+}
+
+bool isPendingAutoCreatedCurrentOrFutureNote(Note note, {DateTime? now}) {
+  final reference = _dateOnly(now ?? DateTime.now());
+  return note.isAutomaticallyCreated &&
+      !note.isUserModified &&
+      !note.noteDate.isBefore(reference);
+}
+
+bool _isSameDay(DateTime a, DateTime b) =>
+    a.year == b.year && a.month == b.month && a.day == b.day;
+
+DateTime _dateOnly(DateTime value) =>
+    DateTime(value.year, value.month, value.day);

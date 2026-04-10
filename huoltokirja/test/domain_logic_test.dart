@@ -111,6 +111,62 @@ void main() {
     expect(matchesSelectedTags(dependant, {}), isTrue);
   });
 
+  test('scheduler-created past note stays pending until user changes it', () {
+    final note = PlainNote(
+      schedulerId: 42,
+      dependantId: 1,
+      title: 'Ajastettu note',
+      body: '',
+      noteDate: DateTime(2026, 4, 1),
+      createdAt: DateTime(2026, 3, 20),
+      updatedAt: DateTime(2026, 3, 20),
+    );
+
+    expect(
+      isPendingAutoCreatedPastNote(note, now: DateTime(2026, 4, 10)),
+      isTrue,
+    );
+    expect(
+      isPendingAutoCreatedCurrentOrFutureNote(note, now: DateTime(2026, 3, 25)),
+      isTrue,
+    );
+  });
+
+  test('saving without real content changes does not mark note changed', () {
+    final original = ServiceNote(
+      schedulerId: 7,
+      dependantId: 1,
+      title: 'Öljynvaihto',
+      body: '',
+      serviceDate: DateTime(2026, 4, 20),
+      createdAt: DateTime(2026, 4, 10),
+      updatedAt: DateTime(2026, 4, 10),
+    );
+
+    final unchanged = ServiceNote(
+      schedulerId: 7,
+      dependantId: 1,
+      title: 'Öljynvaihto',
+      body: '',
+      serviceDate: DateTime(2026, 4, 20),
+      createdAt: DateTime(2026, 4, 10),
+      updatedAt: DateTime(2026, 4, 10, 12),
+    );
+
+    final changed = ServiceNote(
+      schedulerId: 7,
+      dependantId: 1,
+      title: 'Öljynvaihto',
+      body: 'vaihdettu liikkeessä',
+      serviceDate: DateTime(2026, 4, 20),
+      createdAt: DateTime(2026, 4, 10),
+      updatedAt: DateTime(2026, 4, 10, 12),
+    );
+
+    expect(hasMeaningfulNoteChanges(original, unchanged), isFalse);
+    expect(hasMeaningfulNoteChanges(original, changed), isTrue);
+  });
+
   test('scheduler supports calendar and usage rules', () {
     final scheduler = Scheduler(
       dependantId: 1,

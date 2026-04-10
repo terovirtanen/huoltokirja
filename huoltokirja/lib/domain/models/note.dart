@@ -3,6 +3,9 @@ enum NoteType { plain, service, inspection }
 sealed class Note {
   const Note({
     this.id,
+    this.schedulerId,
+    this.schedulerTriggerKey,
+    this.isUserModified = false,
     required this.dependantId,
     required this.title,
     required this.body,
@@ -12,6 +15,9 @@ sealed class Note {
   });
 
   final int? id;
+  final int? schedulerId;
+  final String? schedulerTriggerKey;
+  final bool isUserModified;
   final int dependantId;
   final String title;
   final String body;
@@ -19,6 +25,7 @@ sealed class Note {
   final DateTime createdAt;
   final DateTime updatedAt;
 
+  bool get isAutomaticallyCreated => schedulerId != null;
   NoteType get type;
 
   int? get estimatedCounter => null;
@@ -32,6 +39,9 @@ sealed class Note {
 class PlainNote extends Note {
   const PlainNote({
     super.id,
+    super.schedulerId,
+    super.schedulerTriggerKey,
+    super.isUserModified,
     required super.dependantId,
     required super.title,
     required super.body,
@@ -54,6 +64,9 @@ class PlainNote extends Note {
 class ServiceNote extends Note {
   ServiceNote({
     super.id,
+    super.schedulerId,
+    super.schedulerTriggerKey,
+    super.isUserModified,
     required super.dependantId,
     required super.title,
     required super.body,
@@ -101,6 +114,9 @@ class ServiceNote extends Note {
 class InspectionNote extends Note {
   const InspectionNote({
     super.id,
+    super.schedulerId,
+    super.schedulerTriggerKey,
+    super.isUserModified,
     required super.dependantId,
     required super.title,
     required super.body,
