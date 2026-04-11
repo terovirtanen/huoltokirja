@@ -18,7 +18,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get exportBackupAction => 'Vie varmuuskopio';
 
   @override
-  String get exportBackupSubtitle => 'Luo JSON-varmuuskopio iCloudiin tai Jottacloudiin';
+  String get exportBackupSubtitle => 'Luo JSON-varmuuskopio';
 
   @override
   String get importBackupAction => 'Palauta varmuuskopio';

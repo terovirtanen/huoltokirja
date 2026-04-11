@@ -18,7 +18,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportBackupAction => 'Export backup';
 
   @override
-  String get exportBackupSubtitle => 'Create a JSON backup for iCloud or Jottacloud';
+  String get exportBackupSubtitle => 'Create a JSON backup';
 
   @override
   String get importBackupAction => 'Restore backup';
