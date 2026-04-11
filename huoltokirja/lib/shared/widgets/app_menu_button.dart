@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
@@ -9,7 +10,14 @@ import '../../core/config/app_config.dart';
 import '../../core/l10n/app_localizations_ext.dart';
 import '../../l10n/app_localizations.dart';
 
-enum _AppMenuAction { exportCsv, exportPdf, changeLanguage, about }
+enum _AppMenuAction {
+  exportBackup,
+  importBackup,
+  exportCsv,
+  exportPdf,
+  changeLanguage,
+  about,
+}
 
 class AppMenuButton extends StatelessWidget {
   const AppMenuButton({super.key});
@@ -68,6 +76,30 @@ class AppMenuDrawer extends ConsumerWidget {
                   ),
                 ],
               ),
+            ),
+            _MenuActionTile(
+              icon: Icons.backup_outlined,
+              title: l10n.exportBackupAction,
+              subtitle: l10n.exportBackupSubtitle,
+              onTap: () async {
+                await _runActionFromDrawer(
+                  context,
+                  ref,
+                  _AppMenuAction.exportBackup,
+                );
+              },
+            ),
+            _MenuActionTile(
+              icon: Icons.restore_page_outlined,
+              title: l10n.importBackupAction,
+              subtitle: l10n.importBackupSubtitle,
+              onTap: () async {
+                await _runActionFromDrawer(
+                  context,
+                  ref,
+                  _AppMenuAction.importBackup,
+                );
+              },
             ),
             _MenuActionTile(
               icon: Icons.table_chart_outlined,
@@ -136,6 +168,16 @@ class AppMenuDrawer extends ConsumerWidget {
     _AppMenuAction action,
   ) async {
     switch (action) {
+      case _AppMenuAction.exportBackup:
+        await _shareFile(
+          context,
+          createFile: () =>
+              ref.read(backupServiceProvider).exportBackupArchive(),
+          successMessage: (fileName) =>
+              context.l10n.backupExportReady(fileName),
+        );
+      case _AppMenuAction.importBackup:
+        await _restoreBackup(context, ref);
       case _AppMenuAction.exportCsv:
         await _shareFile(
           context,
@@ -186,6 +228,39 @@ class AppMenuDrawer extends ConsumerWidget {
     } catch (error) {
       messenger.showSnackBar(
         SnackBar(content: Text(l10n.exportFailed(error.toString()))),
+      );
+    }
+  }
+
+  Future<void> _restoreBackup(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = context.l10n;
+
+    try {
+      final file = await openFile(
+        acceptedTypeGroups: const [
+          XTypeGroup(label: 'json', extensions: ['json']),
+        ],
+        confirmButtonText: l10n.importBackupAction,
+      );
+
+      if (file == null) {
+        return;
+      }
+
+      await ref
+          .read(backupServiceProvider)
+          .restoreFromJsonString(await file.readAsString());
+
+      ref.invalidate(dependantListControllerProvider);
+      ref.invalidate(allNotesFeedProvider);
+
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.backupRestoreSuccess)),
+      );
+    } catch (error) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.backupRestoreFailed(error.toString()))),
       );
     }
   }

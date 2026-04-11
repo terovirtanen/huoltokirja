@@ -8,9 +8,11 @@ import '../data/database/app_database.dart';
 import '../data/mappers/dependant_mapper.dart';
 import '../data/mappers/note_mapper.dart';
 import '../data/mappers/scheduler_mapper.dart';
+import '../data/repositories/backup_aware_repositories.dart';
 import '../data/repositories/sqflite_dependant_repository.dart';
 import '../data/repositories/sqflite_note_repository.dart';
 import '../data/repositories/sqflite_scheduler_repository.dart';
+import '../data/services/backup_service.dart';
 import '../data/services/export_service.dart';
 import '../data/services/scheduler_auto_trigger_service.dart';
 import '../domain/models/dependant.dart';
@@ -65,17 +67,35 @@ class AppLocaleController extends Notifier<Locale?> {
   }
 }
 
-final dependantRepositoryProvider = Provider<DependantRepository>((ref) {
+final backupServiceProvider = Provider<AppBackupService>((ref) {
+  return AppBackupService(database: ref.watch(appDatabaseProvider));
+});
+
+final _rawDependantRepositoryProvider = Provider<DependantRepository>((ref) {
   return SqfliteDependantRepository(
     ref.watch(appDatabaseProvider),
     const DependantMapper(),
   );
 });
 
-final noteRepositoryProvider = Provider<NoteRepository>((ref) {
+final dependantRepositoryProvider = Provider<DependantRepository>((ref) {
+  return BackupAwareDependantRepository(
+    delegate: ref.watch(_rawDependantRepositoryProvider),
+    backupService: ref.watch(backupServiceProvider),
+  );
+});
+
+final _rawNoteRepositoryProvider = Provider<NoteRepository>((ref) {
   return SqfliteNoteRepository(
     ref.watch(appDatabaseProvider),
     const NoteMapper(),
+  );
+});
+
+final noteRepositoryProvider = Provider<NoteRepository>((ref) {
+  return BackupAwareNoteRepository(
+    delegate: ref.watch(_rawNoteRepositoryProvider),
+    backupService: ref.watch(backupServiceProvider),
   );
 });
 
@@ -86,10 +106,17 @@ final exportServiceProvider = Provider<AppExportService>((ref) {
   );
 });
 
-final schedulerRepositoryProvider = Provider<SchedulerRepository>((ref) {
+final _rawSchedulerRepositoryProvider = Provider<SchedulerRepository>((ref) {
   return SqfliteSchedulerRepository(
     ref.watch(appDatabaseProvider),
     const SchedulerMapper(),
+  );
+});
+
+final schedulerRepositoryProvider = Provider<SchedulerRepository>((ref) {
+  return BackupAwareSchedulerRepository(
+    delegate: ref.watch(_rawSchedulerRepositoryProvider),
+    backupService: ref.watch(backupServiceProvider),
   );
 });
 

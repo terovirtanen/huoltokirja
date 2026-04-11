@@ -15,6 +15,18 @@ class AppLocalizationsFi extends AppLocalizations {
   String get menu => 'Valikko';
 
   @override
+  String get exportBackupAction => 'Vie varmuuskopio';
+
+  @override
+  String get exportBackupSubtitle => 'Luo JSON-varmuuskopio iCloudiin tai Jottacloudiin';
+
+  @override
+  String get importBackupAction => 'Palauta varmuuskopio';
+
+  @override
+  String get importBackupSubtitle => 'Tuo aiemmin viety varmuuskopio tiedostosta';
+
+  @override
   String get exportCsvAction => 'Vie tiedot CSV-tiedostoon';
 
   @override
@@ -63,6 +75,14 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
+  String backupExportReady(Object fileName) {
+    return 'Varmuuskopio valmis: $fileName';
+  }
+
+  @override
+  String get backupRestoreSuccess => 'Varmuuskopio palautettu';
+
+  @override
   String versionValue(Object version) {
     return 'Versio $version';
   }
@@ -75,6 +95,11 @@ class AppLocalizationsFi extends AppLocalizations {
   @override
   String exportFailed(Object error) {
     return 'Vienti epäonnistui: $error';
+  }
+
+  @override
+  String backupRestoreFailed(Object error) {
+    return 'Varmuuskopion palautus epäonnistui: $error';
   }
 
   @override

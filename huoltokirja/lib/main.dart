@@ -9,6 +9,7 @@ import 'data/mappers/dependant_mapper.dart';
 import 'data/mappers/note_mapper.dart';
 import 'data/mappers/scheduler_mapper.dart';
 import 'data/repositories/sqflite_dependant_repository.dart';
+import 'data/services/backup_service.dart';
 import 'data/repositories/sqflite_note_repository.dart';
 import 'data/repositories/sqflite_scheduler_repository.dart';
 import 'data/services/example_data_seeder.dart';
@@ -28,6 +29,7 @@ Future<void> main() async {
     database,
     const SchedulerMapper(),
   );
+  final backupService = AppBackupService(database: database);
 
   await ExampleDataSeeder(
     dependantRepository: dependantRepository,
@@ -40,6 +42,8 @@ Future<void> main() async {
     noteRepository: noteRepository,
     schedulerRepository: schedulerRepository,
   ).triggerDueNotes();
+
+  await backupService.createAutomaticBackup();
 
   runApp(
     ProviderScope(

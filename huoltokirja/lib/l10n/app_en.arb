@@ -2,6 +2,10 @@
   "@@locale": "en",
   "appTitle": "Maintenance Log",
   "menu": "Menu",
+  "exportBackupAction": "Export backup",
+  "exportBackupSubtitle": "Create a JSON backup for iCloud or Jottacloud",
+  "importBackupAction": "Restore backup",
+  "importBackupSubtitle": "Import a previously exported backup file",
   "exportCsvAction": "Export data to CSV",
   "exportCsvSubtitle": "Export targets and notes into a table file",
   "exportPdfAction": "Create PDF report",
@@ -31,6 +35,13 @@
       "fileName": {}
     }
   },
+  "backupExportReady": "Backup ready: {fileName}",
+  "@backupExportReady": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "backupRestoreSuccess": "Backup restored",
   "versionValue": "Version {version}",
   "@versionValue": {
     "placeholders": {
@@ -45,6 +56,12 @@
   },
   "exportFailed": "Export failed: {error}",
   "@exportFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "backupRestoreFailed": "Backup restore failed: {error}",
+  "@backupRestoreFailed": {
     "placeholders": {
       "error": {}
     }

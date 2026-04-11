@@ -107,6 +107,30 @@ abstract class AppLocalizations {
   /// **'Menu'**
   String get menu;
 
+  /// No description provided for @exportBackupAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Export backup'**
+  String get exportBackupAction;
+
+  /// No description provided for @exportBackupSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a JSON backup for iCloud or Jottacloud'**
+  String get exportBackupSubtitle;
+
+  /// No description provided for @importBackupAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore backup'**
+  String get importBackupAction;
+
+  /// No description provided for @importBackupSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import a previously exported backup file'**
+  String get importBackupSubtitle;
+
   /// No description provided for @exportCsvAction.
   ///
   /// In en, this message translates to:
@@ -191,6 +215,18 @@ abstract class AppLocalizations {
   /// **'PDF report ready: {fileName}'**
   String pdfExportReady(Object fileName);
 
+  /// No description provided for @backupExportReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup ready: {fileName}'**
+  String backupExportReady(Object fileName);
+
+  /// No description provided for @backupRestoreSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup restored'**
+  String get backupRestoreSuccess;
+
   /// No description provided for @versionValue.
   ///
   /// In en, this message translates to:
@@ -208,6 +244,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Export failed: {error}'**
   String exportFailed(Object error);
+
+  /// No description provided for @backupRestoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup restore failed: {error}'**
+  String backupRestoreFailed(Object error);
 
   /// No description provided for @loading.
   ///

@@ -15,6 +15,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menu => 'Menu';
 
   @override
+  String get exportBackupAction => 'Export backup';
+
+  @override
+  String get exportBackupSubtitle => 'Create a JSON backup for iCloud or Jottacloud';
+
+  @override
+  String get importBackupAction => 'Restore backup';
+
+  @override
+  String get importBackupSubtitle => 'Import a previously exported backup file';
+
+  @override
   String get exportCsvAction => 'Export data to CSV';
 
   @override
@@ -63,6 +75,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String backupExportReady(Object fileName) {
+    return 'Backup ready: $fileName';
+  }
+
+  @override
+  String get backupRestoreSuccess => 'Backup restored';
+
+  @override
   String versionValue(Object version) {
     return 'Version $version';
   }
@@ -75,6 +95,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String exportFailed(Object error) {
     return 'Export failed: $error';
+  }
+
+  @override
+  String backupRestoreFailed(Object error) {
+    return 'Backup restore failed: $error';
   }
 
   @override

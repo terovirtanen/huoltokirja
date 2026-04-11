@@ -2,6 +2,10 @@
   "@@locale": "fi",
   "appTitle": "Huoltokirja",
   "menu": "Valikko",
+  "exportBackupAction": "Vie varmuuskopio",
+  "exportBackupSubtitle": "Luo JSON-varmuuskopio iCloudiin tai Jottacloudiin",
+  "importBackupAction": "Palauta varmuuskopio",
+  "importBackupSubtitle": "Tuo aiemmin viety varmuuskopio tiedostosta",
   "exportCsvAction": "Vie tiedot CSV-tiedostoon",
   "exportCsvSubtitle": "Vie kohteet ja muistiinpanot taulukkomuotoon",
   "exportPdfAction": "Tulosta PDF-raportti",
@@ -31,6 +35,13 @@
       "fileName": {}
     }
   },
+  "backupExportReady": "Varmuuskopio valmis: {fileName}",
+  "@backupExportReady": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "backupRestoreSuccess": "Varmuuskopio palautettu",
   "versionValue": "Versio {version}",
   "@versionValue": {
     "placeholders": {
@@ -45,6 +56,12 @@
   },
   "exportFailed": "Vienti epäonnistui: {error}",
   "@exportFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "backupRestoreFailed": "Varmuuskopion palautus epäonnistui: {error}",
+  "@backupRestoreFailed": {
     "placeholders": {
       "error": {}
     }
