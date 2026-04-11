@@ -1,0 +1,309 @@
+{
+  "@@locale": "en",
+  "appTitle": "Maintenance Log",
+  "menu": "Menu",
+  "exportBackupAction": "Export backup",
+  "exportBackupSubtitle": "Create a JSON backup for iCloud or Jottacloud",
+  "importBackupAction": "Restore backup",
+  "importBackupSubtitle": "Import a previously exported backup file",
+  "exportCsvAction": "Export data to CSV",
+  "exportCsvSubtitle": "Export targets and notes into a table file",
+  "exportPdfAction": "Create PDF report",
+  "exportPdfSubtitle": "Generate and share a readable target report",
+  "changeLanguageAction": "Change language",
+  "aboutAction": "About",
+  "aboutSubtitle": "Show software version and build date",
+  "currentSelectionLabel": "Current: {value}",
+  "@currentSelectionLabel": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "chooseLanguage": "Choose language",
+  "useDeviceLanguage": "Use device language",
+  "finnishLanguage": "Finnish",
+  "englishLanguage": "English",
+  "csvExportReady": "CSV export ready: {fileName}",
+  "@csvExportReady": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "pdfExportReady": "PDF report ready: {fileName}",
+  "@pdfExportReady": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "backupExportReady": "Backup ready: {fileName}",
+  "@backupExportReady": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "backupRestoreSuccess": "Backup restored",
+  "versionValue": "Version {version}",
+  "@versionValue": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "buildDateValue": "Build {date}",
+  "@buildDateValue": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "exportFailed": "Export failed: {error}",
+  "@exportFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "backupRestoreFailed": "Backup restore failed: {error}",
+  "@backupRestoreFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "loading": "Loading...",
+  "errorPrefix": "Error: {error}",
+  "@errorPrefix": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "retry": "Try again",
+  "dependantsEmptyTitle": "No targets yet",
+  "dependantsEmptySubtitle": "Add your first target to get started.",
+  "addDependant": "Add target",
+  "add": "Add",
+  "edit": "Edit",
+  "delete": "Delete",
+  "dependantDeleted": "Target deleted",
+  "dependantDetails": "Target details",
+  "group": "Group",
+  "noGroup": "No group",
+  "vehicleGroup": "Vehicle",
+  "workMachineGroup": "Work machine",
+  "deviceGroup": "Device",
+  "animalGroup": "Animal",
+  "noRelation": "No relation",
+  "relationLabel": "Relation: {relation}",
+  "@relationLabel": {
+    "placeholders": {
+      "relation": {}
+    }
+  },
+  "notes": "Notes",
+  "allNotesTitle": "All notes",
+  "allNotesEmptyTitle": "No notes yet",
+  "allNotesEmptySubtitle": "When you add notes to targets, they will appear here.",
+  "targetNameLabel": "Target: {name}",
+  "@targetNameLabel": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "addNote": "Add note",
+  "noNotes": "No notes.",
+  "schedulers": "Schedules",
+  "addScheduler": "Add schedule",
+  "noSchedulers": "No schedules.",
+  "nextSchedule": "Next: {date}{overdue}",
+  "@nextSchedule": {
+    "placeholders": {
+      "date": {},
+      "overdue": {}
+    }
+  },
+  "overdueSuffix": " (overdue)",
+  "dueSoonSuffix": " (within 2 weeks)",
+  "dueTomorrowSuffix": " (1 day or less)",
+  "newDependant": "New target",
+  "editDependant": "Edit target",
+  "name": "Name",
+  "nameRequired": "Name is required",
+  "tagOptional": "Tags (optional)",
+  "filterTagsAction": "Filter tags",
+  "filterTagsTitle": "Select tags",
+  "noTagsAvailable": "No tags yet.",
+  "showAllTargets": "Clear filter",
+  "applyFilterAction": "Filter",
+  "noMatchingTagsTitle": "No matches for selected tags",
+  "noMatchingTagsSubtitle": "Change the selected tags or show all targets.",
+  "relationOptional": "Relation (optional)",
+  "commissioningDateOptional": "Commissioning date (optional)",
+  "birthDateOptional": "Birth date (optional)",
+  "odometerOptional": "Odometer (optional)",
+  "operatingHoursOptional": "Operating hours (optional)",
+  "invalidNumber": "Enter a valid number",
+  "cancel": "Cancel",
+  "save": "Save",
+  "usageEstimateLine": "Estimated current reading: {value} {unit}",
+  "@usageEstimateLine": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "initialDateValue": "{label}: {date}",
+  "@initialDateValue": {
+    "placeholders": {
+      "label": {},
+      "date": {}
+    }
+  },
+  "usageValueLabel": "{label}: {value} {unit}",
+  "@usageValueLabel": {
+    "placeholders": {
+      "label": {},
+      "value": {},
+      "unit": {}
+    }
+  },
+  "birthDateShort": "Birth date",
+  "commissioningDateShort": "Commissioned",
+  "odometerShort": "Odometer",
+  "operatingHoursShort": "Hours",
+  "addNoteTitle": "Add note",
+  "editNoteTitle": "Edit note",
+  "plainNote": "Note",
+  "serviceNote": "Service note",
+  "careNote": "Care note",
+  "inspectionNote": "Inspection note",
+  "type": "Type",
+  "noteDate": "Date",
+  "title": "Title",
+  "titleRequired": "Title is required",
+  "description": "Description",
+  "serviceDate": "Service date",
+  "counterEstimateOptional": "Counter estimate (optional)",
+  "inspectorOptional": "Performer (optional)",
+  "priceOptional": "Price € (optional)",
+  "approvedLabel": "Approved",
+  "performerLabel": "Performer",
+  "priceLabel": "Price",
+  "yesValue": "Yes",
+  "noValue": "No",
+  "noteSaved": "Note saved",
+  "addSchedulerTitle": "Add schedule",
+  "editSchedulerTitle": "Edit schedule",
+  "scheduleStartDate": "Schedule start date",
+  "calendarRule": "Calendar rule",
+  "noCalendarRule": "No calendar rule",
+  "yearly": "Yearly",
+  "semiAnnual": "Semi-annually",
+  "quarterly": "Quarterly",
+  "customMonths": "Custom month interval",
+  "customMonthsLabel": "Month interval",
+  "everyNMonths": "Every {months} months",
+  "@everyNMonths": {
+    "placeholders": {
+      "months": {}
+    }
+  },
+  "monthsMustBePositive": "Month interval must be > 0",
+  "usageRule": "Usage-based rule",
+  "usageIntervalLabel": "Interval ({unit})",
+  "@usageIntervalLabel": {
+    "placeholders": {
+      "unit": {}
+    }
+  },
+  "usageStartValueLabel": "Start value ({unit})",
+  "@usageStartValueLabel": {
+    "placeholders": {
+      "unit": {}
+    }
+  },
+  "scheduleRuleRequired": "Select at least one schedule rule",
+  "intervalDays": "Interval in days",
+  "nameMissing": "Name is missing",
+  "intervalMustBePositive": "Interval must be > 0",
+  "lastCompletedOptional": "Last completed (optional)",
+  "notSet": "Not set",
+  "schedulerSaved": "Schedule saved",
+  "schedulerTypeLine": "{type}",
+  "@schedulerTypeLine": {
+    "placeholders": {
+      "type": {}
+    }
+  },
+  "schedulerCalendarLine": "Calendar: {interval}",
+  "@schedulerCalendarLine": {
+    "placeholders": {
+      "interval": {}
+    }
+  },
+  "schedulerUsageLine": "Usage threshold: {value} {unit}",
+  "@schedulerUsageLine": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "plainNoteSummary": "{date}{body}",
+  "@plainNoteSummary": {
+    "placeholders": {
+      "date": {},
+      "body": {}
+    }
+  },
+  "noteBodySuffix": " • {body}",
+  "@noteBodySuffix": {
+    "placeholders": {
+      "body": {}
+    }
+  },
+  "serviceNoteSummary": "Service {date}{counter}",
+  "@serviceNoteSummary": {
+    "placeholders": {
+      "date": {},
+      "counter": {}
+    }
+  },
+  "careNoteSummary": "Care {date}{counter}",
+  "@careNoteSummary": {
+    "placeholders": {
+      "date": {},
+      "counter": {}
+    }
+  },
+  "counterEstimateSuffix": " • Counter estimate: {counter}",
+  "@counterEstimateSuffix": {
+    "placeholders": {
+      "counter": {}
+    }
+  },
+  "priceSuffix": " • price: {price} €",
+  "@priceSuffix": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+  "approvedSuffix": " • approved",
+  "inspectionNoteSummary": "Inspection {date}{inspector}",
+  "@inspectionNoteSummary": {
+    "placeholders": {
+      "date": {},
+      "inspector": {}
+    }
+  },
+  "inspectorSuffix": " • performer: {name}",
+  "@inspectorSuffix": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "notesPlaceholderTitle": "Notes placeholder",
+  "notesPlaceholderSubtitle": "This view has been replaced by a data-bound target-specific note flow.",
+  "schedulersPlaceholderTitle": "Schedulers placeholder",
+  "schedulersPlaceholderSubtitle": "This view has been replaced by a data-bound target-specific schedule flow.",
+  "idLabel": "ID: {id}",
+  "@idLabel": {
+    "placeholders": {
+      "id": {}
+    }
+  }
+}

@@ -1,0 +1,309 @@
+{
+  "@@locale": "fi",
+  "appTitle": "Huoltokirja",
+  "menu": "Valikko",
+  "exportBackupAction": "Vie varmuuskopio",
+  "exportBackupSubtitle": "Luo JSON-varmuuskopio iCloudiin tai Jottacloudiin",
+  "importBackupAction": "Palauta varmuuskopio",
+  "importBackupSubtitle": "Tuo aiemmin viety varmuuskopio tiedostosta",
+  "exportCsvAction": "Vie tiedot CSV-tiedostoon",
+  "exportCsvSubtitle": "Vie kohteet ja muistiinpanot taulukkomuotoon",
+  "exportPdfAction": "Tulosta PDF-raportti",
+  "exportPdfSubtitle": "Luo ja jaa luettava raportti kohteista",
+  "changeLanguageAction": "Vaihda kieli",
+  "aboutAction": "Tietoja",
+  "aboutSubtitle": "Näytä ohjelmiston versio ja build-päivämäärä",
+  "currentSelectionLabel": "Nykyinen: {value}",
+  "@currentSelectionLabel": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "chooseLanguage": "Valitse kieli",
+  "useDeviceLanguage": "Käytä puhelimen kieltä",
+  "finnishLanguage": "Suomi",
+  "englishLanguage": "Englanti",
+  "csvExportReady": "CSV-vienti valmis: {fileName}",
+  "@csvExportReady": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "pdfExportReady": "PDF-raportti valmis: {fileName}",
+  "@pdfExportReady": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "backupExportReady": "Varmuuskopio valmis: {fileName}",
+  "@backupExportReady": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "backupRestoreSuccess": "Varmuuskopio palautettu",
+  "versionValue": "Versio {version}",
+  "@versionValue": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "buildDateValue": "Build {date}",
+  "@buildDateValue": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "exportFailed": "Vienti epäonnistui: {error}",
+  "@exportFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "backupRestoreFailed": "Varmuuskopion palautus epäonnistui: {error}",
+  "@backupRestoreFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "loading": "Ladataan...",
+  "errorPrefix": "Virhe: {error}",
+  "@errorPrefix": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "retry": "Yritä uudelleen",
+  "dependantsEmptyTitle": "Ei kohteita vielä",
+  "dependantsEmptySubtitle": "Lisää ensimmäinen kohde aloittaaksesi.",
+  "addDependant": "Lisää kohde",
+  "add": "Lisää",
+  "edit": "Muokkaa",
+  "delete": "Poista",
+  "dependantDeleted": "Kohde poistettu",
+  "dependantDetails": "Kohteen tiedot",
+  "group": "Ryhmä",
+  "noGroup": "Ei ryhmää",
+  "vehicleGroup": "Ajoneuvo",
+  "workMachineGroup": "Työkone",
+  "deviceGroup": "Laite",
+  "animalGroup": "Eläin",
+  "noRelation": "Ei suhdetta",
+  "relationLabel": "Suhde: {relation}",
+  "@relationLabel": {
+    "placeholders": {
+      "relation": {}
+    }
+  },
+  "notes": "Muistiinpanot",
+  "allNotesTitle": "Kaikki muistiinpanot",
+  "allNotesEmptyTitle": "Ei muistiinpanoja vielä",
+  "allNotesEmptySubtitle": "Kun lisäät muistiinpanoja kohteille, ne näkyvät täällä.",
+  "targetNameLabel": "Kohde: {name}",
+  "@targetNameLabel": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "addNote": "Lisää muistiinpano",
+  "noNotes": "Ei muistiinpanoja.",
+  "schedulers": "Ajastukset",
+  "addScheduler": "Lisää ajastus",
+  "noSchedulers": "Ei ajastuksia.",
+  "nextSchedule": "Seuraava: {date}{overdue}",
+  "@nextSchedule": {
+    "placeholders": {
+      "date": {},
+      "overdue": {}
+    }
+  },
+  "overdueSuffix": " (myöhässä)",
+  "dueSoonSuffix": " (alle 2 viikkoa)",
+  "dueTomorrowSuffix": " (1 päivä tai vähemmän)",
+  "newDependant": "Uusi kohde",
+  "editDependant": "Muokkaa kohdetta",
+  "name": "Nimi",
+  "nameRequired": "Nimi on pakollinen",
+  "tagOptional": "Leima (valinnainen)",
+  "filterTagsAction": "Suodata leimoja",
+  "filterTagsTitle": "Valitse leimat",
+  "noTagsAvailable": "Ei leimoja vielä.",
+  "showAllTargets": "Tyhjennä suodatus",
+  "applyFilterAction": "Suodata",
+  "noMatchingTagsTitle": "Ei osumia valituilla leimoilla",
+  "noMatchingTagsSubtitle": "Muuta leimoja tai näytä kaikki kohteet.",
+  "relationOptional": "Suhde (valinnainen)",
+  "commissioningDateOptional": "Käyttöönotto pvm (valinnainen)",
+  "birthDateOptional": "Syntymäaika (valinnainen)",
+  "odometerOptional": "Ajokilometrit (valinnainen)",
+  "operatingHoursOptional": "Käyttötunnit (valinnainen)",
+  "invalidNumber": "Anna kelvollinen numero",
+  "cancel": "Peruuta",
+  "save": "Tallenna",
+  "usageEstimateLine": "Arviolukema nyt: {value} {unit}",
+  "@usageEstimateLine": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "initialDateValue": "{label}: {date}",
+  "@initialDateValue": {
+    "placeholders": {
+      "label": {},
+      "date": {}
+    }
+  },
+  "usageValueLabel": "{label}: {value} {unit}",
+  "@usageValueLabel": {
+    "placeholders": {
+      "label": {},
+      "value": {},
+      "unit": {}
+    }
+  },
+  "birthDateShort": "Syntymäaika",
+  "commissioningDateShort": "Käyttöönotto",
+  "odometerShort": "Kilometrit",
+  "operatingHoursShort": "Tunnit",
+  "addNoteTitle": "Lisää muistiinpano",
+  "editNoteTitle": "Muokkaa muistiinpanoa",
+  "plainNote": "Muistiinpano",
+  "serviceNote": "Huolto muistiinpano",
+  "careNote": "Hoitomuistiinpano",
+  "inspectionNote": "Tarkastus muistiinpano",
+  "type": "Tyyppi",
+  "noteDate": "Päivämäärä",
+  "title": "Otsikko",
+  "titleRequired": "Otsikko on pakollinen",
+  "description": "Kuvaus",
+  "serviceDate": "Huoltopäivä",
+  "counterEstimateOptional": "Mittarilukema-arvio (valinnainen)",
+  "inspectorOptional": "Tekijä (valinnainen)",
+  "priceOptional": "Hinta € (valinnainen)",
+  "approvedLabel": "Hyväksytty",
+  "performerLabel": "Tekijä",
+  "priceLabel": "Hinta",
+  "yesValue": "Kyllä",
+  "noValue": "Ei",
+  "noteSaved": "Muistiinpano tallennettu",
+  "addSchedulerTitle": "Lisää ajastus",
+  "editSchedulerTitle": "Muokkaa ajastusta",
+  "scheduleStartDate": "Ajastuksen alkupäivä",
+  "calendarRule": "Kalenterisääntö",
+  "noCalendarRule": "Ei kalenterisääntöä",
+  "yearly": "Vuosittain",
+  "semiAnnual": "Puolivuosittain",
+  "quarterly": "Neljännesvuosittain",
+  "customMonths": "Mukautettu kuukausiväli",
+  "customMonthsLabel": "Kuukausiväli",
+  "everyNMonths": "Joka {months}. kuukausi",
+  "@everyNMonths": {
+    "placeholders": {
+      "months": {}
+    }
+  },
+  "monthsMustBePositive": "Kuukausivälin tulee olla > 0",
+  "usageRule": "Käytön mukaan",
+  "usageIntervalLabel": "Väli ({unit})",
+  "@usageIntervalLabel": {
+    "placeholders": {
+      "unit": {}
+    }
+  },
+  "usageStartValueLabel": "Alkuarvo ({unit})",
+  "@usageStartValueLabel": {
+    "placeholders": {
+      "unit": {}
+    }
+  },
+  "scheduleRuleRequired": "Valitse vähintään yksi ajastussääntö",
+  "intervalDays": "Väli päivinä",
+  "nameMissing": "Nimi puuttuu",
+  "intervalMustBePositive": "Välin tulee olla > 0",
+  "lastCompletedOptional": "Viimeisin suoritus (valinnainen)",
+  "notSet": "Ei asetettu",
+  "schedulerSaved": "Ajastus tallennettu",
+  "schedulerTypeLine": "{type}",
+  "@schedulerTypeLine": {
+    "placeholders": {
+      "type": {}
+    }
+  },
+  "schedulerCalendarLine": "Kalenteri: {interval}",
+  "@schedulerCalendarLine": {
+    "placeholders": {
+      "interval": {}
+    }
+  },
+  "schedulerUsageLine": "Käyttöraja: {value} {unit}",
+  "@schedulerUsageLine": {
+    "placeholders": {
+      "value": {},
+      "unit": {}
+    }
+  },
+  "plainNoteSummary": "{date}{body}",
+  "@plainNoteSummary": {
+    "placeholders": {
+      "date": {},
+      "body": {}
+    }
+  },
+  "noteBodySuffix": " • {body}",
+  "@noteBodySuffix": {
+    "placeholders": {
+      "body": {}
+    }
+  },
+  "serviceNoteSummary": "Huolto {date}{counter}",
+  "@serviceNoteSummary": {
+    "placeholders": {
+      "date": {},
+      "counter": {}
+    }
+  },
+  "careNoteSummary": "Hoito {date}{counter}",
+  "@careNoteSummary": {
+    "placeholders": {
+      "date": {},
+      "counter": {}
+    }
+  },
+  "counterEstimateSuffix": " • km-arvio: {counter}",
+  "@counterEstimateSuffix": {
+    "placeholders": {
+      "counter": {}
+    }
+  },
+  "priceSuffix": " • hinta: {price} €",
+  "@priceSuffix": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+  "approvedSuffix": " • hyväksytty",
+  "inspectionNoteSummary": "Tarkastus {date}{inspector}",
+  "@inspectionNoteSummary": {
+    "placeholders": {
+      "date": {},
+      "inspector": {}
+    }
+  },
+  "inspectorSuffix": " • tekijä: {name}",
+  "@inspectorSuffix": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "notesPlaceholderTitle": "Muistiinpanojen placeholder",
+  "notesPlaceholderSubtitle": "Tämä näkymä on korvattu datakytketyllä kohdekohtaisella muistiinpanopolulla.",
+  "schedulersPlaceholderTitle": "Aikataulujen placeholder",
+  "schedulersPlaceholderSubtitle": "Tämä näkymä on korvattu datakytketyllä kohdekohtaisella aikataulupolulla.",
+  "idLabel": "ID: {id}",
+  "@idLabel": {
+    "placeholders": {
+      "id": {}
+    }
+  }
+}
