@@ -11,6 +11,27 @@ import '../../core/l10n/app_localizations_ext.dart';
 import '../../l10n/app_localizations.dart';
 import 'centered_snackbar.dart';
 
+Rect _fallbackShareOrigin(BuildContext context) {
+  final screenSize = MediaQuery.sizeOf(context);
+  return Rect.fromCenter(
+    center: Offset(screenSize.width / 2, screenSize.height / 2),
+    width: 1,
+    height: 1,
+  );
+}
+
+Rect _resolveShareOrigin(BuildContext context) {
+  final renderObject = context.findRenderObject();
+  if (renderObject is RenderBox && renderObject.hasSize) {
+    final size = renderObject.size;
+    if (size.width > 0 && size.height > 0) {
+      return renderObject.localToGlobal(Offset.zero) & size;
+    }
+  }
+
+  return _fallbackShareOrigin(context);
+}
+
 enum _AppMenuAction {
   exportBackup,
   importBackup,
@@ -158,15 +179,18 @@ class AppMenuDrawer extends ConsumerWidget {
     WidgetRef ref,
     _AppMenuAction action,
   ) async {
+    final shareOrigin = _resolveShareOrigin(context);
     final rootContext = Navigator.of(context, rootNavigator: true).context;
     Navigator.of(context).pop();
-    await _handleAction(rootContext, ref, action);
+    await _handleAction(rootContext, ref, action, shareOrigin: shareOrigin);
   }
 
   Future<void> _handleAction(
     BuildContext context,
     WidgetRef ref,
-    _AppMenuAction action,
+    _AppMenuAction action, {
+    Rect? shareOrigin,
+  }
   ) async {
     switch (action) {
       case _AppMenuAction.exportBackup:
@@ -176,6 +200,7 @@ class AppMenuDrawer extends ConsumerWidget {
               ref.read(backupServiceProvider).exportBackupArchive(),
           successMessage: (fileName) =>
               context.l10n.backupExportReady(fileName),
+          shareOrigin: shareOrigin,
         );
       case _AppMenuAction.importBackup:
         await _restoreBackup(context, ref);
@@ -189,6 +214,7 @@ class AppMenuDrawer extends ConsumerWidget {
                 localeName: context.l10n.localeName,
               ),
           successMessage: (fileName) => context.l10n.csvExportReady(fileName),
+          shareOrigin: shareOrigin,
         );
       case _AppMenuAction.exportPdf:
         await _shareFile(
@@ -201,6 +227,7 @@ class AppMenuDrawer extends ConsumerWidget {
                 materialLocalizations: MaterialLocalizations.of(context),
               ),
           successMessage: (fileName) => context.l10n.pdfExportReady(fileName),
+          shareOrigin: shareOrigin,
         );
       case _AppMenuAction.changeLanguage:
         await _showLanguageDialog(context, ref);
@@ -213,6 +240,7 @@ class AppMenuDrawer extends ConsumerWidget {
     BuildContext context, {
     required Future<File> Function() createFile,
     required String Function(String fileName) successMessage,
+    Rect? shareOrigin,
   }) async {
     final l10n = context.l10n;
 
@@ -222,8 +250,8 @@ class AppMenuDrawer extends ConsumerWidget {
       showCenteredSnackBar(context, message);
       await Share.shareXFiles(
         [XFile(file.path)],
-        text: message,
         subject: l10n.appTitle,
+        sharePositionOrigin: shareOrigin ?? _fallbackShareOrigin(context),
       );
     } catch (error) {
       showCenteredSnackBar(context, l10n.exportFailed(error.toString()));
