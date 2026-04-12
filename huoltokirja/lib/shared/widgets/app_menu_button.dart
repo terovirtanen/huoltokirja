@@ -9,6 +9,7 @@ import '../../app/providers.dart';
 import '../../core/config/app_config.dart';
 import '../../core/l10n/app_localizations_ext.dart';
 import '../../l10n/app_localizations.dart';
+import 'centered_snackbar.dart';
 
 enum _AppMenuAction {
   exportBackup,
@@ -213,27 +214,23 @@ class AppMenuDrawer extends ConsumerWidget {
     required Future<File> Function() createFile,
     required String Function(String fileName) successMessage,
   }) async {
-    final messenger = ScaffoldMessenger.of(context);
     final l10n = context.l10n;
 
     try {
       final file = await createFile();
       final message = successMessage(file.uri.pathSegments.last);
-      messenger.showSnackBar(SnackBar(content: Text(message)));
+      showCenteredSnackBar(context, message);
       await Share.shareXFiles(
         [XFile(file.path)],
         text: message,
         subject: l10n.appTitle,
       );
     } catch (error) {
-      messenger.showSnackBar(
-        SnackBar(content: Text(l10n.exportFailed(error.toString()))),
-      );
+      showCenteredSnackBar(context, l10n.exportFailed(error.toString()));
     }
   }
 
   Future<void> _restoreBackup(BuildContext context, WidgetRef ref) async {
-    final messenger = ScaffoldMessenger.of(context);
     final l10n = context.l10n;
 
     try {
@@ -255,12 +252,11 @@ class AppMenuDrawer extends ConsumerWidget {
       ref.invalidate(dependantListControllerProvider);
       ref.invalidate(allNotesFeedProvider);
 
-      messenger.showSnackBar(
-        SnackBar(content: Text(l10n.backupRestoreSuccess)),
-      );
+      showCenteredSnackBar(context, l10n.backupRestoreSuccess);
     } catch (error) {
-      messenger.showSnackBar(
-        SnackBar(content: Text(l10n.backupRestoreFailed(error.toString()))),
+      showCenteredSnackBar(
+        context,
+        l10n.backupRestoreFailed(error.toString()),
       );
     }
   }

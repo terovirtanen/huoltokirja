@@ -7,6 +7,7 @@ import '../../../core/l10n/app_localizations_ext.dart';
 import '../../../domain/models/dependant.dart';
 import '../../../domain/services/dependant_tag_utils.dart';
 import '../../../shared/widgets/app_menu_button.dart';
+import '../../../shared/widgets/centered_snackbar.dart';
 import '../../../shared/widgets/state_widgets.dart';
 import 'dependant_editor_dialog.dart';
 
@@ -187,9 +188,7 @@ class DependantListScreen extends ConsumerWidget {
         .read(dependantListControllerProvider.notifier)
         .delete(dependantId);
     if (context.mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(context.l10n.dependantDeleted)));
+      showCenteredSnackBar(context, context.l10n.dependantDeleted);
     }
   }
 }

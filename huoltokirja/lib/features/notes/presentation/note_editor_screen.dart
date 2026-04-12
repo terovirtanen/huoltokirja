@@ -6,6 +6,7 @@ import '../../../app/providers.dart';
 import '../../../core/l10n/app_localizations_ext.dart';
 import '../../../domain/models/dependant.dart';
 import '../../../domain/models/note.dart';
+import '../../../shared/widgets/centered_snackbar.dart';
 import 'note_display_utils.dart';
 
 class NoteEditorScreen extends ConsumerStatefulWidget {
@@ -328,9 +329,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     ref.invalidate(dependantDetailProvider(widget.dependantId));
     ref.invalidate(allNotesFeedProvider);
     if (mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(context.l10n.noteSaved)));
+      showCenteredSnackBar(context, context.l10n.noteSaved);
       context.pop();
     }
   }

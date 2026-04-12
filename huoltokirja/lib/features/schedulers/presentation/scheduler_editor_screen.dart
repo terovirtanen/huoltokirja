@@ -8,6 +8,7 @@ import '../../../domain/models/dependant.dart';
 import '../../../domain/models/note.dart';
 import '../../../domain/models/scheduler.dart';
 import '../../../domain/services/counter_estimator.dart';
+import '../../../shared/widgets/centered_snackbar.dart';
 import '../../notes/presentation/note_display_utils.dart';
 
 class SchedulerEditorScreen extends ConsumerStatefulWidget {
@@ -318,9 +319,7 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
 
     final calendarIntervalMonths = _selectedCalendarMonths();
     if (calendarIntervalMonths == null && !_usageRuleEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.scheduleRuleRequired)),
-      );
+      showCenteredSnackBar(context, context.l10n.scheduleRuleRequired);
       return;
     }
 
@@ -363,9 +362,7 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
     ref.invalidate(dependantDetailProvider(widget.dependantId));
     ref.invalidate(allNotesFeedProvider);
     if (mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(context.l10n.schedulerSaved)));
+      showCenteredSnackBar(context, context.l10n.schedulerSaved);
       context.pop();
     }
   }
