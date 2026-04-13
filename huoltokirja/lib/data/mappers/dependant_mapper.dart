@@ -7,6 +7,9 @@ class DependantMapper {
     return Dependant(
       id: row['id'] as int,
       name: row['name'] as String,
+      description: (row['description'] as String?)?.trim().isEmpty ?? true
+          ? null
+          : (row['description'] as String).trim(),
       dependantGroup: DependantGroup.fromStorage(row['dependant_group']),
       initialDate: _parseDate(row['initial_date'] ?? row['birth_date']),
       usage: _parseDouble(row['usage']),
@@ -22,6 +25,9 @@ class DependantMapper {
     return {
       'id': model.id,
       'name': model.name,
+        'description': model.description?.trim().isEmpty ?? true
+          ? null
+          : model.description!.trim(),
       'dependant_group': model.dependantGroup.storageValue,
       'initial_date': model.initialDate?.toIso8601String(),
       'usage': model.usage,

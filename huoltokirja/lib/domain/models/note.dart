@@ -97,11 +97,11 @@ class ServiceNote extends Note {
   @override
   String get listText {
     final parts = <String>[];
-    if (estimatedCounter != null) parts.add('km-arvio: $estimatedCounter');
+    if (estimatedCounter != null) parts.add('$estimatedCounter');
     if (performerName != null && performerName!.isNotEmpty) {
-      parts.add('tekijä: $performerName');
+      parts.add('$performerName');
     }
-    if (price != null) parts.add('hinta: ${price!.toStringAsFixed(2)} €');
+    if (price != null) parts.add('${price!.toStringAsFixed(2)} €');
     final suffix = parts.isEmpty ? '' : ' • ${parts.join(' • ')}';
     return 'Huolto ${_formatDate(serviceDate)}$suffix';
   }
@@ -150,11 +150,11 @@ class InspectionNote extends Note {
   String get listText {
     final dateText = _formatDate(noteDate);
     final parts = <String>[];
-    if (estimatedCounter != null) parts.add('km-arvio: $estimatedCounter');
+    if (estimatedCounter != null) parts.add('$estimatedCounter');
     if (performerName != null && performerName!.isNotEmpty) {
-      parts.add('tekijä: $performerName');
+      parts.add('$performerName');
     }
-    if (price != null) parts.add('hinta: ${price!.toStringAsFixed(2)} €');
+    if (price != null) parts.add('${price!.toStringAsFixed(2)} €');
     if (isApproved) parts.add('hyväksytty');
     final suffix = parts.isEmpty ? '' : ' • ${parts.join(' • ')}';
     return 'Tarkastus $dateText$suffix';

@@ -33,6 +33,7 @@ class Dependant {
   const Dependant({
     this.id,
     required this.name,
+    this.description,
     this.dependantGroup = DependantGroup.none,
     this.initialDate,
     this.usage,
@@ -43,6 +44,7 @@ class Dependant {
 
   final int? id;
   final String name;
+  final String? description;
   final DependantGroup dependantGroup;
   final DateTime? initialDate;
   final double? usage;
@@ -83,6 +85,8 @@ class Dependant {
   Dependant copyWith({
     int? id,
     String? name,
+    String? description,
+    bool clearDescription = false,
     DependantGroup? dependantGroup,
     DateTime? initialDate,
     bool clearInitialDate = false,
@@ -96,6 +100,9 @@ class Dependant {
     return Dependant(
       id: id ?? this.id,
       name: name ?? this.name,
+      description: clearDescription
+          ? null
+          : description ?? this.description,
       dependantGroup: dependantGroup ?? this.dependantGroup,
       initialDate: clearInitialDate ? null : initialDate ?? this.initialDate,
       usage: clearUsage ? null : usage ?? this.usage,

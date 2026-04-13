@@ -178,7 +178,7 @@
   "titleRequired": "Title is required",
   "description": "Description",
   "serviceDate": "Service date",
-  "counterEstimateOptional": "Counter estimate (optional)",
+  "counterEstimateOptional": "Meter reading (optional)",
   "inspectorOptional": "Performer (optional)",
   "priceOptional": "Price € (optional)",
   "approvedLabel": "Approved",
@@ -270,30 +270,12 @@
       "counter": {}
     }
   },
-  "counterEstimateSuffix": " • Counter estimate: {counter}",
-  "@counterEstimateSuffix": {
-    "placeholders": {
-      "counter": {}
-    }
-  },
-  "priceSuffix": " • price: {price} €",
-  "@priceSuffix": {
-    "placeholders": {
-      "price": {}
-    }
-  },
   "approvedSuffix": " • approved",
   "inspectionNoteSummary": "Inspection {date}{inspector}",
   "@inspectionNoteSummary": {
     "placeholders": {
       "date": {},
       "inspector": {}
-    }
-  },
-  "inspectorSuffix": " • performer: {name}",
-  "@inspectorSuffix": {
-    "placeholders": {
-      "name": {}
     }
   },
   "notesPlaceholderTitle": "Notes placeholder",

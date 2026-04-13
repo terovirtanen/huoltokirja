@@ -18,7 +18,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get exportBackupAction => 'Vie varmuuskopio';
 
   @override
-  String get exportBackupSubtitle => 'Luo JSON-varmuuskopio';
+  String get exportBackupSubtitle => 'Luo JSON-varmuuskopio iCloudiin tai Jottacloudiin';
 
   @override
   String get importBackupAction => 'Palauta varmuuskopio';
@@ -333,7 +333,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get serviceDate => 'Huoltopäivä';
 
   @override
-  String get counterEstimateOptional => 'Mittarilukema-arvio (valinnainen)';
+  String get counterEstimateOptional => 'Mittarilukema (valinnainen)';
 
   @override
   String get inspectorOptional => 'Tekijä (valinnainen)';
@@ -467,26 +467,11 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String counterEstimateSuffix(Object counter) {
-    return ' • km-arvio: $counter';
-  }
-
-  @override
-  String priceSuffix(Object price) {
-    return ' • hinta: $price €';
-  }
-
-  @override
   String get approvedSuffix => ' • hyväksytty';
 
   @override
   String inspectionNoteSummary(Object date, Object inspector) {
     return 'Tarkastus $date$inspector';
-  }
-
-  @override
-  String inspectorSuffix(Object name) {
-    return ' • tekijä: $name';
   }
 
   @override

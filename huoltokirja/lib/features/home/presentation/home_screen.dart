@@ -247,9 +247,18 @@ class _AllNotesPage extends ConsumerWidget {
               itemBuilder: (context, index) {
                 final item = filteredItems[index];
                 final palette = _notePalette(context, item.note);
+                final readingUnit = item.dependant.usageUnit ?? '';
+                final hasReading =
+                    item.note.estimatedCounter != null &&
+                    shouldShowCounterField(
+                      dependantGroup: item.dependant.dependantGroup,
+                      noteType: item.note.type,
+                    );
                 final subtitleLines = <String>[
                   context.formatDate(item.note.noteDate),
                   item.dependant.name,
+                  if (hasReading)
+                    '${item.note.estimatedCounter}$readingUnit',
                   if (item.note.body.trim().isNotEmpty) item.note.body.trim(),
                 ];
 

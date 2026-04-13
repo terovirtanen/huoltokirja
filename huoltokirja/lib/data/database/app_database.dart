@@ -93,6 +93,10 @@ class AppDatabase {
             'ALTER TABLE notes ADD COLUMN scheduler_trigger_key TEXT',
           );
         }
+
+        if (oldVersion < 8 && newVersion >= 8) {
+          await db.execute('ALTER TABLE dependants ADD COLUMN description TEXT');
+        }
       },
     );
 

@@ -19,6 +19,7 @@ class DependantEditorDialog extends ConsumerStatefulWidget {
 class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
+  late final TextEditingController _descriptionController;
   late final TextEditingController _tagController;
   late DependantGroup _selectedGroup;
   DateTime? _initialDate;
@@ -27,6 +28,9 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.initial?.name ?? '');
+    _descriptionController = TextEditingController(
+      text: widget.initial?.description ?? '',
+    );
     _tagController = TextEditingController(text: widget.initial?.tag ?? '');
     _selectedGroup = widget.initial?.dependantGroup ?? DependantGroup.none;
     _initialDate = widget.initial?.initialDate;
@@ -35,6 +39,7 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
   @override
   void dispose() {
     _nameController.dispose();
+    _descriptionController.dispose();
     _tagController.dispose();
     super.dispose();
   }
@@ -62,6 +67,12 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
                 validator: (value) => value == null || value.trim().isEmpty
                     ? l10n.nameRequired
                     : null,
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _descriptionController,
+                decoration: InputDecoration(labelText: l10n.description),
+                maxLines: 3,
               ),
               const SizedBox(height: 12),
               TextFormField(
@@ -165,6 +176,9 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
             final result = Dependant(
               id: widget.initial?.id,
               name: _nameController.text.trim(),
+              description: _descriptionController.text.trim().isEmpty
+                  ? null
+                  : _descriptionController.text.trim(),
               dependantGroup: widget.initial?.dependantGroup ?? _selectedGroup,
               initialDate: _selectedGroup == DependantGroup.none
                   ? null
@@ -204,8 +218,6 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
   }
 
   String _formatNumber(double value) {
-    return value == value.roundToDouble()
-        ? value.toStringAsFixed(0)
-        : value.toStringAsFixed(1);
+    return value.toStringAsFixed(0);
   }
 }

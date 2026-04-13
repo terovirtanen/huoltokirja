@@ -77,14 +77,11 @@ class _DependantDetailScreenState extends ConsumerState<DependantDetailScreen> {
                 child: Card(
                   child: ListTile(
                     title: Text(data.dependant.name),
-                    subtitle: Text(
-                      _buildDependantSubtitle(
-                        context,
-                        data.dependant,
-                        data.notes,
-                        usageEstimate,
-                        dateFormat,
-                      ),
+                    subtitle: _DependantHeaderSubtitle(
+                      dependant: data.dependant,
+                      notes: data.notes,
+                      usageEstimate: usageEstimate,
+                      dateFormat: dateFormat,
                     ),
                   ),
                 ),
@@ -428,15 +425,14 @@ class _NoteTile extends StatelessWidget {
           dependantGroup: dependantGroup,
           noteType: note.type,
         )) {
-      buffer.write(
-        context.l10n.counterEstimateSuffix(note.estimatedCounter.toString()),
-      );
+      final unit = dependantGroup.usageUnit ?? '';
+      buffer.write(' • ${note.estimatedCounter}$unit');
     }
     if (note.performerName != null && note.performerName!.trim().isNotEmpty) {
-      buffer.write(context.l10n.inspectorSuffix(note.performerName!.trim()));
+      buffer.write(' • ${note.performerName!.trim()}');
     }
     if (note.price != null) {
-      buffer.write(context.l10n.priceSuffix(note.price!.toStringAsFixed(2)));
+      buffer.write(' • ${note.price!.toStringAsFixed(2)} €');
     }
     if (note.isApproved) {
       buffer.write(context.l10n.approvedSuffix);
@@ -596,10 +592,52 @@ String _buildDependantSubtitle(
   return parts.join('\n');
 }
 
+class _DependantHeaderSubtitle extends StatelessWidget {
+  const _DependantHeaderSubtitle({
+    required this.dependant,
+    required this.notes,
+    required this.usageEstimate,
+    required this.dateFormat,
+  });
+
+  final Dependant dependant;
+  final List<Note> notes;
+  final UsageEstimate? usageEstimate;
+  final DateFormat dateFormat;
+
+  @override
+  Widget build(BuildContext context) {
+    final metaText = _buildDependantSubtitle(
+      context,
+      dependant,
+      notes,
+      usageEstimate,
+      dateFormat,
+    );
+    final description = dependant.description?.trim();
+    final hasDescription = description != null && description.isNotEmpty;
+    final textStyle = Theme.of(context).textTheme.bodySmall;
+    final lineHeight =
+        (textStyle?.fontSize ?? 12) * (textStyle?.height ?? 1.3);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (metaText.isNotEmpty) Text(metaText),
+        if (hasDescription) ...[
+          if (metaText.isNotEmpty) const SizedBox(height: 6),
+          ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: lineHeight * 4),
+            child: SingleChildScrollView(child: Text(description)),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
 String _formatUsage(double value) {
-  return value == value.roundToDouble()
-      ? value.toStringAsFixed(0)
-      : value.toStringAsFixed(1);
+  return value.toStringAsFixed(0);
 }
 
 class _SchedulerTile extends StatelessWidget {

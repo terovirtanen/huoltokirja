@@ -178,7 +178,7 @@
   "titleRequired": "Otsikko on pakollinen",
   "description": "Kuvaus",
   "serviceDate": "Huoltopäivä",
-  "counterEstimateOptional": "Mittarilukema-arvio (valinnainen)",
+  "counterEstimateOptional": "Mittarilukema (valinnainen)",
   "inspectorOptional": "Tekijä (valinnainen)",
   "priceOptional": "Hinta € (valinnainen)",
   "approvedLabel": "Hyväksytty",
@@ -270,30 +270,12 @@
       "counter": {}
     }
   },
-  "counterEstimateSuffix": " • km-arvio: {counter}",
-  "@counterEstimateSuffix": {
-    "placeholders": {
-      "counter": {}
-    }
-  },
-  "priceSuffix": " • hinta: {price} €",
-  "@priceSuffix": {
-    "placeholders": {
-      "price": {}
-    }
-  },
   "approvedSuffix": " • hyväksytty",
   "inspectionNoteSummary": "Tarkastus {date}{inspector}",
   "@inspectionNoteSummary": {
     "placeholders": {
       "date": {},
       "inspector": {}
-    }
-  },
-  "inspectorSuffix": " • tekijä: {name}",
-  "@inspectorSuffix": {
-    "placeholders": {
-      "name": {}
     }
   },
   "notesPlaceholderTitle": "Muistiinpanojen placeholder",

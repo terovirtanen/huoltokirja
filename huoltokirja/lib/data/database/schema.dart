@@ -6,6 +6,7 @@ const createDependantsTable = '''
 CREATE TABLE dependants (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
+  description TEXT,
   dependant_group TEXT NOT NULL DEFAULT 'none',
   initial_date TEXT,
   usage REAL,

@@ -686,7 +686,7 @@ abstract class AppLocalizations {
   /// No description provided for @counterEstimateOptional.
   ///
   /// In en, this message translates to:
-  /// **'Counter estimate (optional)'**
+  /// **'Meter reading (optional)'**
   String get counterEstimateOptional;
 
   /// No description provided for @inspectorOptional.
@@ -911,18 +911,6 @@ abstract class AppLocalizations {
   /// **'Care {date}{counter}'**
   String careNoteSummary(Object date, Object counter);
 
-  /// No description provided for @counterEstimateSuffix.
-  ///
-  /// In en, this message translates to:
-  /// **' • Counter estimate: {counter}'**
-  String counterEstimateSuffix(Object counter);
-
-  /// No description provided for @priceSuffix.
-  ///
-  /// In en, this message translates to:
-  /// **' • price: {price} €'**
-  String priceSuffix(Object price);
-
   /// No description provided for @approvedSuffix.
   ///
   /// In en, this message translates to:
@@ -934,12 +922,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Inspection {date}{inspector}'**
   String inspectionNoteSummary(Object date, Object inspector);
-
-  /// No description provided for @inspectorSuffix.
-  ///
-  /// In en, this message translates to:
-  /// **' • performer: {name}'**
-  String inspectorSuffix(Object name);
 
   /// No description provided for @notesPlaceholderTitle.
   ///

@@ -18,7 +18,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportBackupAction => 'Export backup';
 
   @override
-  String get exportBackupSubtitle => 'Create a JSON backup';
+  String get exportBackupSubtitle => 'Create a JSON backup for iCloud or Jottacloud';
 
   @override
   String get importBackupAction => 'Restore backup';
@@ -333,7 +333,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get serviceDate => 'Service date';
 
   @override
-  String get counterEstimateOptional => 'Counter estimate (optional)';
+  String get counterEstimateOptional => 'Meter reading (optional)';
 
   @override
   String get inspectorOptional => 'Performer (optional)';
@@ -467,26 +467,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String counterEstimateSuffix(Object counter) {
-    return ' • Counter estimate: $counter';
-  }
-
-  @override
-  String priceSuffix(Object price) {
-    return ' • price: $price €';
-  }
-
-  @override
   String get approvedSuffix => ' • approved';
 
   @override
   String inspectionNoteSummary(Object date, Object inspector) {
     return 'Inspection $date$inspector';
-  }
-
-  @override
-  String inspectorSuffix(Object name) {
-    return ' • performer: $name';
   }
 
   @override
