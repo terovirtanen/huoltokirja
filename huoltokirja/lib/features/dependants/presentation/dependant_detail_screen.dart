@@ -10,7 +10,10 @@ import '../../../domain/models/note.dart';
 import '../../../domain/models/scheduler.dart';
 import '../../../domain/services/counter_estimator.dart';
 import '../../../shared/widgets/state_widgets.dart';
+import 'dependant_editor_dialog.dart';
 import '../../notes/presentation/note_display_utils.dart';
+
+enum _DependantDetailAction { edit }
 
 class DependantDetailScreen extends ConsumerStatefulWidget {
   const DependantDetailScreen({super.key, required this.dependantId});
@@ -56,7 +59,20 @@ class _DependantDetailScreenState extends ConsumerState<DependantDetailScreen> {
     final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.dependantDetails)),
+      appBar: AppBar(
+        title: Text(l10n.dependantDetails),
+        actions: [
+          PopupMenuButton<_DependantDetailAction>(
+            onSelected: (_) => _editDependant(context),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: _DependantDetailAction.edit,
+                child: Text(l10n.editDependant),
+              ),
+            ],
+          ),
+        ],
+      ),
       body: detailAsync.when(
         loading: () => const LoadingState(),
         error: (error, _) => ErrorState(
@@ -154,6 +170,30 @@ class _DependantDetailScreenState extends ConsumerState<DependantDetailScreen> {
         },
       ),
     );
+  }
+
+  Future<void> _editDependant(BuildContext context) async {
+    final initial = await ref
+        .read(dependantRepositoryProvider)
+        .getById(widget.dependantId);
+    if (initial == null || !context.mounted) {
+      return;
+    }
+
+    final result = await showDialog<Dependant>(
+      context: context,
+      builder: (_) => DependantEditorDialog(initial: initial),
+    );
+
+    if (result == null) {
+      return;
+    }
+
+    await ref.read(dependantListControllerProvider.notifier).updateDependant(
+      result,
+    );
+    ref.invalidate(dependantDetailProvider(widget.dependantId));
+    ref.invalidate(allNotesFeedProvider);
   }
 }
 
@@ -579,7 +619,6 @@ String _buildDependantSubtitle(
       shouldShowUsageEstimate(
         dependant: dependant,
         estimate: usageEstimate,
-        notes: notes,
       )) {
     parts.add(
       l10n.usageEstimateLine(

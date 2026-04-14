@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/providers.dart';
 import '../../../core/l10n/app_localizations_ext.dart';
+import '../../../core/utils/text_normalization.dart';
 import '../../../domain/models/dependant.dart';
 import '../../../domain/models/note.dart';
 import '../../../shared/widgets/centered_snackbar.dart';
@@ -132,6 +133,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
             TextFormField(
               controller: _titleController,
               decoration: InputDecoration(labelText: l10n.title),
+              textCapitalization: TextCapitalization.words,
               validator: (value) => value == null || value.trim().isEmpty
                   ? l10n.titleRequired
                   : null,
@@ -140,6 +142,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
             TextFormField(
               controller: _bodyController,
               decoration: InputDecoration(labelText: l10n.description),
+              textCapitalization: TextCapitalization.sentences,
               maxLines: 3,
             ),
             const SizedBox(height: 12),
@@ -177,6 +180,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
               TextFormField(
                 controller: _performerController,
                 decoration: InputDecoration(labelText: l10n.inspectorOptional),
+                textCapitalization: TextCapitalization.words,
               ),
               const SizedBox(height: 12),
               TextFormField(
@@ -220,13 +224,16 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         )
         ? int.tryParse(_serviceCounterController.text.trim())
         : null;
+    final normalizedTitle = capitalizeFirst(_titleController.text);
+    final normalizedBody = capitalizeFirst(_bodyController.text);
+    final normalizedPerformer = capitalizeFirst(_performerController.text);
 
     final note = switch (selectedType) {
       NoteType.plain => PlainNote(
         id: widget.noteId,
         dependantId: widget.dependantId,
-        title: _titleController.text.trim(),
-        body: _bodyController.text.trim(),
+        title: normalizedTitle,
+        body: normalizedBody,
         noteDate: _noteDate,
         createdAt: now,
         updatedAt: now,
@@ -234,13 +241,13 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       NoteType.service => ServiceNote(
         id: widget.noteId,
         dependantId: widget.dependantId,
-        title: _titleController.text.trim(),
-        body: _bodyController.text.trim(),
+        title: normalizedTitle,
+        body: normalizedBody,
         serviceDate: _noteDate,
         estimatedCounter: estimatedCounter,
-        performerName: _performerController.text.trim().isEmpty
+        performerName: normalizedPerformer.isEmpty
             ? null
-            : _performerController.text.trim(),
+            : normalizedPerformer,
         price: double.tryParse(
           _priceController.text.trim().replaceAll(',', '.'),
         ),
@@ -250,13 +257,13 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       NoteType.inspection => InspectionNote(
         id: widget.noteId,
         dependantId: widget.dependantId,
-        title: _titleController.text.trim(),
-        body: _bodyController.text.trim(),
+        title: normalizedTitle,
+        body: normalizedBody,
         noteDate: _noteDate,
         estimatedCounter: estimatedCounter,
-        performerName: _performerController.text.trim().isEmpty
+        performerName: normalizedPerformer.isEmpty
             ? null
-            : _performerController.text.trim(),
+            : normalizedPerformer,
         price: double.tryParse(
           _priceController.text.trim().replaceAll(',', '.'),
         ),

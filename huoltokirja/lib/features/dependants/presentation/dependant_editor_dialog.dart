@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
 import '../../../core/l10n/app_localizations_ext.dart';
+import '../../../core/utils/text_normalization.dart';
 import '../../../domain/models/dependant.dart';
 import '../../../domain/services/counter_estimator.dart';
 
@@ -64,6 +65,7 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(labelText: l10n.name),
+                textCapitalization: TextCapitalization.words,
                 validator: (value) => value == null || value.trim().isEmpty
                     ? l10n.nameRequired
                     : null,
@@ -72,12 +74,14 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
               TextFormField(
                 controller: _descriptionController,
                 decoration: InputDecoration(labelText: l10n.description),
+                textCapitalization: TextCapitalization.sentences,
                 maxLines: 3,
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _tagController,
                 decoration: InputDecoration(labelText: l10n.tagOptional),
+                textCapitalization: TextCapitalization.sentences,
               ),
               if (widget.initial == null) ...[
                 const SizedBox(height: 12),
@@ -173,18 +177,23 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
             if (!_formKey.currentState!.validate()) return;
             final now = DateTime.now();
             final tagText = _tagController.text.trim();
+            final normalizedName = capitalizeFirst(_nameController.text);
+            final normalizedDescription = capitalizeFirst(
+              _descriptionController.text,
+            );
+            final normalizedTag = capitalizeFirst(tagText);
             final result = Dependant(
               id: widget.initial?.id,
-              name: _nameController.text.trim(),
-              description: _descriptionController.text.trim().isEmpty
+              name: normalizedName,
+              description: normalizedDescription.isEmpty
                   ? null
-                  : _descriptionController.text.trim(),
+                  : normalizedDescription,
               dependantGroup: widget.initial?.dependantGroup ?? _selectedGroup,
               initialDate: _selectedGroup == DependantGroup.none
                   ? null
                   : _initialDate,
               usage: null,
-              tag: tagText.isEmpty ? null : tagText,
+              tag: normalizedTag.isEmpty ? null : normalizedTag,
               createdAt: widget.initial?.createdAt ?? now,
               updatedAt: now,
             );

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/providers.dart';
 import '../../../core/l10n/app_localizations_ext.dart';
+import '../../../core/utils/text_normalization.dart';
 import '../../../domain/models/dependant.dart';
 import '../../../domain/models/note.dart';
 import '../../../domain/models/scheduler.dart';
@@ -154,6 +155,7 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
             TextFormField(
               controller: _labelController,
               decoration: InputDecoration(labelText: l10n.name),
+              textCapitalization: TextCapitalization.words,
               validator: (value) => value == null || value.trim().isEmpty
                   ? l10n.nameMissing
                   : null,
@@ -335,7 +337,7 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
     final scheduler = Scheduler(
       id: widget.schedulerId,
       dependantId: widget.dependantId,
-      label: _labelController.text.trim(),
+      label: capitalizeFirst(_labelController.text),
       noteType: selectedNoteType,
       startDate: _startDate,
       calendarIntervalMonths: calendarIntervalMonths,
