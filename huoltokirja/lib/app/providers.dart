@@ -30,6 +30,13 @@ final appDatabaseProvider = Provider<AppDatabase>((_) {
 final appLocaleControllerProvider =
     NotifierProvider<AppLocaleController, Locale?>(AppLocaleController.new);
 
+enum DependantSortOrder { latestNote, name }
+
+final dependantSortOrderProvider =
+    NotifierProvider<DependantSortController, DependantSortOrder>(
+      DependantSortController.new,
+    );
+
 class AppLocaleController extends Notifier<Locale?> {
   static const _preferenceKey = 'selected_locale';
   SharedPreferences? _preferences;
@@ -60,6 +67,41 @@ class AppLocaleController extends Notifier<Locale?> {
     final preferences = await _getPreferences();
     await preferences.setString(_preferenceKey, locale.languageCode);
     state = locale;
+  }
+
+  Future<SharedPreferences> _getPreferences() async {
+    return _preferences ??= await SharedPreferences.getInstance();
+  }
+}
+
+class DependantSortController extends Notifier<DependantSortOrder> {
+  static const _preferenceKey = 'dependant_sort_order';
+  SharedPreferences? _preferences;
+
+  @override
+  DependantSortOrder build() {
+    unawaited(_loadSavedOrder());
+    return DependantSortOrder.latestNote;
+  }
+
+  Future<void> setSortOrder(DependantSortOrder order) async {
+    final preferences = await _getPreferences();
+    await preferences.setString(_preferenceKey, order.name);
+    state = order;
+  }
+
+  Future<void> _loadSavedOrder() async {
+    final preferences = await _getPreferences();
+    final value = preferences.getString(_preferenceKey);
+    if (value == null || value.isEmpty) {
+      state = DependantSortOrder.latestNote;
+      return;
+    }
+
+    state = DependantSortOrder.values.firstWhere(
+      (order) => order.name == value,
+      orElse: () => DependantSortOrder.latestNote,
+    );
   }
 
   Future<SharedPreferences> _getPreferences() async {

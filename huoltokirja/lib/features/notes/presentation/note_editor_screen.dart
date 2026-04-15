@@ -133,7 +133,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
             TextFormField(
               controller: _titleController,
               decoration: InputDecoration(labelText: l10n.title),
-              textCapitalization: TextCapitalization.words,
+              textCapitalization: TextCapitalization.sentences,
               validator: (value) => value == null || value.trim().isEmpty
                   ? l10n.titleRequired
                   : null,
@@ -180,7 +180,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
               TextFormField(
                 controller: _performerController,
                 decoration: InputDecoration(labelText: l10n.inspectorOptional),
-                textCapitalization: TextCapitalization.words,
+                textCapitalization: TextCapitalization.sentences,
               ),
               const SizedBox(height: 12),
               TextFormField(

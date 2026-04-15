@@ -15,6 +15,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menu => 'Menu';
 
   @override
+  String get targetSortAction => 'Target sorting';
+
+  @override
+  String get targetSortLatestNote => 'Latest note';
+
+  @override
+  String get targetSortName => 'Name';
+
+  @override
   String get exportBackupAction => 'Export backup';
 
   @override

@@ -15,6 +15,15 @@ class AppLocalizationsFi extends AppLocalizations {
   String get menu => 'Valikko';
 
   @override
+  String get targetSortAction => 'Kohteiden järjestys';
+
+  @override
+  String get targetSortLatestNote => 'Viimeisin muistiinpano';
+
+  @override
+  String get targetSortName => 'Nimen mukaan';
+
+  @override
   String get exportBackupAction => 'Vie varmuuskopio';
 
   @override
@@ -135,7 +144,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get dependantDeleted => 'Kohde poistettu';
 
   @override
-  String get dependantDetails => 'Kohteen tiedot';
+  String get dependantDetails => 'Tiedot';
 
   @override
   String get group => 'Ryhmä';
@@ -213,7 +222,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get newDependant => 'Uusi kohde';
 
   @override
-  String get editDependant => 'Muokkaa kohdetta';
+  String get editDependant => 'Muokkaa';
 
   @override
   String get name => 'Nimi';

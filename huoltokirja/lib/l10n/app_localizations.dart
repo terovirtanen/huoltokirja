@@ -107,6 +107,24 @@ abstract class AppLocalizations {
   /// **'Menu'**
   String get menu;
 
+  /// No description provided for @targetSortAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Target sorting'**
+  String get targetSortAction;
+
+  /// No description provided for @targetSortLatestNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest note'**
+  String get targetSortLatestNote;
+
+  /// No description provided for @targetSortName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get targetSortName;
+
   /// No description provided for @exportBackupAction.
   ///
   /// In en, this message translates to:

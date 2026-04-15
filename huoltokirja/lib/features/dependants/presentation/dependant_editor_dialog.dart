@@ -65,7 +65,7 @@ class _DependantEditorDialogState extends ConsumerState<DependantEditorDialog> {
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(labelText: l10n.name),
-                textCapitalization: TextCapitalization.words,
+                textCapitalization: TextCapitalization.sentences,
                 validator: (value) => value == null || value.trim().isEmpty
                     ? l10n.nameRequired
                     : null,

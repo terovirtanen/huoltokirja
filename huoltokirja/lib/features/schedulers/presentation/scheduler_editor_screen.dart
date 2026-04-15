@@ -155,7 +155,7 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
             TextFormField(
               controller: _labelController,
               decoration: InputDecoration(labelText: l10n.name),
-              textCapitalization: TextCapitalization.words,
+              textCapitalization: TextCapitalization.sentences,
               validator: (value) => value == null || value.trim().isEmpty
                   ? l10n.nameMissing
                   : null,

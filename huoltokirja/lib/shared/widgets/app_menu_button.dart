@@ -33,6 +33,7 @@ Rect _resolveShareOrigin(BuildContext context) {
 }
 
 enum _AppMenuAction {
+  sortTargets,
   exportBackup,
   importBackup,
   exportCsv,
@@ -66,10 +67,12 @@ class AppMenuDrawer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
+    final sortOrder = ref.watch(dependantSortOrderProvider);
     final currentLanguage = _currentLanguageLabel(
       l10n,
       ref.watch(appLocaleControllerProvider),
     );
+    final currentSortLabel = _sortOrderLabel(l10n, sortOrder);
 
     return Drawer(
       child: SafeArea(
@@ -98,6 +101,19 @@ class AppMenuDrawer extends ConsumerWidget {
                   ),
                 ],
               ),
+            ),
+            _MenuActionTile(
+              icon: Icons.sort,
+              title: l10n.targetSortAction,
+              subtitle: l10n.currentSelectionLabel(currentSortLabel),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () async {
+                await _runActionFromDrawer(
+                  context,
+                  ref,
+                  _AppMenuAction.sortTargets,
+                );
+              },
             ),
             _MenuActionTile(
               icon: Icons.backup_outlined,
@@ -193,6 +209,8 @@ class AppMenuDrawer extends ConsumerWidget {
   }
   ) async {
     switch (action) {
+      case _AppMenuAction.sortTargets:
+        await _showSortDialog(context, ref);
       case _AppMenuAction.exportBackup:
         await _shareFile(
           context,
@@ -337,6 +355,43 @@ class AppMenuDrawer extends ConsumerWidget {
     );
   }
 
+  Future<void> _showSortDialog(BuildContext context, WidgetRef ref) async {
+    final controller = ref.read(dependantSortOrderProvider.notifier);
+    final selectedOrder = ref.read(dependantSortOrderProvider);
+    final l10n = context.l10n;
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return SimpleDialog(
+          title: Text(l10n.targetSortAction),
+          children: [
+            _SortOption(
+              label: l10n.targetSortLatestNote,
+              selected: selectedOrder == DependantSortOrder.latestNote,
+              onTap: () async {
+                await controller.setSortOrder(DependantSortOrder.latestNote);
+                if (dialogContext.mounted) {
+                  Navigator.of(dialogContext).pop();
+                }
+              },
+            ),
+            _SortOption(
+              label: l10n.targetSortName,
+              selected: selectedOrder == DependantSortOrder.name,
+              onTap: () async {
+                await controller.setSortOrder(DependantSortOrder.name);
+                if (dialogContext.mounted) {
+                  Navigator.of(dialogContext).pop();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> _showAboutDialog(BuildContext context) async {
     final l10n = context.l10n;
 
@@ -376,6 +431,34 @@ class AppMenuDrawer extends ConsumerWidget {
       'en' => l10n.englishLanguage,
       _ => l10n.useDeviceLanguage,
     };
+  }
+
+  String _sortOrderLabel(AppLocalizations l10n, DependantSortOrder order) {
+    return switch (order) {
+      DependantSortOrder.latestNote => l10n.targetSortLatestNote,
+      DependantSortOrder.name => l10n.targetSortName,
+    };
+  }
+}
+
+class _SortOption extends StatelessWidget {
+  const _SortOption({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(label),
+      trailing: selected ? const Icon(Icons.check) : null,
+      onTap: onTap,
+    );
   }
 }
 

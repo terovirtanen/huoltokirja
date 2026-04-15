@@ -65,12 +65,22 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(Drawer), findsOneWidget);
+    expect(find.text('Kohteiden järjestys'), findsOneWidget);
     expect(find.text('Vie varmuuskopio'), findsOneWidget);
     expect(find.text('Palauta varmuuskopio'), findsOneWidget);
     expect(find.text('Vie tiedot CSV-tiedostoon'), findsOneWidget);
     expect(find.text('Tulosta PDF-raportti'), findsOneWidget);
-    expect(find.text('Vaihda kieli'), findsOneWidget);
     expect(find.textContaining('Nykyinen:'), findsWidgets);
+
+    await tester.scrollUntilVisible(
+      find.widgetWithText(ListTile, 'Vaihda kieli'),
+      120,
+      scrollable: find.descendant(
+        of: find.byType(Drawer),
+        matching: find.byType(Scrollable),
+      ),
+    );
+    expect(find.text('Vaihda kieli'), findsOneWidget);
 
     await tester.scrollUntilVisible(
       find.widgetWithText(ListTile, 'Tietoja'),

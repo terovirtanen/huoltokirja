@@ -19,6 +19,8 @@ class DependantListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dependantsAsync = ref.watch(dependantListControllerProvider);
+    final notesFeedAsync = ref.watch(allNotesFeedProvider);
+    final sortOrder = ref.watch(dependantSortOrderProvider);
     final l10n = context.l10n;
 
     return Scaffold(
@@ -47,7 +49,27 @@ class DependantListScreen extends ConsumerWidget {
               )
               .toList(growable: false);
 
-          if (filteredDependants.isEmpty) {
+          final latestNoteByDependantId = <int, DateTime>{};
+          notesFeedAsync.whenData((items) {
+            for (final item in items) {
+              final dependantId = item.dependant.id;
+              if (dependantId == null) {
+                continue;
+              }
+              final existing = latestNoteByDependantId[dependantId];
+              if (existing == null || item.note.noteDate.isAfter(existing)) {
+                latestNoteByDependantId[dependantId] = item.note.noteDate;
+              }
+            }
+          });
+
+          final sortedDependants = _sortDependants(
+            filteredDependants,
+            order: sortOrder,
+            latestNoteByDependantId: latestNoteByDependantId,
+          );
+
+          if (sortedDependants.isEmpty) {
             return EmptyState(
               title: l10n.noMatchingTagsTitle,
               subtitle: l10n.noMatchingTagsSubtitle,
@@ -58,9 +80,9 @@ class DependantListScreen extends ConsumerWidget {
             onRefresh: () =>
                 ref.read(dependantListControllerProvider.notifier).refresh(),
             child: ListView.builder(
-              itemCount: filteredDependants.length,
+              itemCount: sortedDependants.length,
               itemBuilder: (context, index) {
-                final dependant = filteredDependants[index];
+                final dependant = sortedDependants[index];
                 final palette = _targetPalette();
 
                 final subtitle = _buildSubtitle(dependant);
@@ -122,6 +144,41 @@ class DependantListScreen extends ConsumerWidget {
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  List<Dependant> _sortDependants(
+    List<Dependant> dependants, {
+    required DependantSortOrder order,
+    required Map<int, DateTime> latestNoteByDependantId,
+  }) {
+    final sorted = List<Dependant>.from(dependants);
+
+    if (order == DependantSortOrder.name) {
+      sorted.sort(
+        (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+      );
+      return sorted;
+    }
+
+    sorted.sort((a, b) {
+      final aDate = a.id == null ? null : latestNoteByDependantId[a.id!];
+      final bDate = b.id == null ? null : latestNoteByDependantId[b.id!];
+
+      if (aDate != null && bDate != null) {
+        final byDate = bDate.compareTo(aDate);
+        if (byDate != 0) {
+          return byDate;
+        }
+      } else if (aDate != null) {
+        return -1;
+      } else if (bDate != null) {
+        return 1;
+      }
+
+      return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+    });
+
+    return sorted;
   }
 
   String? _buildSubtitle(Dependant dependant) {
