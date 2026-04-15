@@ -201,18 +201,43 @@ class AppBackupService {
     final payload = BackupPayload.fromJson(decoded);
 
     await _database.raw.transaction((txn) async {
+      final dependantColumns = await _readTableColumns(txn, dependantTable);
+      final noteColumns = await _readTableColumns(txn, notesTable);
+      final schedulerColumns = await _readTableColumns(txn, schedulersTable);
+
       await txn.delete(notesTable);
       await txn.delete(schedulersTable);
       await txn.delete(dependantTable);
 
       for (final row in payload.dependants) {
-        await txn.insert(dependantTable, row);
+        await txn.insert(
+          dependantTable,
+          _sanitizeRowForInsert(
+            row,
+            allowedColumns: dependantColumns,
+            tableName: dependantTable,
+          ),
+        );
       }
       for (final row in payload.notes) {
-        await txn.insert(notesTable, row);
+        await txn.insert(
+          notesTable,
+          _sanitizeRowForInsert(
+            row,
+            allowedColumns: noteColumns,
+            tableName: notesTable,
+          ),
+        );
       }
       for (final row in payload.schedulers) {
-        await txn.insert(schedulersTable, row);
+        await txn.insert(
+          schedulersTable,
+          _sanitizeRowForInsert(
+            row,
+            allowedColumns: schedulerColumns,
+            tableName: schedulersTable,
+          ),
+        );
       }
     });
   }
@@ -224,6 +249,49 @@ class AppBackupService {
 
   Map<String, dynamic> _normalizeRow(Map<String, Object?> row) {
     return row.map((key, value) => MapEntry(key, value));
+  }
+
+  Future<Set<String>> _readTableColumns(dynamic txn, String table) async {
+    final rows = await txn.rawQuery('PRAGMA table_info($table)');
+    return rows
+        .map((row) => row['name'])
+        .whereType<String>()
+        .toSet();
+  }
+
+  Map<String, Object?> _sanitizeRowForInsert(
+    Map<String, dynamic> row, {
+    required Set<String> allowedColumns,
+    required String tableName,
+  }) {
+    final sanitized = <String, Object?>{};
+
+    for (final entry in row.entries) {
+      if (!allowedColumns.contains(entry.key)) {
+        continue;
+      }
+      sanitized[entry.key] = _normalizeInsertValue(entry.value);
+    }
+
+    if (sanitized.isEmpty) {
+      throw FormatException(
+        'Varmuuskopion taulurivi "$tableName" ei sisällä tuettuja kenttiä.',
+      );
+    }
+
+    return sanitized;
+  }
+
+  Object? _normalizeInsertValue(Object? value) {
+    if (value == null || value is String || value is num) {
+      return value;
+    }
+
+    if (value is bool) {
+      return value ? 1 : 0;
+    }
+
+    throw FormatException('Varmuuskopio sisältää tukemattoman arvotyypin.');
   }
 
   Future<void> _trimAutomaticBackupHistory(Directory directory) async {

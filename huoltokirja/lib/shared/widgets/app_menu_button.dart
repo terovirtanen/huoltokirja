@@ -110,7 +110,6 @@ class AppMenuDrawer extends ConsumerWidget {
               onTap: () async {
                 await _runActionFromDrawer(
                   context,
-                  ref,
                   _AppMenuAction.sortTargets,
                 );
               },
@@ -122,7 +121,6 @@ class AppMenuDrawer extends ConsumerWidget {
               onTap: () async {
                 await _runActionFromDrawer(
                   context,
-                  ref,
                   _AppMenuAction.exportBackup,
                 );
               },
@@ -134,7 +132,6 @@ class AppMenuDrawer extends ConsumerWidget {
               onTap: () async {
                 await _runActionFromDrawer(
                   context,
-                  ref,
                   _AppMenuAction.importBackup,
                 );
               },
@@ -146,7 +143,6 @@ class AppMenuDrawer extends ConsumerWidget {
               onTap: () async {
                 await _runActionFromDrawer(
                   context,
-                  ref,
                   _AppMenuAction.exportCsv,
                 );
               },
@@ -158,7 +154,6 @@ class AppMenuDrawer extends ConsumerWidget {
               onTap: () async {
                 await _runActionFromDrawer(
                   context,
-                  ref,
                   _AppMenuAction.exportPdf,
                 );
               },
@@ -171,7 +166,6 @@ class AppMenuDrawer extends ConsumerWidget {
               onTap: () async {
                 await _runActionFromDrawer(
                   context,
-                  ref,
                   _AppMenuAction.changeLanguage,
                 );
               },
@@ -181,7 +175,7 @@ class AppMenuDrawer extends ConsumerWidget {
               icon: Icons.info_outline,
               title: l10n.aboutAction,
               onTap: () async {
-                await _runActionFromDrawer(context, ref, _AppMenuAction.about);
+                await _runActionFromDrawer(context, _AppMenuAction.about);
               },
             ),
           ],
@@ -192,40 +186,45 @@ class AppMenuDrawer extends ConsumerWidget {
 
   Future<void> _runActionFromDrawer(
     BuildContext context,
-    WidgetRef ref,
     _AppMenuAction action,
   ) async {
     final shareOrigin = _resolveShareOrigin(context);
     final rootContext = Navigator.of(context, rootNavigator: true).context;
+    final container = ProviderScope.containerOf(rootContext, listen: false);
     Navigator.of(context).pop();
-    await _handleAction(rootContext, ref, action, shareOrigin: shareOrigin);
+    await _handleAction(
+      rootContext,
+      container,
+      action,
+      shareOrigin: shareOrigin,
+    );
   }
 
   Future<void> _handleAction(
     BuildContext context,
-    WidgetRef ref,
+    ProviderContainer container,
     _AppMenuAction action, {
     Rect? shareOrigin,
   }
   ) async {
     switch (action) {
       case _AppMenuAction.sortTargets:
-        await _showSortDialog(context, ref);
+        await _showSortDialog(context, container);
       case _AppMenuAction.exportBackup:
         await _shareFile(
           context,
           createFile: () =>
-              ref.read(backupServiceProvider).exportBackupArchive(),
+              container.read(backupServiceProvider).exportBackupArchive(),
           successMessage: (fileName) =>
               context.l10n.backupExportReady(fileName),
           shareOrigin: shareOrigin,
         );
       case _AppMenuAction.importBackup:
-        await _restoreBackup(context, ref);
+        await _restoreBackup(context, container);
       case _AppMenuAction.exportCsv:
         await _shareFile(
           context,
-          createFile: () => ref
+          createFile: () => container
               .read(exportServiceProvider)
               .exportCsv(
                 selectedTags: selectedTags,
@@ -237,7 +236,7 @@ class AppMenuDrawer extends ConsumerWidget {
       case _AppMenuAction.exportPdf:
         await _shareFile(
           context,
-          createFile: () => ref
+          createFile: () => container
               .read(exportServiceProvider)
               .exportPdfReport(
                 selectedTags: selectedTags,
@@ -248,7 +247,7 @@ class AppMenuDrawer extends ConsumerWidget {
           shareOrigin: shareOrigin,
         );
       case _AppMenuAction.changeLanguage:
-        await _showLanguageDialog(context, ref);
+        await _showLanguageDialog(context, container);
       case _AppMenuAction.about:
         await _showAboutDialog(context);
     }
@@ -276,13 +275,20 @@ class AppMenuDrawer extends ConsumerWidget {
     }
   }
 
-  Future<void> _restoreBackup(BuildContext context, WidgetRef ref) async {
+  Future<void> _restoreBackup(
+    BuildContext context,
+    ProviderContainer container,
+  ) async {
     final l10n = context.l10n;
 
     try {
       final file = await openFile(
         acceptedTypeGroups: const [
-          XTypeGroup(label: 'json', extensions: ['json']),
+          XTypeGroup(
+            label: 'json',
+            extensions: ['json'],
+            uniformTypeIdentifiers: ['public.json'],
+          ),
         ],
         confirmButtonText: l10n.importBackupAction,
       );
@@ -291,12 +297,12 @@ class AppMenuDrawer extends ConsumerWidget {
         return;
       }
 
-      await ref
+      await container
           .read(backupServiceProvider)
           .restoreFromJsonString(await file.readAsString());
 
-      ref.invalidate(dependantListControllerProvider);
-      ref.invalidate(allNotesFeedProvider);
+      container.invalidate(dependantListControllerProvider);
+      container.invalidate(allNotesFeedProvider);
 
       showCenteredSnackBar(context, l10n.backupRestoreSuccess);
     } catch (error) {
@@ -307,10 +313,13 @@ class AppMenuDrawer extends ConsumerWidget {
     }
   }
 
-  Future<void> _showLanguageDialog(BuildContext context, WidgetRef ref) async {
+  Future<void> _showLanguageDialog(
+    BuildContext context,
+    ProviderContainer container,
+  ) async {
     final selectedLanguageCode =
-        ref.read(appLocaleControllerProvider)?.languageCode ?? 'system';
-    final controller = ref.read(appLocaleControllerProvider.notifier);
+        container.read(appLocaleControllerProvider)?.languageCode ?? 'system';
+    final controller = container.read(appLocaleControllerProvider.notifier);
     final l10n = context.l10n;
 
     await showDialog<void>(
@@ -355,9 +364,12 @@ class AppMenuDrawer extends ConsumerWidget {
     );
   }
 
-  Future<void> _showSortDialog(BuildContext context, WidgetRef ref) async {
-    final controller = ref.read(dependantSortOrderProvider.notifier);
-    final selectedOrder = ref.read(dependantSortOrderProvider);
+  Future<void> _showSortDialog(
+    BuildContext context,
+    ProviderContainer container,
+  ) async {
+    final controller = container.read(dependantSortOrderProvider.notifier);
+    final selectedOrder = container.read(dependantSortOrderProvider);
     final l10n = context.l10n;
 
     await showDialog<void>(
