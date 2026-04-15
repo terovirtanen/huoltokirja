@@ -5,10 +5,19 @@
   "targetSortAction": "Target sorting",
   "targetSortLatestNote": "Latest note",
   "targetSortName": "Name",
+  "backupMenuAction": "Backups",
+  "backupMenuSubtitle": "Cloud sync, export and restore",
   "exportBackupAction": "Export backup",
   "exportBackupSubtitle": "Create a JSON backup for iCloud or Jottacloud",
   "importBackupAction": "Restore backup",
-  "importBackupSubtitle": "Import a previously exported backup file",
+  "importBackupSubtitle": "Choose backup version to restore (latest by default)",
+  "backupRestoreConfirmBody": "Current data will be replaced by the backup. Continue?",
+  "backupRestoreNoBackupFound": "No backup found",
+  "backupCloudSyncAction": "Sync backup to cloud",
+  "backupCloudSyncEnabled": "On",
+  "backupCloudSyncDisabled": "Off",
+  "backupCloudFolderAction": "Choose cloud folder",
+  "backupCloudFolderNotSet": "Not set",
   "exportCsvAction": "Export data to CSV",
   "exportCsvSubtitle": "Export targets and notes into a table file",
   "exportPdfAction": "Create PDF report",
@@ -44,7 +53,56 @@
       "fileName": {}
     }
   },
+  "backupSavedToDevice": "Backup saved to device: {fileName}",
+  "@backupSavedToDevice": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "backupSavedToDeviceCloudSyncOnClose": "Backup saved to device: {fileName}. Cloud sync will run when the app closes.",
+  "@backupSavedToDeviceCloudSyncOnClose": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "backupSavedToDeviceCloudFolderMissing": "Backup saved to device: {fileName}. Choose a cloud folder to enable close-time cloud sync.",
+  "@backupSavedToDeviceCloudFolderMissing": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "backupCloudFolderSet": "Cloud folder set: {folderName}",
+  "@backupCloudFolderSet": {
+    "placeholders": {
+      "folderName": {}
+    }
+  },
+  "backupCloudFolderSetFailed": "Failed to set cloud folder: {error}",
+  "@backupCloudFolderSetFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "backupRestoreSuccess": "Backup restored",
+  "backupVersionPickerTitle": "Choose backup version",
+  "backupSourceCloud": "Cloud",
+  "backupSourceDevice": "Device",
+  "cloudBackupFoundTitle": "Cloud backup found",
+  "cloudBackupFoundBody": "Restore the latest cloud backup to this installation?",
+  "backupCloudSyncSuccess": "Backup synced to cloud: {fileName}",
+  "@backupCloudSyncSuccess": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "backupCloudSyncFailedLocalSaved": "Cloud sync failed ({error}), backup saved to device",
+  "@backupCloudSyncFailedLocalSaved": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "backupCloudSyncOn": "Cloud sync enabled",
+  "backupCloudSyncOff": "Cloud sync disabled",
   "versionValue": "Version {version}",
   "@versionValue": {
     "placeholders": {

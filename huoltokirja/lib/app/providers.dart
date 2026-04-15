@@ -32,6 +32,16 @@ final appLocaleControllerProvider =
 
 enum DependantSortOrder { latestNote, name }
 
+final backupCloudSyncEnabledProvider =
+    NotifierProvider<BackupCloudSyncController, bool>(
+      BackupCloudSyncController.new,
+    );
+
+final backupCloudDirectoryPathProvider =
+    NotifierProvider<BackupCloudDirectoryPathController, String?>(
+      BackupCloudDirectoryPathController.new,
+    );
+
 final dependantSortOrderProvider =
     NotifierProvider<DependantSortController, DependantSortOrder>(
       DependantSortController.new,
@@ -102,6 +112,65 @@ class DependantSortController extends Notifier<DependantSortOrder> {
       (order) => order.name == value,
       orElse: () => DependantSortOrder.latestNote,
     );
+  }
+
+  Future<SharedPreferences> _getPreferences() async {
+    return _preferences ??= await SharedPreferences.getInstance();
+  }
+}
+
+class BackupCloudSyncController extends Notifier<bool> {
+  static const _preferenceKey = 'backup_cloud_sync_enabled';
+  SharedPreferences? _preferences;
+
+  @override
+  bool build() {
+    unawaited(_loadSavedValue());
+    return true;
+  }
+
+  Future<void> setEnabled(bool enabled) async {
+    final preferences = await _getPreferences();
+    await preferences.setBool(_preferenceKey, enabled);
+    state = enabled;
+  }
+
+  Future<void> _loadSavedValue() async {
+    final preferences = await _getPreferences();
+    state = preferences.getBool(_preferenceKey) ?? true;
+  }
+
+  Future<SharedPreferences> _getPreferences() async {
+    return _preferences ??= await SharedPreferences.getInstance();
+  }
+}
+
+class BackupCloudDirectoryPathController extends Notifier<String?> {
+  static const _preferenceKey = 'backup_cloud_directory_path';
+  SharedPreferences? _preferences;
+
+  @override
+  String? build() {
+    unawaited(_loadSavedValue());
+    return null;
+  }
+
+  Future<void> setPath(String path) async {
+    final preferences = await _getPreferences();
+    await preferences.setString(_preferenceKey, path);
+    state = path;
+  }
+
+  Future<void> clearPath() async {
+    final preferences = await _getPreferences();
+    await preferences.remove(_preferenceKey);
+    state = null;
+  }
+
+  Future<void> _loadSavedValue() async {
+    final preferences = await _getPreferences();
+    final path = preferences.getString(_preferenceKey);
+    state = (path == null || path.isEmpty) ? null : path;
   }
 
   Future<SharedPreferences> _getPreferences() async {

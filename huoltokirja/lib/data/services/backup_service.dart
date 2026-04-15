@@ -11,6 +11,22 @@ import '../database/schema.dart';
 
 typedef BackupDirectoryProvider = Future<Directory> Function();
 
+enum BackupSource { device, cloud }
+
+class BackupVersion {
+  const BackupVersion({
+    required this.file,
+    required this.source,
+    required this.modifiedAt,
+  });
+
+  final File file;
+  final BackupSource source;
+  final DateTime modifiedAt;
+
+  String get fileName => p.basename(file.path);
+}
+
 class BackupPayload {
   const BackupPayload({
     required this.schemaVersion,
@@ -96,8 +112,10 @@ class AppBackupService {
   static const _automaticBackupFolderName = 'backups';
   static const _automaticBackupLatestFileName = 'huoltokirja-auto-latest.json';
   static const _automaticBackupPrefix = 'huoltokirja-auto';
+  static const _cloudBackupPrefix = 'huoltokirja-cloud';
   static const _manualBackupPrefix = 'huoltokirja-backup';
   static const _maxAutomaticHistoryFiles = 10;
+  static const _maxCloudHistoryFiles = 30;
 
   final AppDatabase _database;
   final BackupDirectoryProvider _automaticBackupDirectoryProvider;
@@ -106,6 +124,7 @@ class AppBackupService {
   final Duration automaticBackupDelay;
 
   Timer? _automaticBackupTimer;
+  Future<File>? _automaticBackupInFlight;
 
   Future<BackupPayload> createBackupPayload() async {
     final dependants = await _database.raw.query(
@@ -132,17 +151,20 @@ class AppBackupService {
     return const JsonEncoder.withIndent('  ').convert(payload.toJson());
   }
 
-  Future<File> exportBackupArchive() async {
-    final payload = await createBackupPayload();
-    final directory = await _exportDirectoryProvider();
-    await directory.create(recursive: true);
+  String buildManualBackupFileName() {
+    return '$_manualBackupPrefix-${_timestamp(_nowProvider())}.json';
+  }
 
-    final file = File(
-      p.join(
-        directory.path,
-        '$_manualBackupPrefix-${_timestamp(_nowProvider())}.json',
-      ),
-    );
+  Future<File> exportBackupArchive() async {
+    final directory = await _exportDirectoryProvider();
+    final filePath = p.join(directory.path, buildManualBackupFileName());
+    return exportBackupArchiveToPath(filePath);
+  }
+
+  Future<File> exportBackupArchiveToPath(String filePath) async {
+    final payload = await createBackupPayload();
+    final file = File(filePath);
+    await file.parent.create(recursive: true);
     await file.writeAsString(encodeBackupPayload(payload), flush: true);
     return file;
   }
@@ -167,6 +189,160 @@ class AppBackupService {
   }
 
   Future<File> createAutomaticBackup() async {
+    final inFlight = _automaticBackupInFlight;
+    if (inFlight != null) {
+      return inFlight;
+    }
+
+    final operation = _createAutomaticBackupInternal();
+    _automaticBackupInFlight = operation;
+
+    try {
+      return await operation;
+    } finally {
+      _automaticBackupInFlight = null;
+    }
+  }
+
+  Future<File?> getLatestAutomaticBackupFile() async {
+    final rootDirectory = await _automaticBackupDirectoryProvider();
+    final latestFile = File(
+      p.join(
+        rootDirectory.path,
+        _automaticBackupFolderName,
+        _automaticBackupLatestFileName,
+      ),
+    );
+
+    if (await latestFile.exists()) {
+      return latestFile;
+    }
+
+    return null;
+  }
+
+  Future<File?> syncLatestBackupToCloud({
+    required bool enabled,
+    required String? cloudDirectoryPath,
+  }) async {
+    if (!enabled || cloudDirectoryPath == null || cloudDirectoryPath.isEmpty) {
+      return null;
+    }
+
+    final latest = await getLatestAutomaticBackupFile();
+    if (latest == null) {
+      return null;
+    }
+
+    final cloudDirectory = Directory(cloudDirectoryPath);
+    await cloudDirectory.create(recursive: true);
+
+    final cloudFile = File(
+      p.join(
+        cloudDirectory.path,
+        '$_cloudBackupPrefix-${_timestamp(_nowProvider())}.json',
+      ),
+    );
+    await latest.copy(cloudFile.path);
+
+    await _trimBackupHistory(
+      cloudDirectory,
+      prefix: _cloudBackupPrefix,
+      maxFiles: _maxCloudHistoryFiles,
+    );
+
+    return cloudFile;
+  }
+
+  Future<List<BackupVersion>> listRestorableBackups({
+    String? cloudDirectoryPath,
+  }) async {
+    final versions = <BackupVersion>[];
+
+    final rootDirectory = await _automaticBackupDirectoryProvider();
+    final localDirectory = Directory(
+      p.join(rootDirectory.path, _automaticBackupFolderName),
+    );
+    if (await localDirectory.exists()) {
+      final localFiles = await _listVersionFiles(
+        localDirectory,
+        prefix: _automaticBackupPrefix,
+      );
+      for (final file in localFiles) {
+        final stat = await file.stat();
+        versions.add(
+          BackupVersion(
+            file: file,
+            source: BackupSource.device,
+            modifiedAt: stat.modified,
+          ),
+        );
+      }
+    }
+
+    if (cloudDirectoryPath != null && cloudDirectoryPath.isNotEmpty) {
+      final cloudDirectory = Directory(cloudDirectoryPath);
+      if (await cloudDirectory.exists()) {
+        final cloudFiles = await _listVersionFiles(
+          cloudDirectory,
+          prefix: _cloudBackupPrefix,
+        );
+        for (final file in cloudFiles) {
+          final stat = await file.stat();
+          versions.add(
+            BackupVersion(
+              file: file,
+              source: BackupSource.cloud,
+              modifiedAt: stat.modified,
+            ),
+          );
+        }
+      }
+    }
+
+    versions.sort((a, b) {
+      final compareDate = b.modifiedAt.compareTo(a.modifiedAt);
+      if (compareDate != 0) {
+        return compareDate;
+      }
+      if (a.source != b.source) {
+        return a.source == BackupSource.cloud ? -1 : 1;
+      }
+      return b.file.path.compareTo(a.file.path);
+    });
+
+    return versions;
+  }
+
+  Future<List<BackupVersion>> listCloudBackups({
+    required String cloudDirectoryPath,
+  }) async {
+    final cloudDirectory = Directory(cloudDirectoryPath);
+    if (!await cloudDirectory.exists()) {
+      return const [];
+    }
+
+    final files = await _listVersionFiles(
+      cloudDirectory,
+      prefix: _cloudBackupPrefix,
+    );
+    final versions = <BackupVersion>[];
+    for (final file in files) {
+      final stat = await file.stat();
+      versions.add(
+        BackupVersion(
+          file: file,
+          source: BackupSource.cloud,
+          modifiedAt: stat.modified,
+        ),
+      );
+    }
+
+    versions.sort((a, b) => b.modifiedAt.compareTo(a.modifiedAt));
+    return versions;
+  }
+
+  Future<File> _createAutomaticBackupInternal() async {
     final payload = await createBackupPayload();
     final rootDirectory = await _automaticBackupDirectoryProvider();
     final backupDirectory = Directory(
@@ -188,8 +364,27 @@ class AppBackupService {
     );
     await historyFile.writeAsString(contents, flush: true);
 
-    await _trimAutomaticBackupHistory(backupDirectory);
+    await _trimBackupHistory(
+      backupDirectory,
+      prefix: _automaticBackupPrefix,
+      maxFiles: _maxAutomaticHistoryFiles,
+    );
     return latestFile;
+  }
+
+  Future<List<File>> _listVersionFiles(
+    Directory directory, {
+    required String prefix,
+  }) async {
+    final files = await directory
+        .list()
+        .where((entity) => entity is File)
+        .cast<File>()
+        .where((file) => p.basename(file.path).startsWith('$prefix-'))
+        .toList();
+
+    files.sort((a, b) => b.path.compareTo(a.path));
+    return files;
   }
 
   Future<void> restoreFromJsonString(String jsonString) async {
@@ -294,21 +489,13 @@ class AppBackupService {
     throw FormatException('Varmuuskopio sisältää tukemattoman arvotyypin.');
   }
 
-  Future<void> _trimAutomaticBackupHistory(Directory directory) async {
-    final files = await directory
-        .list()
-        .where((entity) => entity is File)
-        .cast<File>()
-        .where(
-          (file) =>
-              p.basename(file.path).startsWith('$_automaticBackupPrefix-') &&
-              p.basename(file.path) != _automaticBackupLatestFileName,
-        )
-        .toList();
-
-    files.sort((a, b) => b.path.compareTo(a.path));
-
-    for (final staleFile in files.skip(_maxAutomaticHistoryFiles)) {
+  Future<void> _trimBackupHistory(
+    Directory directory, {
+    required String prefix,
+    required int maxFiles,
+  }) async {
+    final files = await _listVersionFiles(directory, prefix: prefix);
+    for (final staleFile in files.skip(maxFiles)) {
       await staleFile.delete();
     }
   }

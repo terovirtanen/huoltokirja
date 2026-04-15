@@ -125,6 +125,18 @@ abstract class AppLocalizations {
   /// **'Name'**
   String get targetSortName;
 
+  /// No description provided for @backupMenuAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups'**
+  String get backupMenuAction;
+
+  /// No description provided for @backupMenuSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud sync, export and restore'**
+  String get backupMenuSubtitle;
+
   /// No description provided for @exportBackupAction.
   ///
   /// In en, this message translates to:
@@ -146,8 +158,50 @@ abstract class AppLocalizations {
   /// No description provided for @importBackupSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Import a previously exported backup file'**
+  /// **'Choose backup version to restore (latest by default)'**
   String get importBackupSubtitle;
+
+  /// No description provided for @backupRestoreConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Current data will be replaced by the backup. Continue?'**
+  String get backupRestoreConfirmBody;
+
+  /// No description provided for @backupRestoreNoBackupFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No backup found'**
+  String get backupRestoreNoBackupFound;
+
+  /// No description provided for @backupCloudSyncAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync backup to cloud'**
+  String get backupCloudSyncAction;
+
+  /// No description provided for @backupCloudSyncEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get backupCloudSyncEnabled;
+
+  /// No description provided for @backupCloudSyncDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get backupCloudSyncDisabled;
+
+  /// No description provided for @backupCloudFolderAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose cloud folder'**
+  String get backupCloudFolderAction;
+
+  /// No description provided for @backupCloudFolderNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get backupCloudFolderNotSet;
 
   /// No description provided for @exportCsvAction.
   ///
@@ -239,11 +293,95 @@ abstract class AppLocalizations {
   /// **'Backup ready: {fileName}'**
   String backupExportReady(Object fileName);
 
+  /// No description provided for @backupSavedToDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup saved to device: {fileName}'**
+  String backupSavedToDevice(Object fileName);
+
+  /// No description provided for @backupSavedToDeviceCloudSyncOnClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup saved to device: {fileName}. Cloud sync will run when the app closes.'**
+  String backupSavedToDeviceCloudSyncOnClose(Object fileName);
+
+  /// No description provided for @backupSavedToDeviceCloudFolderMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup saved to device: {fileName}. Choose a cloud folder to enable close-time cloud sync.'**
+  String backupSavedToDeviceCloudFolderMissing(Object fileName);
+
+  /// No description provided for @backupCloudFolderSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud folder set: {folderName}'**
+  String backupCloudFolderSet(Object folderName);
+
+  /// No description provided for @backupCloudFolderSetFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to set cloud folder: {error}'**
+  String backupCloudFolderSetFailed(Object error);
+
   /// No description provided for @backupRestoreSuccess.
   ///
   /// In en, this message translates to:
   /// **'Backup restored'**
   String get backupRestoreSuccess;
+
+  /// No description provided for @backupVersionPickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose backup version'**
+  String get backupVersionPickerTitle;
+
+  /// No description provided for @backupSourceCloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud'**
+  String get backupSourceCloud;
+
+  /// No description provided for @backupSourceDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Device'**
+  String get backupSourceDevice;
+
+  /// No description provided for @cloudBackupFoundTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud backup found'**
+  String get cloudBackupFoundTitle;
+
+  /// No description provided for @cloudBackupFoundBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore the latest cloud backup to this installation?'**
+  String get cloudBackupFoundBody;
+
+  /// No description provided for @backupCloudSyncSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup synced to cloud: {fileName}'**
+  String backupCloudSyncSuccess(Object fileName);
+
+  /// No description provided for @backupCloudSyncFailedLocalSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud sync failed ({error}), backup saved to device'**
+  String backupCloudSyncFailedLocalSaved(Object error);
+
+  /// No description provided for @backupCloudSyncOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud sync enabled'**
+  String get backupCloudSyncOn;
+
+  /// No description provided for @backupCloudSyncOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud sync disabled'**
+  String get backupCloudSyncOff;
 
   /// No description provided for @versionValue.
   ///

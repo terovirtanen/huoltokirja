@@ -24,6 +24,12 @@ class AppLocalizationsFi extends AppLocalizations {
   String get targetSortName => 'Nimen mukaan';
 
   @override
+  String get backupMenuAction => 'Varmuuskopiointi';
+
+  @override
+  String get backupMenuSubtitle => 'Pilvisynkronointi, vienti ja palautus';
+
+  @override
   String get exportBackupAction => 'Vie varmuuskopio';
 
   @override
@@ -33,7 +39,28 @@ class AppLocalizationsFi extends AppLocalizations {
   String get importBackupAction => 'Palauta varmuuskopio';
 
   @override
-  String get importBackupSubtitle => 'Tuo aiemmin viety varmuuskopio tiedostosta';
+  String get importBackupSubtitle => 'Valitse palautettava varmuuskopio (oletus uusin)';
+
+  @override
+  String get backupRestoreConfirmBody => 'Nykyiset tiedot korvataan varmuuskopiolla. Haluatko jatkaa?';
+
+  @override
+  String get backupRestoreNoBackupFound => 'Varmuuskopiota ei löydy';
+
+  @override
+  String get backupCloudSyncAction => 'Synkronoi varmuuskopio pilveen';
+
+  @override
+  String get backupCloudSyncEnabled => 'Päällä';
+
+  @override
+  String get backupCloudSyncDisabled => 'Pois';
+
+  @override
+  String get backupCloudFolderAction => 'Valitse pilvikansio';
+
+  @override
+  String get backupCloudFolderNotSet => 'Ei valittu';
 
   @override
   String get exportCsvAction => 'Vie tiedot CSV-tiedostoon';
@@ -89,7 +116,63 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
+  String backupSavedToDevice(Object fileName) {
+    return 'Varmuuskopio tallennettu laitteelle: $fileName';
+  }
+
+  @override
+  String backupSavedToDeviceCloudSyncOnClose(Object fileName) {
+    return 'Varmuuskopio tallennettu laitteelle: $fileName. Pilvisynkronointi tehdään sovelluksen sulkemisen yhteydessä.';
+  }
+
+  @override
+  String backupSavedToDeviceCloudFolderMissing(Object fileName) {
+    return 'Varmuuskopio tallennettu laitteelle: $fileName. Valitse pilvikansio, jotta sulkemisen aikainen pilvisynkronointi toimii.';
+  }
+
+  @override
+  String backupCloudFolderSet(Object folderName) {
+    return 'Pilvikansio asetettu: $folderName';
+  }
+
+  @override
+  String backupCloudFolderSetFailed(Object error) {
+    return 'Pilvikansion asetus epäonnistui: $error';
+  }
+
+  @override
   String get backupRestoreSuccess => 'Varmuuskopio palautettu';
+
+  @override
+  String get backupVersionPickerTitle => 'Valitse palautettava varmuuskopio';
+
+  @override
+  String get backupSourceCloud => 'Pilvi';
+
+  @override
+  String get backupSourceDevice => 'Laite';
+
+  @override
+  String get cloudBackupFoundTitle => 'Pilvivarmuuskopio löytyi';
+
+  @override
+  String get cloudBackupFoundBody => 'Haluatko palauttaa uusimman pilvivarmuuskopion tähän asennukseen?';
+
+  @override
+  String backupCloudSyncSuccess(Object fileName) {
+    return 'Varmuuskopio synkronoitu pilveen: $fileName';
+  }
+
+  @override
+  String backupCloudSyncFailedLocalSaved(Object error) {
+    return 'Pilvisynkronointi epäonnistui ($error), varmuuskopio tallennettu laitteelle';
+  }
+
+  @override
+  String get backupCloudSyncOn => 'Pilvisynkronointi käytössä';
+
+  @override
+  String get backupCloudSyncOff => 'Pilvisynkronointi poistettu käytöstä';
 
   @override
   String versionValue(Object version) {

@@ -152,6 +152,48 @@ void main() {
     expect(await file.readAsString(), contains('schemaVersion'));
   });
 
+  test('sync latest backup to cloud writes cloud backup file', () async {
+    final service = buildService();
+
+    await service.createAutomaticBackup();
+
+    final cloudDir = Directory('${tempDir.path}/cloud');
+    final cloudFile = await service.syncLatestBackupToCloud(
+      enabled: true,
+      cloudDirectoryPath: cloudDir.path,
+    );
+
+    expect(cloudFile, isNotNull);
+    expect(await cloudFile!.exists(), isTrue);
+    expect(cloudFile.path, contains('huoltokirja-cloud-'));
+  });
+
+  test('list restorable backups returns newest first', () async {
+    final service = buildService();
+
+    final root = await tempDir.create(recursive: true);
+    final localDir = Directory('${root.path}/backups');
+    final cloudDir = Directory('${root.path}/cloud');
+    await localDir.create(recursive: true);
+    await cloudDir.create(recursive: true);
+
+    final olderLocal = File('${localDir.path}/huoltokirja-auto-2026-01.json');
+    await olderLocal.writeAsString('{}');
+    final newerCloud = File('${cloudDir.path}/huoltokirja-cloud-2026-02.json');
+    await newerCloud.writeAsString('{}');
+
+    await olderLocal.setLastModified(DateTime(2026, 1, 1));
+    await newerCloud.setLastModified(DateTime(2026, 2, 1));
+
+    final versions = await service.listRestorableBackups(
+      cloudDirectoryPath: cloudDir.path,
+    );
+
+    expect(versions, isNotEmpty);
+    expect(versions.first.file.path, equals(newerCloud.path));
+    expect(versions.first.source, equals(BackupSource.cloud));
+  });
+
   test('restore tolerates unknown columns and boolean values', () async {
     final dependant = await dependantRepo.create(
       Dependant(

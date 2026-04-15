@@ -24,6 +24,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get targetSortName => 'Name';
 
   @override
+  String get backupMenuAction => 'Backups';
+
+  @override
+  String get backupMenuSubtitle => 'Cloud sync, export and restore';
+
+  @override
   String get exportBackupAction => 'Export backup';
 
   @override
@@ -33,7 +39,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importBackupAction => 'Restore backup';
 
   @override
-  String get importBackupSubtitle => 'Import a previously exported backup file';
+  String get importBackupSubtitle => 'Choose backup version to restore (latest by default)';
+
+  @override
+  String get backupRestoreConfirmBody => 'Current data will be replaced by the backup. Continue?';
+
+  @override
+  String get backupRestoreNoBackupFound => 'No backup found';
+
+  @override
+  String get backupCloudSyncAction => 'Sync backup to cloud';
+
+  @override
+  String get backupCloudSyncEnabled => 'On';
+
+  @override
+  String get backupCloudSyncDisabled => 'Off';
+
+  @override
+  String get backupCloudFolderAction => 'Choose cloud folder';
+
+  @override
+  String get backupCloudFolderNotSet => 'Not set';
 
   @override
   String get exportCsvAction => 'Export data to CSV';
@@ -89,7 +116,63 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String backupSavedToDevice(Object fileName) {
+    return 'Backup saved to device: $fileName';
+  }
+
+  @override
+  String backupSavedToDeviceCloudSyncOnClose(Object fileName) {
+    return 'Backup saved to device: $fileName. Cloud sync will run when the app closes.';
+  }
+
+  @override
+  String backupSavedToDeviceCloudFolderMissing(Object fileName) {
+    return 'Backup saved to device: $fileName. Choose a cloud folder to enable close-time cloud sync.';
+  }
+
+  @override
+  String backupCloudFolderSet(Object folderName) {
+    return 'Cloud folder set: $folderName';
+  }
+
+  @override
+  String backupCloudFolderSetFailed(Object error) {
+    return 'Failed to set cloud folder: $error';
+  }
+
+  @override
   String get backupRestoreSuccess => 'Backup restored';
+
+  @override
+  String get backupVersionPickerTitle => 'Choose backup version';
+
+  @override
+  String get backupSourceCloud => 'Cloud';
+
+  @override
+  String get backupSourceDevice => 'Device';
+
+  @override
+  String get cloudBackupFoundTitle => 'Cloud backup found';
+
+  @override
+  String get cloudBackupFoundBody => 'Restore the latest cloud backup to this installation?';
+
+  @override
+  String backupCloudSyncSuccess(Object fileName) {
+    return 'Backup synced to cloud: $fileName';
+  }
+
+  @override
+  String backupCloudSyncFailedLocalSaved(Object error) {
+    return 'Cloud sync failed ($error), backup saved to device';
+  }
+
+  @override
+  String get backupCloudSyncOn => 'Cloud sync enabled';
+
+  @override
+  String get backupCloudSyncOff => 'Cloud sync disabled';
 
   @override
   String versionValue(Object version) {

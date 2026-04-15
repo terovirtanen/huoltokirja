@@ -5,10 +5,19 @@
   "targetSortAction": "Kohteiden järjestys",
   "targetSortLatestNote": "Viimeisin muistiinpano",
   "targetSortName": "Nimen mukaan",
+  "backupMenuAction": "Varmuuskopiointi",
+  "backupMenuSubtitle": "Pilvisynkronointi, vienti ja palautus",
   "exportBackupAction": "Vie varmuuskopio",
   "exportBackupSubtitle": "Luo JSON-varmuuskopio iCloudiin tai Jottacloudiin",
   "importBackupAction": "Palauta varmuuskopio",
-  "importBackupSubtitle": "Tuo aiemmin viety varmuuskopio tiedostosta",
+  "importBackupSubtitle": "Valitse palautettava varmuuskopio (oletus uusin)",
+  "backupRestoreConfirmBody": "Nykyiset tiedot korvataan varmuuskopiolla. Haluatko jatkaa?",
+  "backupRestoreNoBackupFound": "Varmuuskopiota ei löydy",
+  "backupCloudSyncAction": "Synkronoi varmuuskopio pilveen",
+  "backupCloudSyncEnabled": "Päällä",
+  "backupCloudSyncDisabled": "Pois",
+  "backupCloudFolderAction": "Valitse pilvikansio",
+  "backupCloudFolderNotSet": "Ei valittu",
   "exportCsvAction": "Vie tiedot CSV-tiedostoon",
   "exportCsvSubtitle": "Vie kohteet ja muistiinpanot taulukkomuotoon",
   "exportPdfAction": "Tulosta PDF-raportti",
@@ -44,7 +53,56 @@
       "fileName": {}
     }
   },
+  "backupSavedToDevice": "Varmuuskopio tallennettu laitteelle: {fileName}",
+  "@backupSavedToDevice": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "backupSavedToDeviceCloudSyncOnClose": "Varmuuskopio tallennettu laitteelle: {fileName}. Pilvisynkronointi tehdään sovelluksen sulkemisen yhteydessä.",
+  "@backupSavedToDeviceCloudSyncOnClose": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "backupSavedToDeviceCloudFolderMissing": "Varmuuskopio tallennettu laitteelle: {fileName}. Valitse pilvikansio, jotta sulkemisen aikainen pilvisynkronointi toimii.",
+  "@backupSavedToDeviceCloudFolderMissing": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "backupCloudFolderSet": "Pilvikansio asetettu: {folderName}",
+  "@backupCloudFolderSet": {
+    "placeholders": {
+      "folderName": {}
+    }
+  },
+  "backupCloudFolderSetFailed": "Pilvikansion asetus epäonnistui: {error}",
+  "@backupCloudFolderSetFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "backupRestoreSuccess": "Varmuuskopio palautettu",
+  "backupVersionPickerTitle": "Valitse palautettava varmuuskopio",
+  "backupSourceCloud": "Pilvi",
+  "backupSourceDevice": "Laite",
+  "cloudBackupFoundTitle": "Pilvivarmuuskopio löytyi",
+  "cloudBackupFoundBody": "Haluatko palauttaa uusimman pilvivarmuuskopion tähän asennukseen?",
+  "backupCloudSyncSuccess": "Varmuuskopio synkronoitu pilveen: {fileName}",
+  "@backupCloudSyncSuccess": {
+    "placeholders": {
+      "fileName": {}
+    }
+  },
+  "backupCloudSyncFailedLocalSaved": "Pilvisynkronointi epäonnistui ({error}), varmuuskopio tallennettu laitteelle",
+  "@backupCloudSyncFailedLocalSaved": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "backupCloudSyncOn": "Pilvisynkronointi käytössä",
+  "backupCloudSyncOff": "Pilvisynkronointi poistettu käytöstä",
   "versionValue": "Versio {version}",
   "@versionValue": {
     "placeholders": {

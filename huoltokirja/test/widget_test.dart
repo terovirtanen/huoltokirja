@@ -66,11 +66,31 @@ void main() {
 
     expect(find.byType(Drawer), findsOneWidget);
     expect(find.text('Kohteiden järjestys'), findsOneWidget);
-    expect(find.text('Vie varmuuskopio'), findsOneWidget);
-    expect(find.text('Palauta varmuuskopio'), findsOneWidget);
-    expect(find.text('Vie tiedot CSV-tiedostoon'), findsOneWidget);
-    expect(find.text('Tulosta PDF-raportti'), findsOneWidget);
+    expect(find.text('Varmuuskopiointi'), findsOneWidget);
+    expect(find.text('Synkronoi varmuuskopio pilveen'), findsNothing);
+    expect(find.text('Vie varmuuskopio'), findsNothing);
+    expect(find.text('Palauta varmuuskopio'), findsNothing);
     expect(find.textContaining('Nykyinen:'), findsWidgets);
+
+    await tester.scrollUntilVisible(
+      find.widgetWithText(ListTile, 'Vie tiedot CSV-tiedostoon'),
+      120,
+      scrollable: find.descendant(
+        of: find.byType(Drawer),
+        matching: find.byType(Scrollable),
+      ),
+    );
+    expect(find.text('Vie tiedot CSV-tiedostoon'), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.widgetWithText(ListTile, 'Tulosta PDF-raportti'),
+      120,
+      scrollable: find.descendant(
+        of: find.byType(Drawer),
+        matching: find.byType(Scrollable),
+      ),
+    );
+    expect(find.text('Tulosta PDF-raportti'), findsOneWidget);
 
     await tester.scrollUntilVisible(
       find.widgetWithText(ListTile, 'Vaihda kieli'),
