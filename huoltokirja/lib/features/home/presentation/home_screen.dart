@@ -122,7 +122,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> _showTagFilterSheet(List<String> availableTags) async {
-    final selectedTags = await showModalBottomSheet<Set<String>>(
+    await showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
       builder: (context) {
@@ -161,6 +161,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     tempSelection.remove(tag);
                                   }
                                 });
+
+                                if (mounted) {
+                                  setState(
+                                    () => _selectedTags = Set<String>.from(
+                                      tempSelection,
+                                    ),
+                                  );
+                                }
                               },
                             ),
                           )
@@ -170,15 +178,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   Row(
                     children: [
                       FilledButton.tonal(
-                        onPressed: () => Navigator.of(context).pop(<String>{}),
+                        onPressed: () {
+                          if (mounted) {
+                            setState(() => _selectedTags = <String>{});
+                          }
+                          Navigator.of(context).pop();
+                        },
                         child: Text(l10n.showAllTargets),
-                      ),
-                      const Spacer(),
-                      FilledButton(
-                        onPressed: () => Navigator.of(
-                          context,
-                        ).pop(Set<String>.from(tempSelection)),
-                        child: Text(l10n.applyFilterAction),
                       ),
                     ],
                   ),
@@ -189,10 +195,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         );
       },
     );
-
-    if (selectedTags != null && mounted) {
-      setState(() => _selectedTags = selectedTags);
-    }
   }
 }
 
