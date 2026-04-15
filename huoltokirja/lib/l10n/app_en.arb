@@ -83,6 +83,7 @@
       "error": {}
     }
   },
+  "backupCloudFolderPickFileHint": "Pick any file from the target cloud folder and the folder will be used.",
   "backupRestoreSuccess": "Backup restored",
   "backupVersionPickerTitle": "Choose backup version",
   "backupSourceCloud": "Cloud",

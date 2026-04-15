@@ -83,6 +83,7 @@
       "error": {}
     }
   },
+  "backupCloudFolderPickFileHint": "Valitse jokin tiedosto halutusta pilvikansiosta, niin kansio asetetaan käyttöön.",
   "backupRestoreSuccess": "Varmuuskopio palautettu",
   "backupVersionPickerTitle": "Valitse palautettava varmuuskopio",
   "backupSourceCloud": "Pilvi",

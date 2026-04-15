@@ -323,6 +323,12 @@ abstract class AppLocalizations {
   /// **'Failed to set cloud folder: {error}'**
   String backupCloudFolderSetFailed(Object error);
 
+  /// No description provided for @backupCloudFolderPickFileHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick any file from the target cloud folder and the folder will be used.'**
+  String get backupCloudFolderPickFileHint;
+
   /// No description provided for @backupRestoreSuccess.
   ///
   /// In en, this message translates to:

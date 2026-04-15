@@ -141,6 +141,9 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
+  String get backupCloudFolderPickFileHint => 'Valitse jokin tiedosto halutusta pilvikansiosta, niin kansio asetetaan käyttöön.';
+
+  @override
   String get backupRestoreSuccess => 'Varmuuskopio palautettu';
 
   @override

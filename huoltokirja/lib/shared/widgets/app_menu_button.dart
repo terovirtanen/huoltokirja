@@ -389,14 +389,8 @@ class AppMenuDrawer extends ConsumerWidget {
         selectedPath = saveLocation?.path;
       } on UnimplementedError {
         // Fallback for platforms where save location picking is not supported.
+        showCenteredSnackBar(context, l10n.backupCloudFolderPickFileHint);
         final selectedFile = await openFile(
-          acceptedTypeGroups: const [
-            XTypeGroup(
-              label: 'json',
-              extensions: ['json'],
-              uniformTypeIdentifiers: ['public.json'],
-            ),
-          ],
           confirmButtonText: l10n.backupCloudFolderAction,
         );
         selectedPath = selectedFile?.path;

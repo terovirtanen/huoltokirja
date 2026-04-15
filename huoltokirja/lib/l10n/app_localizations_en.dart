@@ -141,6 +141,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get backupCloudFolderPickFileHint => 'Pick any file from the target cloud folder and the folder will be used.';
+
+  @override
   String get backupRestoreSuccess => 'Backup restored';
 
   @override
