@@ -8,7 +8,7 @@
   "backupMenuAction": "Varmuuskopiointi",
   "backupMenuSubtitle": "Pilvisynkronointi, vienti ja palautus",
   "exportBackupAction": "Vie varmuuskopio",
-  "exportBackupSubtitle": "Luo JSON-varmuuskopio iCloudiin tai Jottacloudiin",
+  "exportBackupSubtitle": "Luo varmuuskopio",
   "importBackupAction": "Palauta varmuuskopio",
   "importBackupSubtitle": "Valitse palautettava varmuuskopio (oletus uusin)",
   "backupRestoreConfirmBody": "Nykyiset tiedot korvataan varmuuskopiolla. Haluatko jatkaa?",
@@ -65,7 +65,7 @@
       "fileName": {}
     }
   },
-  "backupSavedToDeviceCloudFolderMissing": "Varmuuskopio tallennettu laitteelle: {fileName}. Valitse pilvikansio, jotta sulkemisen aikainen pilvisynkronointi toimii.",
+  "backupSavedToDeviceCloudFolderMissing": "Varmuuskopio tallennettu laitteelle: {fileName}. Valitse pilvikansio, jotta varmuuskopio voidaan viedä pilveen.",
   "@backupSavedToDeviceCloudFolderMissing": {
     "placeholders": {
       "fileName": {}
@@ -83,7 +83,7 @@
       "error": {}
     }
   },
-  "backupCloudFolderPickFileHint": "Valitse jokin tiedosto halutusta pilvikansiosta, niin kansio asetetaan käyttöön.",
+  "backupCloudFolderPickFileHint": "Pilvikansion valinta ei ole tuettu tällä laitteella tai alustalla.",
   "backupRestoreSuccess": "Varmuuskopio palautettu",
   "backupVersionPickerTitle": "Valitse palautettava varmuuskopio",
   "backupSourceCloud": "Pilvi",

@@ -141,7 +141,7 @@ void main() {
     expect(restoredNotes.map((item) => item.title), ['Rokotus']);
   });
 
-  test('automatic backup writes a json file', () async {
+  test('automatic backup writes only the local latest file', () async {
     final service = buildService();
 
     service.scheduleAutomaticBackup();
@@ -149,23 +149,47 @@ void main() {
 
     expect(file, isNotNull);
     expect(await file!.exists(), isTrue);
+    expect(file.path, endsWith('huoltokirja-auto-latest.json'));
     expect(await file.readAsString(), contains('schemaVersion'));
+
+    final localDir = Directory('${tempDir.path}/backups');
+    final localFiles = await localDir.list().where((e) => e is File).toList();
+    expect(localFiles, hasLength(1));
   });
 
-  test('sync latest backup to cloud writes cloud backup file', () async {
+  test('sync latest backup to cloud rotates latest and prev files', () async {
     final service = buildService();
 
     await service.createAutomaticBackup();
 
     final cloudDir = Directory('${tempDir.path}/cloud');
-    final cloudFile = await service.syncLatestBackupToCloud(
-      enabled: true,
-      cloudDirectoryPath: cloudDir.path,
+    for (var i = 0; i < 5; i++) {
+      final cloudFile = await service.syncLatestBackupToCloud(
+        enabled: true,
+        cloudDirectoryPath: cloudDir.path,
+      );
+      expect(cloudFile, isNotNull);
+    }
+
+    expect(
+      File('${cloudDir.path}/huoltokirja-cloud-latest.json').existsSync(),
+      isTrue,
+    );
+    expect(
+      File('${cloudDir.path}/huoltokirja-cloud-prev-1.json').existsSync(),
+      isTrue,
+    );
+    expect(
+      File('${cloudDir.path}/huoltokirja-cloud-prev-2.json').existsSync(),
+      isTrue,
+    );
+    expect(
+      File('${cloudDir.path}/huoltokirja-cloud-prev-3.json').existsSync(),
+      isTrue,
     );
 
-    expect(cloudFile, isNotNull);
-    expect(await cloudFile!.exists(), isTrue);
-    expect(cloudFile.path, contains('huoltokirja-cloud-'));
+    final cloudFiles = await cloudDir.list().where((e) => e is File).toList();
+    expect(cloudFiles, hasLength(4));
   });
 
   test('list restorable backups returns newest first', () async {
@@ -229,12 +253,14 @@ void main() {
     );
 
     final service = buildService();
-    final payloadJson = jsonDecode(
-      service.encodeBackupPayload(await service.createBackupPayload()),
-    ) as Map<String, dynamic>;
+    final payloadJson =
+        jsonDecode(
+              service.encodeBackupPayload(await service.createBackupPayload()),
+            )
+            as Map<String, dynamic>;
 
-    (payloadJson['dependants'] as List)
-        .first['legacy_dependant_field'] = 'legacy';
+    (payloadJson['dependants'] as List).first['legacy_dependant_field'] =
+        'legacy';
     (payloadJson['notes'] as List).first['approved'] = true;
     (payloadJson['notes'] as List).first['legacy_note_field'] = 123;
     (payloadJson['schedulers'] as List).first['legacy_scheduler_field'] = true;

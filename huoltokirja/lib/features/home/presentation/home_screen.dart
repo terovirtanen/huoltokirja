@@ -58,7 +58,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           bottom: 12,
           child: SafeArea(
             top: false,
-            child: FloatingActionButton.small(
+            child: FloatingActionButton(
               heroTag: 'home-filter-fab',
               tooltip: context.l10n.filterTagsAction,
               backgroundColor: _selectedTags.isEmpty
@@ -153,6 +153,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             (tag) => FilterChip(
                               label: Text(tag),
                               selected: tempSelection.contains(tag),
+                              showCheckmark: false,
                               onSelected: (selected) {
                                 setSheetState(() {
                                   if (selected) {

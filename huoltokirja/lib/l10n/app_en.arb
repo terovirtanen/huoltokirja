@@ -8,7 +8,7 @@
   "backupMenuAction": "Backups",
   "backupMenuSubtitle": "Cloud sync, export and restore",
   "exportBackupAction": "Export backup",
-  "exportBackupSubtitle": "Create a JSON backup for iCloud or Jottacloud",
+  "exportBackupSubtitle": "Create backup",
   "importBackupAction": "Restore backup",
   "importBackupSubtitle": "Choose backup version to restore (latest by default)",
   "backupRestoreConfirmBody": "Current data will be replaced by the backup. Continue?",
@@ -65,7 +65,7 @@
       "fileName": {}
     }
   },
-  "backupSavedToDeviceCloudFolderMissing": "Backup saved to device: {fileName}. Choose a cloud folder to enable close-time cloud sync.",
+  "backupSavedToDeviceCloudFolderMissing": "Backup saved to device: {fileName}. Choose a cloud folder to export the backup to the cloud.",
   "@backupSavedToDeviceCloudFolderMissing": {
     "placeholders": {
       "fileName": {}
@@ -83,7 +83,7 @@
       "error": {}
     }
   },
-  "backupCloudFolderPickFileHint": "Pick any file from the target cloud folder and the folder will be used.",
+  "backupCloudFolderPickFileHint": "Cloud folder selection is not supported on this device or platform.",
   "backupRestoreSuccess": "Backup restored",
   "backupVersionPickerTitle": "Choose backup version",
   "backupSourceCloud": "Cloud",

@@ -111,11 +111,11 @@ class AppBackupService {
   static const backupSchemaVersion = 1;
   static const _automaticBackupFolderName = 'backups';
   static const _automaticBackupLatestFileName = 'huoltokirja-auto-latest.json';
+  static const _cloudBackupLatestFileName = 'huoltokirja-cloud-latest.json';
   static const _automaticBackupPrefix = 'huoltokirja-auto';
   static const _cloudBackupPrefix = 'huoltokirja-cloud';
   static const _manualBackupPrefix = 'huoltokirja-backup';
-  static const _maxAutomaticHistoryFiles = 10;
-  static const _maxCloudHistoryFiles = 30;
+  static const _maxCloudHistoryFiles = 3;
 
   final AppDatabase _database;
   final BackupDirectoryProvider _automaticBackupDirectoryProvider;
@@ -152,7 +152,7 @@ class AppBackupService {
   }
 
   String buildManualBackupFileName() {
-    return '$_manualBackupPrefix-${_timestamp(_nowProvider())}.json';
+    return '$_manualBackupPrefix-latest.json';
   }
 
   Future<File> exportBackupArchive() async {
@@ -237,18 +237,26 @@ class AppBackupService {
     final cloudDirectory = Directory(cloudDirectoryPath);
     await cloudDirectory.create(recursive: true);
 
+    await _rotateBackupSlots(
+      directory: cloudDirectory,
+      latestFileName: _cloudBackupLatestFileName,
+      prefix: _cloudBackupPrefix,
+      maxPreviousFiles: _maxCloudHistoryFiles,
+    );
+
     final cloudFile = File(
-      p.join(
-        cloudDirectory.path,
-        '$_cloudBackupPrefix-${_timestamp(_nowProvider())}.json',
-      ),
+      p.join(cloudDirectory.path, _cloudBackupLatestFileName),
     );
     await latest.copy(cloudFile.path);
 
-    await _trimBackupHistory(
+    await _deleteFilesMatchingPrefix(
       cloudDirectory,
       prefix: _cloudBackupPrefix,
-      maxFiles: _maxCloudHistoryFiles,
+      exceptFileNames: {
+        _cloudBackupLatestFileName,
+        for (var i = 1; i <= _maxCloudHistoryFiles; i++)
+          _buildHistoryFileName(_cloudBackupPrefix, i),
+      },
     );
 
     return cloudFile;
@@ -356,19 +364,12 @@ class AppBackupService {
     );
     await latestFile.writeAsString(contents, flush: true);
 
-    final historyFile = File(
-      p.join(
-        backupDirectory.path,
-        '$_automaticBackupPrefix-${_timestamp(_nowProvider())}.json',
-      ),
-    );
-    await historyFile.writeAsString(contents, flush: true);
-
-    await _trimBackupHistory(
+    await _deleteFilesMatchingPrefix(
       backupDirectory,
       prefix: _automaticBackupPrefix,
-      maxFiles: _maxAutomaticHistoryFiles,
+      exceptFileNames: {_automaticBackupLatestFileName},
     );
+
     return latestFile;
   }
 
@@ -448,10 +449,7 @@ class AppBackupService {
 
   Future<Set<String>> _readTableColumns(dynamic txn, String table) async {
     final rows = await txn.rawQuery('PRAGMA table_info($table)');
-    return rows
-        .map((row) => row['name'])
-        .whereType<String>()
-        .toSet();
+    return rows.map((row) => row['name']).whereType<String>().toSet();
   }
 
   Map<String, Object?> _sanitizeRowForInsert(
@@ -489,22 +487,60 @@ class AppBackupService {
     throw FormatException('Varmuuskopio sisältää tukemattoman arvotyypin.');
   }
 
-  Future<void> _trimBackupHistory(
-    Directory directory, {
+  Future<void> _rotateBackupSlots({
+    required Directory directory,
+    required String latestFileName,
     required String prefix,
-    required int maxFiles,
+    required int maxPreviousFiles,
   }) async {
-    final files = await _listVersionFiles(directory, prefix: prefix);
-    for (final staleFile in files.skip(maxFiles)) {
-      await staleFile.delete();
+    for (var index = maxPreviousFiles; index >= 1; index--) {
+      final sourceName = index == 1
+          ? latestFileName
+          : _buildHistoryFileName(prefix, index - 1);
+      final targetName = _buildHistoryFileName(prefix, index);
+
+      final sourceFile = File(p.join(directory.path, sourceName));
+      if (!await sourceFile.exists()) {
+        continue;
+      }
+
+      final targetFile = File(p.join(directory.path, targetName));
+      if (await targetFile.exists()) {
+        await targetFile.delete();
+      }
+
+      await sourceFile.rename(targetFile.path);
     }
   }
 
-  String _timestamp(DateTime dateTime) {
-    final value = dateTime.toUtc();
+  Future<void> _deleteFilesMatchingPrefix(
+    Directory directory, {
+    required String prefix,
+    required Set<String> exceptFileNames,
+  }) async {
+    if (!await directory.exists()) {
+      return;
+    }
 
-    String twoDigits(int value) => value.toString().padLeft(2, '0');
+    await for (final entity in directory.list()) {
+      if (entity is! File) {
+        continue;
+      }
 
-    return '${value.year}-${twoDigits(value.month)}-${twoDigits(value.day)}T${twoDigits(value.hour)}-${twoDigits(value.minute)}-${twoDigits(value.second)}Z';
+      final fileName = p.basename(entity.path);
+      if (!fileName.startsWith('$prefix-')) {
+        continue;
+      }
+
+      if (exceptFileNames.contains(fileName)) {
+        continue;
+      }
+
+      await entity.delete();
+    }
+  }
+
+  String _buildHistoryFileName(String prefix, int index) {
+    return '$prefix-prev-$index.json';
   }
 }

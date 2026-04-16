@@ -33,16 +33,18 @@ class AppLocalizationsFi extends AppLocalizations {
   String get exportBackupAction => 'Vie varmuuskopio';
 
   @override
-  String get exportBackupSubtitle => 'Luo JSON-varmuuskopio iCloudiin tai Jottacloudiin';
+  String get exportBackupSubtitle => 'Luo varmuuskopio';
 
   @override
   String get importBackupAction => 'Palauta varmuuskopio';
 
   @override
-  String get importBackupSubtitle => 'Valitse palautettava varmuuskopio (oletus uusin)';
+  String get importBackupSubtitle =>
+      'Valitse palautettava varmuuskopio (oletus uusin)';
 
   @override
-  String get backupRestoreConfirmBody => 'Nykyiset tiedot korvataan varmuuskopiolla. Haluatko jatkaa?';
+  String get backupRestoreConfirmBody =>
+      'Nykyiset tiedot korvataan varmuuskopiolla. Haluatko jatkaa?';
 
   @override
   String get backupRestoreNoBackupFound => 'Varmuuskopiota ei löydy';
@@ -66,7 +68,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get exportCsvAction => 'Vie tiedot CSV-tiedostoon';
 
   @override
-  String get exportCsvSubtitle => 'Vie kohteet ja muistiinpanot taulukkomuotoon';
+  String get exportCsvSubtitle =>
+      'Vie kohteet ja muistiinpanot taulukkomuotoon';
 
   @override
   String get exportPdfAction => 'Tulosta PDF-raportti';
@@ -127,7 +130,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String backupSavedToDeviceCloudFolderMissing(Object fileName) {
-    return 'Varmuuskopio tallennettu laitteelle: $fileName. Valitse pilvikansio, jotta sulkemisen aikainen pilvisynkronointi toimii.';
+    return 'Varmuuskopio tallennettu laitteelle: $fileName. Valitse pilvikansio, jotta varmuuskopio voidaan viedä pilveen.';
   }
 
   @override
@@ -141,7 +144,8 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get backupCloudFolderPickFileHint => 'Valitse jokin tiedosto halutusta pilvikansiosta, niin kansio asetetaan käyttöön.';
+  String get backupCloudFolderPickFileHint =>
+      'Pilvikansion valinta ei ole tuettu tällä laitteella tai alustalla.';
 
   @override
   String get backupRestoreSuccess => 'Varmuuskopio palautettu';
@@ -159,7 +163,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get cloudBackupFoundTitle => 'Pilvivarmuuskopio löytyi';
 
   @override
-  String get cloudBackupFoundBody => 'Haluatko palauttaa uusimman pilvivarmuuskopion tähän asennukseen?';
+  String get cloudBackupFoundBody =>
+      'Haluatko palauttaa uusimman pilvivarmuuskopion tähän asennukseen?';
 
   @override
   String backupCloudSyncSuccess(Object fileName) {
@@ -212,7 +217,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get dependantsEmptyTitle => 'Ei kohteita vielä';
 
   @override
-  String get dependantsEmptySubtitle => 'Lisää ensimmäinen kohde aloittaaksesi.';
+  String get dependantsEmptySubtitle =>
+      'Lisää ensimmäinen kohde aloittaaksesi.';
 
   @override
   String get addDependant => 'Lisää kohde';
@@ -268,7 +274,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get allNotesEmptyTitle => 'Ei muistiinpanoja vielä';
 
   @override
-  String get allNotesEmptySubtitle => 'Kun lisäät muistiinpanoja kohteille, ne näkyvät täällä.';
+  String get allNotesEmptySubtitle =>
+      'Kun lisäät muistiinpanoja kohteille, ne näkyvät täällä.';
 
   @override
   String targetNameLabel(Object name) {
@@ -338,7 +345,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get noMatchingTagsTitle => 'Ei osumia valituilla leimoilla';
 
   @override
-  String get noMatchingTagsSubtitle => 'Muuta leimoja tai näytä kaikki kohteet.';
+  String get noMatchingTagsSubtitle =>
+      'Muuta leimoja tai näytä kaikki kohteet.';
 
   @override
   String get relationOptional => 'Suhde (valinnainen)';
@@ -573,13 +581,15 @@ class AppLocalizationsFi extends AppLocalizations {
   String get notesPlaceholderTitle => 'Muistiinpanojen placeholder';
 
   @override
-  String get notesPlaceholderSubtitle => 'Tämä näkymä on korvattu datakytketyllä kohdekohtaisella muistiinpanopolulla.';
+  String get notesPlaceholderSubtitle =>
+      'Tämä näkymä on korvattu datakytketyllä kohdekohtaisella muistiinpanopolulla.';
 
   @override
   String get schedulersPlaceholderTitle => 'Aikataulujen placeholder';
 
   @override
-  String get schedulersPlaceholderSubtitle => 'Tämä näkymä on korvattu datakytketyllä kohdekohtaisella aikataulupolulla.';
+  String get schedulersPlaceholderSubtitle =>
+      'Tämä näkymä on korvattu datakytketyllä kohdekohtaisella aikataulupolulla.';
 
   @override
   String idLabel(Object id) {

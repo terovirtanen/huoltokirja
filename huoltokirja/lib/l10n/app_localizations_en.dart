@@ -33,16 +33,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportBackupAction => 'Export backup';
 
   @override
-  String get exportBackupSubtitle => 'Create a JSON backup for iCloud or Jottacloud';
+  String get exportBackupSubtitle => 'Create backup';
 
   @override
   String get importBackupAction => 'Restore backup';
 
   @override
-  String get importBackupSubtitle => 'Choose backup version to restore (latest by default)';
+  String get importBackupSubtitle =>
+      'Choose backup version to restore (latest by default)';
 
   @override
-  String get backupRestoreConfirmBody => 'Current data will be replaced by the backup. Continue?';
+  String get backupRestoreConfirmBody =>
+      'Current data will be replaced by the backup. Continue?';
 
   @override
   String get backupRestoreNoBackupFound => 'No backup found';
@@ -127,7 +129,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String backupSavedToDeviceCloudFolderMissing(Object fileName) {
-    return 'Backup saved to device: $fileName. Choose a cloud folder to enable close-time cloud sync.';
+    return 'Backup saved to device: $fileName. Choose a cloud folder to export the backup to the cloud.';
   }
 
   @override
@@ -141,7 +143,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get backupCloudFolderPickFileHint => 'Pick any file from the target cloud folder and the folder will be used.';
+  String get backupCloudFolderPickFileHint =>
+      'Cloud folder selection is not supported on this device or platform.';
 
   @override
   String get backupRestoreSuccess => 'Backup restored';
@@ -159,7 +162,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cloudBackupFoundTitle => 'Cloud backup found';
 
   @override
-  String get cloudBackupFoundBody => 'Restore the latest cloud backup to this installation?';
+  String get cloudBackupFoundBody =>
+      'Restore the latest cloud backup to this installation?';
 
   @override
   String backupCloudSyncSuccess(Object fileName) {
@@ -268,7 +272,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get allNotesEmptyTitle => 'No notes yet';
 
   @override
-  String get allNotesEmptySubtitle => 'When you add notes to targets, they will appear here.';
+  String get allNotesEmptySubtitle =>
+      'When you add notes to targets, they will appear here.';
 
   @override
   String targetNameLabel(Object name) {
@@ -338,7 +343,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noMatchingTagsTitle => 'No matches for selected tags';
 
   @override
-  String get noMatchingTagsSubtitle => 'Change the selected tags or show all targets.';
+  String get noMatchingTagsSubtitle =>
+      'Change the selected tags or show all targets.';
 
   @override
   String get relationOptional => 'Relation (optional)';
@@ -573,13 +579,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notesPlaceholderTitle => 'Notes placeholder';
 
   @override
-  String get notesPlaceholderSubtitle => 'This view has been replaced by a data-bound target-specific note flow.';
+  String get notesPlaceholderSubtitle =>
+      'This view has been replaced by a data-bound target-specific note flow.';
 
   @override
   String get schedulersPlaceholderTitle => 'Schedulers placeholder';
 
   @override
-  String get schedulersPlaceholderSubtitle => 'This view has been replaced by a data-bound target-specific schedule flow.';
+  String get schedulersPlaceholderSubtitle =>
+      'This view has been replaced by a data-bound target-specific schedule flow.';
 
   @override
   String idLabel(Object id) {

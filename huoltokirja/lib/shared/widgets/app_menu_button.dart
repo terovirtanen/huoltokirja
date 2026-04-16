@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -113,10 +114,7 @@ class AppMenuDrawer extends ConsumerWidget {
               subtitle: l10n.currentSelectionLabel(currentSortLabel),
               trailing: const Icon(Icons.chevron_right),
               onTap: () async {
-                await _runActionFromDrawer(
-                  context,
-                  _AppMenuAction.sortTargets,
-                );
+                await _runActionFromDrawer(context, _AppMenuAction.sortTargets);
               },
             ),
             _MenuActionTile(
@@ -125,10 +123,7 @@ class AppMenuDrawer extends ConsumerWidget {
               subtitle: l10n.backupMenuSubtitle,
               trailing: const Icon(Icons.chevron_right),
               onTap: () async {
-                await _runActionFromDrawer(
-                  context,
-                  _AppMenuAction.backupMenu,
-                );
+                await _runActionFromDrawer(context, _AppMenuAction.backupMenu);
               },
             ),
             _MenuActionTile(
@@ -136,10 +131,7 @@ class AppMenuDrawer extends ConsumerWidget {
               title: l10n.exportCsvAction,
               subtitle: l10n.exportCsvSubtitle,
               onTap: () async {
-                await _runActionFromDrawer(
-                  context,
-                  _AppMenuAction.exportCsv,
-                );
+                await _runActionFromDrawer(context, _AppMenuAction.exportCsv);
               },
             ),
             _MenuActionTile(
@@ -147,10 +139,7 @@ class AppMenuDrawer extends ConsumerWidget {
               title: l10n.exportPdfAction,
               subtitle: l10n.exportPdfSubtitle,
               onTap: () async {
-                await _runActionFromDrawer(
-                  context,
-                  _AppMenuAction.exportPdf,
-                );
+                await _runActionFromDrawer(context, _AppMenuAction.exportPdf);
               },
             ),
             _MenuActionTile(
@@ -200,8 +189,7 @@ class AppMenuDrawer extends ConsumerWidget {
     ProviderContainer container,
     _AppMenuAction action, {
     Rect? shareOrigin,
-  }
-  ) async {
+  }) async {
     switch (action) {
       case _AppMenuAction.sortTargets:
         await _showSortDialog(context, container);
@@ -316,14 +304,17 @@ class AppMenuDrawer extends ConsumerWidget {
   ) async {
     final l10n = context.l10n;
     final backupService = container.read(backupServiceProvider);
-    final cloudSyncEnabled = container.read(backupCloudSyncEnabledProvider);
-    final cloudDirectoryPath = container.read(backupCloudDirectoryPathProvider);
 
     try {
       final localBackup = await backupService.createAutomaticBackup();
 
-      if (cloudSyncEnabled &&
-          (cloudDirectoryPath == null || cloudDirectoryPath.isEmpty)) {
+      var cloudDirectoryPath = container.read(backupCloudDirectoryPathProvider);
+      if (cloudDirectoryPath == null || cloudDirectoryPath.isEmpty) {
+        await _chooseCloudBackupFolder(context, container);
+        cloudDirectoryPath = container.read(backupCloudDirectoryPathProvider);
+      }
+
+      if (cloudDirectoryPath == null || cloudDirectoryPath.isEmpty) {
         showCenteredSnackBar(
           context,
           l10n.backupSavedToDeviceCloudFolderMissing(
@@ -333,12 +324,23 @@ class AppMenuDrawer extends ConsumerWidget {
         return;
       }
 
-      final successMessage = cloudSyncEnabled
-          ? l10n.backupSavedToDeviceCloudSyncOnClose(
-              localBackup.uri.pathSegments.last,
-            )
-          : l10n.backupSavedToDevice(localBackup.uri.pathSegments.last);
-      showCenteredSnackBar(context, successMessage);
+      final cloudBackup = await backupService.syncLatestBackupToCloud(
+        enabled: true,
+        cloudDirectoryPath: cloudDirectoryPath,
+      );
+
+      if (cloudBackup == null) {
+        showCenteredSnackBar(
+          context,
+          l10n.backupSavedToDevice(localBackup.uri.pathSegments.last),
+        );
+        return;
+      }
+
+      showCenteredSnackBar(
+        context,
+        l10n.backupCloudSyncSuccess(cloudBackup.uri.pathSegments.last),
+      );
     } catch (error) {
       showCenteredSnackBar(context, l10n.exportFailed(error.toString()));
     }
@@ -370,39 +372,29 @@ class AppMenuDrawer extends ConsumerWidget {
     ProviderContainer container,
   ) async {
     final l10n = context.l10n;
-    final controller = container.read(backupCloudDirectoryPathProvider.notifier);
+    final controller = container.read(
+      backupCloudDirectoryPathProvider.notifier,
+    );
 
     try {
-      String? selectedPath;
+      String? cloudDirectoryPath;
+
       try {
-        final saveLocation = await getSaveLocation(
-          suggestedName: 'huoltokirja-cloud-placeholder.json',
-          acceptedTypeGroups: const [
-            XTypeGroup(
-              label: 'json',
-              extensions: ['json'],
-              uniformTypeIdentifiers: ['public.json'],
-            ),
-          ],
-          confirmButtonText: l10n.backupCloudFolderAction,
+        cloudDirectoryPath = await FilePicker.platform.getDirectoryPath(
+          dialogTitle: l10n.backupCloudFolderAction,
         );
-        selectedPath = saveLocation?.path;
-      } on UnimplementedError {
-        // Fallback for platforms where save location picking is not supported.
-        showCenteredSnackBar(context, l10n.backupCloudFolderPickFileHint);
-        final selectedFile = await openFile(
-          confirmButtonText: l10n.backupCloudFolderAction,
-        );
-        selectedPath = selectedFile?.path;
+      } catch (_) {
+        try {
+          cloudDirectoryPath = await getDirectoryPath(
+            confirmButtonText: l10n.backupCloudFolderAction,
+          );
+        } on UnimplementedError {
+          showCenteredSnackBar(context, l10n.backupCloudFolderPickFileHint);
+          return;
+        }
       }
 
-      if (selectedPath == null || selectedPath.isEmpty) {
-        return;
-      }
-
-      final cloudDirectoryPath = p.dirname(selectedPath);
-      if (cloudDirectoryPath.isEmpty) {
-        showCenteredSnackBar(context, l10n.backupCloudFolderNotSet);
+      if (cloudDirectoryPath == null || cloudDirectoryPath.isEmpty) {
         return;
       }
 
@@ -470,10 +462,7 @@ class AppMenuDrawer extends ConsumerWidget {
 
       showCenteredSnackBar(context, l10n.backupRestoreSuccess);
     } catch (error) {
-      showCenteredSnackBar(
-        context,
-        l10n.backupRestoreFailed(error.toString()),
-      );
+      showCenteredSnackBar(context, l10n.backupRestoreFailed(error.toString()));
     }
   }
 

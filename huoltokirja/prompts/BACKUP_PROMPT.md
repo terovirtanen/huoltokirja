@@ -2,278 +2,169 @@
 
 ## Tavoite
 
-Toteuta sovellukseen **automaattinen varmuuskopiointi** siten, että:
+Tämä dokumentti kuvaa backup-ominaisuuden nykyisen toteutuksen huhtikuussa 2026 sekä ehdotuksen seuraavasta muutoksesta.
 
-- paikallinen `sqflite` säilyy päätietolähteenä
-- varmuuskopio voidaan tehdä **automaattisesti**
-- oletuksena käytetään **laitteen omaa pilvipalvelua**
-- käyttäjä voi vaihtoehtoisesti valita myös **Jottacloudin**
-- ratkaisu toimii mahdollisimman hyvin myös offline-tilassa
+Tämä dokumentti vastaa nyt toteutettua toimintaa ja nykyistä linjausta.
 
-## Periaatteet
+## Nykyinen toteutus
 
-- Sovellus on edelleen **offline-first**.
-- Kaikki varsinainen käyttödata tallennetaan ensin paikalliseen SQLite-tietokantaan.
-- Pilvi toimii vähintään **varmuuskopiona**, ei pakollisena ensisijaisena tietolähteenä.
-- Ensimmäinen toteutus tehdään niin, että se on turvallinen, palautettava ja laajennettavissa myöhemmin oikeaksi synkaksi.
+### 1. Datamalli ja formaatti
 
-## Vaiheittainen toteutussuunnitelma
+Backup tallennetaan JSON-muodossa.
 
-### Vaihe 1: määrittele backup-arkkitehtuuri
+Mukana ovat vähintään seuraavat kentät:
 
-Luo backupille selkeä rakenne ja vastuut.
+- schemaVersion
+- createdAt
+- appVersion
+- dependants
+- notes
+- schedulers
 
-#### Uudet osat
+Restore validoi rakenteen ja korvaa nykyisen tietokantasisällön varmuuskopion sisällöllä.
 
-- `backup_service.dart`
-- `backup_models.dart`
-- tarvittaessa `backup_repository.dart`
-- `backup_settings_controller.dart`
+### 2. Automaattinen backup
 
-#### Vastuut
+Sovellus tekee automaattisen backupin debounce-tyyppisesti datamuutosten jälkeen.
 
-- lukea kaikki sovelluksen tiedot repositorioista
-- muodostaa niistä yksi varmuuskopio-olio
-- serialisoida varmuuskopio JSON-muotoon
-- tallentaa tai lähettää backup valittuun kohteeseen
-- palauttaa varmuuskopio takaisin tietokantaan
+Nykyinen toimintamalli:
 
-### Vaihe 2: määrittele backupin tietosisältö
+- repositoriot ajastavat backupin muutosten jälkeen
+- oletusviive on 15 sekuntia
+- jos sovellus menee taustalle tai sulkeutuu, odottava backup ajetaan heti loppuun
 
-Varmuuskopio sisältää vähintään:
+### 3. Paikallinen tallennus
 
-- `schemaVersion`
-- `createdAt`
-- `appVersion`
-- `dependants`
-- `notes`
-- `schedulers`
-- mahdollisesti myös tulevaisuudessa asetuksia
+Paikalliset automaattiset backupit tallennetaan sovelluksen asiakirjahakemiston backups-kansioon.
 
-#### Muoto
+Nykyinen toimintatapa on tämä:
 
-Käytä alkuun selkeää **JSON**-rakennetta.
+- käytön aikana tallennetaan vain yksi paikallinen latest-tiedosto
+- paikallinen automaattinen backup ei tee enää erillistä historiakiertoa jokaisesta muutoksesta
 
-Esimerkiksi:
+Tavoitenimi:
 
-```json
-{
-  "schemaVersion": 1,
-  "createdAt": "2026-04-11T10:00:00Z",
-  "appVersion": "1.0.0",
-  "dependants": [],
-  "notes": [],
-  "schedulers": []
-}
-```
+- uusin paikallinen backup: huoltokirja-auto-latest.json
 
-### Vaihe 3: toteuta manuaalinen backup ja restore ensin
+### 4. Pilvisynkronointi
 
-Ennen automatiikkaa tee perustoiminnot valmiiksi:
+Käyttäjä voi:
 
-- `Vie varmuuskopio`
-- `Palauta varmuuskopio`
+- laittaa pilvisynkronoinnin päälle tai pois
+- valita pilvikansion
+- synkronoida uusimman paikallisen backupin pilveen sovelluksen sulkeutuessa tai siirtyessä taustalle
 
-#### Vaatimukset
+Nykyinen toimintatapa:
 
-- backup kirjoitetaan tiedostoksi
-- tiedosto voidaan jakaa tai tallentaa käyttäjän valitsemaan sijaintiin
-- restore lukee tiedoston, validoi sisällön ja palauttaa datan paikalliseen tietokantaan
+- käytön aikana kirjoitetaan vain paikallinen latest
+- lopetuksen tai taustalle siirtymisen yhteydessä tehdään pilvitallennus
+- samalla tehdään pilven kierrätys latest + prev-1 ... prev-3 mallilla
 
-#### Ensimmäinen restore-strategia
+Ensimmäisellä käynnistyksellä sovellus voi myös tarjota uusimman pilvivarmuuskopion palauttamista.
 
-- MVP: **korvaa kaikki nykyiset tiedot** varmuuskopion tiedoilla
-- näytä aina vahvistus ennen palautusta
+### 5. Käyttöliittymä
 
-### Vaihe 4: lisää automaattinen backup-paikallislogiikka
+Backup-valikossa on tällä hetkellä:
 
-Kun manuaalinen backup toimii, lisää automaattinen ajaminen.
+- pilvisynkronoinnin kytkentä päälle tai pois
+- pilvikansion valinta
+- vie varmuuskopio
+- palauta varmuuskopio
 
-#### Backup triggereitä
+Nykyinen toimintatapa valikolle on tämä:
 
-Automaattinen backup tehdään ainakin seuraavissa tilanteissa:
+- Vie varmuuskopio tekee ensin manuaalisen paikallisen kopion
+- sen jälkeen sama kopio viedään käyttäjän valittuun pilvikansioon
+- toiminnon alaotsikko muutetaan muotoon: Luo varmuuskopio
 
-- kun sovellus siirtyy taustalle
-- kun sovellus suljetaan
-- kun käyttäjä on tehnyt muutoksia dataan
-- enintään esimerkiksi kerran vuorokaudessa automaattisesti
+Palautuksessa käyttäjä voi valita version laitteelta tai pilvestä. Oletuksena valitaan uusin saatavilla oleva versio.
 
-#### Tärkeä vaatimus
+### 6. Testikattavuus
 
-Älä tee backupia jokaisesta yksittäisestä muutoksesta heti.
-Käytä esimerkiksi **debouncea** tai jonotusta, jotta useat muutokset yhdistetään yhdeksi backupiksi.
+Nykyisestä toteutuksesta on jo testit ainakin seuraaville:
 
-Esimerkki:
+- backup-payloadin muodostus
+- restore, joka korvaa tietokannan sisällön
+- automaattinen backup tiedostoon
+- uusimman backupin synkka pilveen
+- palautettavien backup-versioiden listaus
 
-- käyttäjä lisää kohteen
-- muokkaa muistiinpanoa
-- lisää ajastuksen
-- tehdään lopulta yksi backup 10–30 sekunnin sisällä muutoksista
+## Havaittu ongelma
 
-### Vaihe 5: oletusbackup laitteen omaan pilveen
+Backup-tiedostoja kertyy edelleen liikaa.
 
-Toteuta oletuskohteeksi laitteen pilvipohjainen tiedostoympäristö.
+Juurisyy on se, että nykyinen toteutus kirjoittaa:
 
-#### iOS
+- yhden latest-tiedoston paikallisesti
+- lisäksi uuden aikaleimallisen historiatiedoston jokaisesta automaattisesta backupista
+- lisäksi uuden aikaleimallisen pilvitiedoston jokaisesta pilvisynkasta
 
-- hyödynnä Files/iCloud-yhteensopivaa tallennusta
-- varmista, että backup voidaan tallentaa iCloud Drive -sijaintiin tai sovelluksen backupkelpoiseen dataan
+Vaikka vanhoja tiedostoja siivotaan rajaan asti, kansioon kertyy silti käyttäjän näkökulmasta turhan paljon varmuuskopioita.
 
-#### Android
+## Toteutettu muutos
 
-- hyödynnä järjestelmän tiedostonvalitsinta ja dokumenttipuuta
-- mahdollista tallennus järjestelmän tarjoamaan pilvisijaintiin, esimerkiksi Drive-yhteensopivaan kohteeseen
+Poistetaan aikaleima tiedostonimestä ja siirrytään kiinteään nimimalliin.
 
-#### Käyttäjäkokemus
+### Ehdotettu uusi nimeämislogiikka
 
-- oletuksena sovellus käyttää laitteen oletusratkaisua
-- käyttäjän ei tarvitse heti ymmärtää teknisiä yksityiskohtia
+Paikallinen:
 
-### Vaihe 6: lisää vaihtoehtoinen backup-kohde Jottacloud
+- huoltokirja-auto-latest.json
+- huoltokirja-auto-prev-1.json
+- huoltokirja-auto-prev-2.json
+- huoltokirja-auto-prev-3.json
 
-Ratkaisu pitää suunnitella niin, että backup-kohteita voi olla useita.
+Pilvi:
 
-Luo esimerkiksi abstraktio:
+- huoltokirja-cloud-latest.json
+- huoltokirja-cloud-prev-1.json
+- huoltokirja-cloud-prev-2.json
+- huoltokirja-cloud-prev-3.json
 
-- `BackupDestination`
-  - `DeviceCloudBackupDestination`
-  - `JottacloudBackupDestination`
+Manuaalinen vienti:
 
-#### Ensimmäinen Jottacloud-taso
+- huoltokirja-backup-latest.json
 
-- käyttäjä voi valita Jottacloudin backup-kohteeksi
-- jos suora API-integraatio ei ole vielä valmis, toteuta vähintään yhteensopiva tiedostovienti/palautuspolku
+Tärkeä huomio: aikaleima säilyy edelleen JSON-sisällön createdAt-kentässä, joten tiedostonimestä ei tarvitse enää lukea aikaa.
 
-#### Täysi automaattinen Jottacloud-tuki
+### Ehdotettu kirjoitusstrategia
 
-Tätä varten tarvitaan myöhemmin:
+Käytön aikana:
 
-- Jottacloud-käyttäjätunnistus
-- OAuth / access token -hallinta
-- tiedoston upload/download API
-- virheenkäsittely ja uudelleenyritys
+1. uusi sisältö kirjoitetaan vain paikalliseen latest-tiedostoon
 
-### Vaihe 7: lisää asetukset käyttäjälle
+Lopetuksen tai taustalle siirtymisen yhteydessä:
 
-Tee sovellukseen backup-asetukset.
+1. paikallinen latest kopioidaan pilveen
+2. pilven nykyinen latest siirretään nimeen prev-1
+3. prev-1 siirretään nimeen prev-2
+4. prev-2 siirretään nimeen prev-3
+5. uusi sisältö kirjoitetaan pilven latest-tiedostoon
 
-#### Asetukset
+Näin käytössä on pieni kiertävä historia ilman, että uusia tiedostonimiä syntyy loputtomasti, ja normaali käyttö pysyy kevyenä.
 
-- `Automaattinen varmuuskopiointi` on/off
-- `Varmuuskopion kohde`
-  - laitteen pilvi
-  - Jottacloud
-- `Vain Wi‑Fi-yhteydellä` on/off
-- `Säilytettävien varmuuskopioiden määrä`
-- `Viimeisin onnistunut varmuuskopio`
-- `Varmuuskopioi nyt`
+### Miksi tämä on parempi
 
-### Vaihe 8: huomioi taustasuoritus mobiilissa
+- tiedostojen määrä pysyy aidosti pienenä
+- normaalin käytön aikana kirjoitus pysyy kevyenä, koska päivitetään vain paikallinen latest
+- käyttäjä näkee heti mikä on uusin versio
+- restore ei ole sidottu aikaleiman parsintaan tiedostonimestä
+- pilvikansio pysyy siistimpänä
+- sama malli toimii paikalliselle, pilvelle ja manuaaliselle viennille
+- manuaalinen vienti voidaan toteuttaa selkeästi kaksivaiheisena: ensin paikallinen kopio, sitten vienti valittuun pilvikansioon
 
-Automaattinen backup ei voi mobiilissa toimia täysin rajattomasti taustalla.
+## Toteutusjärjestys, jolla muutos tehtiin
 
-Siksi toteuta tämä realistisesti:
+Kun varsinainen muutos tehdään, toteutus kannattaa tehdä tässä järjestyksessä:
 
-- ensisijaisesti backup tehdään, kun sovellus on aktiivinen tai siirtyy taustalle
-- käytä tarvittaessa taustatyökirjastoa kuten `workmanager`
-- huomioi iOS- ja Android-rajoitukset
-- älä oleta, että upload voidaan tehdä milloin tahansa ilman käyttöjärjestelmän ehtoja
+1. muuta käytönaikainen automaattinen backup tallentamaan vain paikallinen latest
+2. tee pilvisynkasta lopetuksen yhteydessä kiertävä latest + prev-1 ... prev-3 -malli
+3. säilytä latest aina uusimmalle tiedostolle
+4. pidä createdAt edelleen backup-payloadissa ennallaan
+5. päivitä testit vastaamaan uutta nimeämismallia
 
-### Vaihe 9: varmista palautettavuus ja eheys
+## Rajaus
 
-Backup ei saa olla vain tiedosto, vaan sen on oltava myös turvallisesti palautettavissa.
-
-#### Tee vähintään nämä tarkistukset
-
-- tarkista `schemaVersion`
-- tarkista JSON-rakenne
-- tarkista pakolliset kentät
-- estä osittain rikkinäisen backupin palautus
-- näytä käyttäjälle virheilmoitus, jos backup ei ole kelvollinen
-
-#### Lisäparannukset myöhemmin
-
-- checksum tai hash
-- salattu backup
-- useampi historiallinen backup-versio
-
-### Vaihe 10: toteuta backupin kierto ja siivous
-
-Jotta pilvi ei täyty turhaan, hallitse vanhoja varmuuskopioita.
-
-#### Suositus
-
-- säilytä esimerkiksi viimeiset 10 onnistunutta backupia
-- poista vanhimmat automaattisesti
-- merkitse uusimmat selkeästi aikaleimalla
-
-Tiedostonimi voi olla esimerkiksi:
-
-- `huoltokirja-backup-2026-04-11T10-30-00.json`
-
-### Vaihe 11: lisää käyttöönotto käyttöliittymään
-
-Lisää valikkoon tai asetuksiin:
-
-- `Varmuuskopioi nyt`
-- `Palauta varmuuskopio`
-- `Automaattinen varmuuskopiointi`
-- `Varmuuskopion kohde`
-- `Viimeisin varmuuskopio` -tila
-
-Näytä myös käyttäjälle yksinkertainen tila:
-
-- onnistui
-- epäonnistui
-- odottaa verkkoyhteyttä
-- viimeisin backup päivämäärällä
-
-### Vaihe 12: testaus
-
-Kirjoita testit vähintään seuraaville:
-
-- backup JSON muodostuu oikein
-- restore palauttaa datan oikein
-- rikkinäinen backup hylätään
-- automaattinen backup ei laukea liian usein
-- Jottacloud-kohde voidaan valita asetuksista
-- laitteen oletusbackup toimii oletuspolkuna
-
-## Toteutusjärjestys
-
-Tee ominaisuus tässä järjestyksessä:
-
-1. backup-datamalli
-2. JSON export
-3. JSON import / restore
-4. manuaaliset UI-toiminnot
-5. automaattinen backup triggeröinti
-6. backup-asetukset
-7. laitteen oletuspilvi oletuskohteeksi
-8. Jottacloud vaihtoehtoiseksi kohteeksi
-9. taustatyöt ja retry-logiikka
-10. laajempi validointi ja siivous
-
-## Rajaus MVP-versioon
-
-Ensimmäisessä toimivassa versiossa riittää, että:
-
-- backup tehdään automaattisesti paikallisen datan muutosten jälkeen
-- backup tallennetaan tiedostoksi
-- käyttäjä voi käyttää laitteen omaa pilveä oletuksena
-- Jottacloud on valittavissa vähintään yhteensopivan tiedostopolun kautta
-- restore toimii turvallisesti
-
-## Ei tehdä vielä, ellei erikseen pyydetä
-
-- täyttä kaksisuuntaista reaaliaikaista synkkaa
-- monimutkaista konfliktinratkaisua eri laitteiden välillä
-- täydellistä online-first arkkitehtuuria
-- raskasta palvelinpuolta ilman erillistä tarvetta
-
-## Tarkistus
-
-- `flutter analyze`
-- `flutter test`
-- testaa iOS-simulaattorilla ja Android-emulaattorilla
-- testaa backupin vienti, palautus ja automaattinen triggeröinti käytännössä
+- restore-logiikan perusrakenne säilyy ennallaan
+- käyttöliittymää ei laajennettu tämän muutoksen ulkopuolelle
+- pilvi-integraatio on edelleen tiedostopohjainen ilman erillistä palvelinrajapintaa
