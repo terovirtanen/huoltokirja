@@ -289,7 +289,22 @@ String pdfNoteTypeLabel({
   };
 }
 
-List<String> buildPdfNoteDetails({
+class PdfDetailLine {
+  const PdfDetailLine(this.text, {this.isItalic = false});
+
+  final String text;
+  final bool isItalic;
+}
+
+String? buildPdfDependantDescription(Dependant dependant) {
+  final description = dependant.description?.trim();
+  if (description == null || description.isEmpty) {
+    return null;
+  }
+  return description;
+}
+
+List<PdfDetailLine> buildPdfNoteDetails({
   required Note note,
   required DependantGroup dependantGroup,
   AppLocalizations? l10n,
@@ -298,24 +313,27 @@ List<String> buildPdfNoteDetails({
   final pdfL10n = l10n ?? lookupAppLocalizations(const Locale('fi'));
   final resolvedFormatDate =
       formatDate ?? buildPdfDateFormatter(localeName: pdfL10n.localeName);
-  final details = <String>[
-    '${pdfL10n.noteDate}: ${resolvedFormatDate(note.noteDate)}',
+  final details = <PdfDetailLine>[
+    PdfDetailLine(resolvedFormatDate(note.noteDate)),
   ];
 
-  final body = note.body.trim();
-  if (body.isNotEmpty) {
-    details.add('${pdfL10n.description}: $body');
-  }
   if (note.performerName != null && note.performerName!.trim().isNotEmpty) {
-    details.add('${pdfL10n.performerLabel}: ${note.performerName!.trim()}');
+    details.add(PdfDetailLine(note.performerName!.trim()));
   }
   if (note.price != null) {
-    details.add('${pdfL10n.priceLabel}: ${note.price!.toStringAsFixed(2)} €');
+    details.add(PdfDetailLine('${note.price!.toStringAsFixed(2)} €'));
   }
   if (note.type == NoteType.inspection) {
     details.add(
-      '${pdfL10n.approvedLabel}: ${note.isApproved ? pdfL10n.yesValue : pdfL10n.noValue}',
+      PdfDetailLine(
+        note.isApproved ? pdfL10n.approvedLabel : pdfL10n.rejectedLabel,
+      ),
     );
+  }
+
+  final body = note.body.trim();
+  if (body.isNotEmpty) {
+    details.add(PdfDetailLine(body, isItalic: true));
   }
 
   return details;
@@ -349,6 +367,13 @@ pw.Widget _buildPdfDependantSection({
               pw.SizedBox(height: 4),
               pw.Text(
                 '${_pdfDependantDateLabel(dependant, l10n)}: ${formatDate(dependant.initialDate!)}',
+              ),
+            ],
+            if (buildPdfDependantDescription(dependant) != null) ...[
+              pw.SizedBox(height: 4),
+              pw.Text(
+                buildPdfDependantDescription(dependant)!,
+                style: pw.TextStyle(fontStyle: pw.FontStyle.italic),
               ),
             ],
           ],
@@ -399,7 +424,12 @@ pw.Widget _buildPdfDependantSection({
                 ).map(
                   (line) => pw.Padding(
                     padding: const pw.EdgeInsets.only(bottom: 2),
-                    child: pw.Text(line),
+                    child: pw.Text(
+                      line.text,
+                      style: line.isItalic
+                          ? pw.TextStyle(fontStyle: pw.FontStyle.italic)
+                          : null,
+                    ),
                   ),
                 ),
               ],

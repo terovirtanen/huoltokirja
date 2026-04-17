@@ -244,6 +244,7 @@
   "inspectorOptional": "Performer (optional)",
   "priceOptional": "Price € (optional)",
   "approvedLabel": "Approved",
+  "rejectedLabel": "Rejected",
   "performerLabel": "Performer",
   "priceLabel": "Price",
   "yesValue": "Yes",

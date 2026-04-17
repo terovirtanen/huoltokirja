@@ -9,7 +9,7 @@ void main() {
   final fi = lookupAppLocalizations(const Locale('fi'));
   final en = lookupAppLocalizations(const Locale('en'));
 
-  test('pdf note details show all relevant fields except usage estimate', () {
+  test('pdf note details show plain values in the requested order', () {
     final note = InspectionNote(
       dependantId: 1,
       schedulerId: 42,
@@ -30,18 +30,32 @@ void main() {
       dependantGroup: DependantGroup.vehicle,
       l10n: fi,
       formatDate: (_) => '10.4.2026',
-    ).join('\n');
+    );
 
-    expect(details, contains('Päivämäärä'));
-    expect(details, contains('Katsastaja Oy'));
-    expect(details, contains('34.00'));
-    expect(details, contains('Kyllä'));
-    expect(details, contains('Korjauskehotus poistettu'));
-    expect(details, isNot(contains('221000')));
-    expect(details, isNot(contains('Luotu ajastuksesta')));
+    expect(details.map((line) => line.text), [
+      '10.4.2026',
+      'Katsastaja Oy',
+      '34.00 €',
+      'Hyväksytty',
+      'Korjauskehotus poistettu',
+    ]);
+    expect(details.last.isItalic, isTrue);
+    expect(details.take(4).every((line) => !line.isItalic), isTrue);
+    expect(
+      details.map((line) => line.text).join('\n'),
+      isNot(contains('Päivämäärä')),
+    );
+    expect(
+      details.map((line) => line.text).join('\n'),
+      isNot(contains('221000')),
+    );
+    expect(
+      details.map((line) => line.text).join('\n'),
+      isNot(contains('Luotu ajastuksesta')),
+    );
   });
 
-  test('pdf details use localized labels and localized dates', () {
+  test('pdf details use localized values without field names', () {
     final note = InspectionNote(
       dependantId: 1,
       title: 'Inspection',
@@ -59,13 +73,49 @@ void main() {
       dependantGroup: DependantGroup.vehicle,
       l10n: en,
       formatDate: (_) => '4/10/2026',
-    ).join('\n');
+    );
 
-    expect(details, contains('Date: 4/10/2026'));
-    expect(details, contains('Description: All good'));
-    expect(details, contains('Performer: Inspector Inc'));
-    expect(details, contains('Price: 49.90 €'));
-    expect(details, contains('Approved: Yes'));
+    expect(
+      details.map((line) => line.text),
+      containsAll([
+        '4/10/2026',
+        'Inspector Inc',
+        '49.90 €',
+        'Approved',
+        'All good',
+      ]),
+    );
+    expect(
+      details.map((line) => line.text).join('\n'),
+      isNot(contains('Date:')),
+    );
+    expect(
+      details.map((line) => line.text).join('\n'),
+      isNot(contains('Description:')),
+    );
+    expect(details.last.isItalic, isTrue);
+  });
+
+  test('rejected inspection uses rejected wording in pdf', () {
+    final note = InspectionNote(
+      dependantId: 1,
+      title: 'Inspection',
+      body: 'Needs fixes',
+      noteDate: DateTime(2026, 4, 10),
+      isApproved: false,
+      createdAt: DateTime(2026, 4, 10),
+      updatedAt: DateTime(2026, 4, 10),
+    );
+
+    final details = buildPdfNoteDetails(
+      note: note,
+      dependantGroup: DependantGroup.vehicle,
+      l10n: fi,
+      formatDate: (_) => '10.4.2026',
+    );
+
+    expect(details.map((line) => line.text), contains('Hylätty'));
+    expect(details.map((line) => line.text), isNot(contains('Ei')));
   });
 
   test('animal service note is labeled as care note in pdf', () {
@@ -85,6 +135,21 @@ void main() {
         l10n: fi,
       ),
       'Hoitomuistiinpano',
+    );
+  });
+
+  test('pdf dependant description is returned without label text', () {
+    final dependant = Dependant(
+      name: 'Toyota Corolla',
+      dependantGroup: DependantGroup.vehicle,
+      description: 'Huollettu vain merkkihuollossa',
+      createdAt: DateTime(2026, 4, 10),
+      updatedAt: DateTime(2026, 4, 10),
+    );
+
+    expect(
+      buildPdfDependantDescription(dependant),
+      'Huollettu vain merkkihuollossa',
     );
   });
 

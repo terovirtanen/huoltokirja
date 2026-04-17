@@ -447,6 +447,9 @@ class AppLocalizationsFi extends AppLocalizations {
   String get approvedLabel => 'Hyväksytty';
 
   @override
+  String get rejectedLabel => 'Hylätty';
+
+  @override
   String get performerLabel => 'Tekijä';
 
   @override

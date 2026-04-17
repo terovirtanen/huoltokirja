@@ -445,6 +445,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get approvedLabel => 'Approved';
 
   @override
+  String get rejectedLabel => 'Rejected';
+
+  @override
   String get performerLabel => 'Performer';
 
   @override

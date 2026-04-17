@@ -244,6 +244,7 @@
   "inspectorOptional": "Tekijä (valinnainen)",
   "priceOptional": "Hinta € (valinnainen)",
   "approvedLabel": "Hyväksytty",
+  "rejectedLabel": "Hylätty",
   "performerLabel": "Tekijä",
   "priceLabel": "Hinta",
   "yesValue": "Kyllä",
