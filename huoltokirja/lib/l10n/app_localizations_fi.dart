@@ -27,20 +27,19 @@ class AppLocalizationsFi extends AppLocalizations {
   String get backupMenuAction => 'Varmuuskopiointi';
 
   @override
-  String get backupMenuSubtitle => 'Pilvisynkronointi, vienti ja palautus';
+  String get backupMenuSubtitle => 'Manuaalinen vienti ja palautus';
 
   @override
   String get exportBackupAction => 'Vie varmuuskopio';
 
   @override
-  String get exportBackupSubtitle => 'Luo varmuuskopio';
+  String get exportBackupSubtitle => 'Tallenna varmuuskopio tiedostoon';
 
   @override
   String get importBackupAction => 'Palauta varmuuskopio';
 
   @override
-  String get importBackupSubtitle =>
-      'Valitse palautettava varmuuskopio (oletus uusin)';
+  String get importBackupSubtitle => 'Valitse varmuuskopiotiedosto';
 
   @override
   String get backupRestoreConfirmBody =>
@@ -145,7 +144,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get backupCloudFolderPickFileHint =>
-      'Pilvikansion valinta ei ole tuettu tällä laitteella tai alustalla.';
+      'Valitse olemassa oleva varmuuskopiotiedosto halutusta pilvikansiosta.';
 
   @override
   String get backupRestoreSuccess => 'Varmuuskopio palautettu';

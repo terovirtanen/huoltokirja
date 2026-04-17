@@ -234,6 +234,19 @@ class AppBackupService {
       return null;
     }
 
+    final cloudTargetType = await FileSystemEntity.type(cloudDirectoryPath);
+    final isExplicitFileTarget =
+        cloudTargetType == FileSystemEntityType.file ||
+        (cloudTargetType == FileSystemEntityType.notFound &&
+            p.extension(cloudDirectoryPath).toLowerCase() == '.json');
+
+    if (isExplicitFileTarget) {
+      final cloudFile = File(cloudDirectoryPath);
+      await cloudFile.parent.create(recursive: true);
+      await latest.copy(cloudFile.path);
+      return cloudFile;
+    }
+
     final cloudDirectory = Directory(cloudDirectoryPath);
     await cloudDirectory.create(recursive: true);
 
@@ -289,21 +302,34 @@ class AppBackupService {
     }
 
     if (cloudDirectoryPath != null && cloudDirectoryPath.isNotEmpty) {
-      final cloudDirectory = Directory(cloudDirectoryPath);
-      if (await cloudDirectory.exists()) {
-        final cloudFiles = await _listVersionFiles(
-          cloudDirectory,
-          prefix: _cloudBackupPrefix,
+      final cloudTargetType = await FileSystemEntity.type(cloudDirectoryPath);
+      if (cloudTargetType == FileSystemEntityType.file) {
+        final file = File(cloudDirectoryPath);
+        final stat = await file.stat();
+        versions.add(
+          BackupVersion(
+            file: file,
+            source: BackupSource.cloud,
+            modifiedAt: stat.modified,
+          ),
         );
-        for (final file in cloudFiles) {
-          final stat = await file.stat();
-          versions.add(
-            BackupVersion(
-              file: file,
-              source: BackupSource.cloud,
-              modifiedAt: stat.modified,
-            ),
+      } else {
+        final cloudDirectory = Directory(cloudDirectoryPath);
+        if (await cloudDirectory.exists()) {
+          final cloudFiles = await _listVersionFiles(
+            cloudDirectory,
+            prefix: _cloudBackupPrefix,
           );
+          for (final file in cloudFiles) {
+            final stat = await file.stat();
+            versions.add(
+              BackupVersion(
+                file: file,
+                source: BackupSource.cloud,
+                modifiedAt: stat.modified,
+              ),
+            );
+          }
         }
       }
     }
@@ -325,6 +351,19 @@ class AppBackupService {
   Future<List<BackupVersion>> listCloudBackups({
     required String cloudDirectoryPath,
   }) async {
+    final cloudTargetType = await FileSystemEntity.type(cloudDirectoryPath);
+    if (cloudTargetType == FileSystemEntityType.file) {
+      final file = File(cloudDirectoryPath);
+      final stat = await file.stat();
+      return [
+        BackupVersion(
+          file: file,
+          source: BackupSource.cloud,
+          modifiedAt: stat.modified,
+        ),
+      ];
+    }
+
     final cloudDirectory = Directory(cloudDirectoryPath);
     if (!await cloudDirectory.exists()) {
       return const [];

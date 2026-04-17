@@ -157,6 +157,16 @@ void main() {
     expect(localFiles, hasLength(1));
   });
 
+  test('manual export creates a backup archive file', () async {
+    final service = buildService();
+
+    final file = await service.exportBackupArchive();
+
+    expect(await file.exists(), isTrue);
+    expect(file.path, endsWith('huoltokirja-backup-latest.json'));
+    expect(await file.readAsString(), contains('schemaVersion'));
+  });
+
   test('sync latest backup to cloud rotates latest and prev files', () async {
     final service = buildService();
 
@@ -191,6 +201,29 @@ void main() {
     final cloudFiles = await cloudDir.list().where((e) => e is File).toList();
     expect(cloudFiles, hasLength(4));
   });
+
+  test(
+    'sync latest backup also supports an explicit cloud file path',
+    () async {
+      final service = buildService();
+
+      await service.createAutomaticBackup();
+
+      final cloudDir = Directory('${tempDir.path}/cloud-file-target');
+      await cloudDir.create(recursive: true);
+      final chosenFile = File('${cloudDir.path}/chosen-backup.json');
+      await chosenFile.writeAsString('old');
+
+      final syncedFile = await service.syncLatestBackupToCloud(
+        enabled: true,
+        cloudDirectoryPath: chosenFile.path,
+      );
+
+      expect(syncedFile, isNotNull);
+      expect(syncedFile!.path, equals(chosenFile.path));
+      expect(await chosenFile.readAsString(), contains('schemaVersion'));
+    },
+  );
 
   test('list restorable backups returns newest first', () async {
     final service = buildService();

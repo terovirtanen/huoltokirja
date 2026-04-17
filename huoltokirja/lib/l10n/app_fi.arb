@@ -6,11 +6,11 @@
   "targetSortLatestNote": "Viimeisin muistiinpano",
   "targetSortName": "Nimen mukaan",
   "backupMenuAction": "Varmuuskopiointi",
-  "backupMenuSubtitle": "Pilvisynkronointi, vienti ja palautus",
+  "backupMenuSubtitle": "Manuaalinen vienti ja palautus",
   "exportBackupAction": "Vie varmuuskopio",
-  "exportBackupSubtitle": "Luo varmuuskopio",
+  "exportBackupSubtitle": "Tallenna varmuuskopio tiedostoon",
   "importBackupAction": "Palauta varmuuskopio",
-  "importBackupSubtitle": "Valitse palautettava varmuuskopio (oletus uusin)",
+  "importBackupSubtitle": "Valitse varmuuskopiotiedosto",
   "backupRestoreConfirmBody": "Nykyiset tiedot korvataan varmuuskopiolla. Haluatko jatkaa?",
   "backupRestoreNoBackupFound": "Varmuuskopiota ei löydy",
   "backupCloudSyncAction": "Synkronoi varmuuskopio pilveen",
@@ -83,7 +83,7 @@
       "error": {}
     }
   },
-  "backupCloudFolderPickFileHint": "Pilvikansion valinta ei ole tuettu tällä laitteella tai alustalla.",
+  "backupCloudFolderPickFileHint": "Valitse olemassa oleva varmuuskopiotiedosto halutusta pilvikansiosta.",
   "backupRestoreSuccess": "Varmuuskopio palautettu",
   "backupVersionPickerTitle": "Valitse palautettava varmuuskopio",
   "backupSourceCloud": "Pilvi",

@@ -6,11 +6,11 @@
   "targetSortLatestNote": "Latest note",
   "targetSortName": "Name",
   "backupMenuAction": "Backups",
-  "backupMenuSubtitle": "Cloud sync, export and restore",
+  "backupMenuSubtitle": "Manual export and restore",
   "exportBackupAction": "Export backup",
-  "exportBackupSubtitle": "Create backup",
+  "exportBackupSubtitle": "Save backup to a file",
   "importBackupAction": "Restore backup",
-  "importBackupSubtitle": "Choose backup version to restore (latest by default)",
+  "importBackupSubtitle": "Choose a backup file",
   "backupRestoreConfirmBody": "Current data will be replaced by the backup. Continue?",
   "backupRestoreNoBackupFound": "No backup found",
   "backupCloudSyncAction": "Sync backup to cloud",
@@ -83,7 +83,7 @@
       "error": {}
     }
   },
-  "backupCloudFolderPickFileHint": "Cloud folder selection is not supported on this device or platform.",
+  "backupCloudFolderPickFileHint": "Choose an existing backup file from the cloud folder you want to use.",
   "backupRestoreSuccess": "Backup restored",
   "backupVersionPickerTitle": "Choose backup version",
   "backupSourceCloud": "Cloud",

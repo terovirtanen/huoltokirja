@@ -27,20 +27,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backupMenuAction => 'Backups';
 
   @override
-  String get backupMenuSubtitle => 'Cloud sync, export and restore';
+  String get backupMenuSubtitle => 'Manual export and restore';
 
   @override
   String get exportBackupAction => 'Export backup';
 
   @override
-  String get exportBackupSubtitle => 'Create backup';
+  String get exportBackupSubtitle => 'Save backup to a file';
 
   @override
   String get importBackupAction => 'Restore backup';
 
   @override
-  String get importBackupSubtitle =>
-      'Choose backup version to restore (latest by default)';
+  String get importBackupSubtitle => 'Choose a backup file';
 
   @override
   String get backupRestoreConfirmBody =>
@@ -144,7 +143,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupCloudFolderPickFileHint =>
-      'Cloud folder selection is not supported on this device or platform.';
+      'Choose an existing backup file from the cloud folder you want to use.';
 
   @override
   String get backupRestoreSuccess => 'Backup restored';

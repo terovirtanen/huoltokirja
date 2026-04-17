@@ -1,16 +1,13 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart' as p;
 import 'package:share_plus/share_plus.dart';
 
 import '../../app/providers.dart';
 import '../../core/config/app_config.dart';
 import '../../core/l10n/app_localizations_ext.dart';
-import '../../data/services/backup_service.dart';
 import '../../l10n/app_localizations.dart';
 import 'centered_snackbar.dart';
 
@@ -38,8 +35,6 @@ Rect _resolveShareOrigin(BuildContext context) {
 enum _AppMenuAction {
   sortTargets,
   backupMenu,
-  toggleCloudBackupSync,
-  chooseCloudBackupFolder,
   exportBackup,
   importBackup,
   exportCsv,
@@ -195,12 +190,8 @@ class AppMenuDrawer extends ConsumerWidget {
         await _showSortDialog(context, container);
       case _AppMenuAction.backupMenu:
         await _showBackupMenu(context, container);
-      case _AppMenuAction.toggleCloudBackupSync:
-        await _toggleCloudBackupSync(context, container);
-      case _AppMenuAction.chooseCloudBackupFolder:
-        await _chooseCloudBackupFolder(context, container);
       case _AppMenuAction.exportBackup:
-        await _exportBackup(context, container);
+        await _exportBackup(context, container, shareOrigin: shareOrigin);
       case _AppMenuAction.importBackup:
         await _restoreBackup(context, container);
       case _AppMenuAction.exportCsv:
@@ -240,11 +231,6 @@ class AppMenuDrawer extends ConsumerWidget {
     ProviderContainer container,
   ) async {
     final l10n = context.l10n;
-    final cloudSyncEnabled = container.read(backupCloudSyncEnabledProvider);
-    final cloudDirectoryPath = container.read(backupCloudDirectoryPathProvider);
-    final cloudFolderLabel = cloudDirectoryPath == null
-        ? l10n.backupCloudFolderNotSet
-        : p.basename(cloudDirectoryPath);
 
     await showDialog<void>(
       context: context,
@@ -252,28 +238,6 @@ class AppMenuDrawer extends ConsumerWidget {
         return SimpleDialog(
           title: Text(l10n.backupMenuAction),
           children: [
-            _BackupMenuOption(
-              icon: Icons.cloud_sync_outlined,
-              title: l10n.backupCloudSyncAction,
-              subtitle: l10n.currentSelectionLabel(
-                cloudSyncEnabled
-                    ? l10n.backupCloudSyncEnabled
-                    : l10n.backupCloudSyncDisabled,
-              ),
-              onTap: () async {
-                Navigator.of(dialogContext).pop();
-                await _toggleCloudBackupSync(context, container);
-              },
-            ),
-            _BackupMenuOption(
-              icon: Icons.folder_open,
-              title: l10n.backupCloudFolderAction,
-              subtitle: l10n.currentSelectionLabel(cloudFolderLabel),
-              onTap: () async {
-                Navigator.of(dialogContext).pop();
-                await _chooseCloudBackupFolder(context, container);
-              },
-            ),
             _BackupMenuOption(
               icon: Icons.upload_file,
               title: l10n.exportBackupAction,
@@ -300,115 +264,16 @@ class AppMenuDrawer extends ConsumerWidget {
 
   Future<void> _exportBackup(
     BuildContext context,
-    ProviderContainer container,
-  ) async {
-    final l10n = context.l10n;
-    final backupService = container.read(backupServiceProvider);
-
-    try {
-      final localBackup = await backupService.createAutomaticBackup();
-
-      var cloudDirectoryPath = container.read(backupCloudDirectoryPathProvider);
-      if (cloudDirectoryPath == null || cloudDirectoryPath.isEmpty) {
-        await _chooseCloudBackupFolder(context, container);
-        cloudDirectoryPath = container.read(backupCloudDirectoryPathProvider);
-      }
-
-      if (cloudDirectoryPath == null || cloudDirectoryPath.isEmpty) {
-        showCenteredSnackBar(
-          context,
-          l10n.backupSavedToDeviceCloudFolderMissing(
-            localBackup.uri.pathSegments.last,
-          ),
-        );
-        return;
-      }
-
-      final cloudBackup = await backupService.syncLatestBackupToCloud(
-        enabled: true,
-        cloudDirectoryPath: cloudDirectoryPath,
-      );
-
-      if (cloudBackup == null) {
-        showCenteredSnackBar(
-          context,
-          l10n.backupSavedToDevice(localBackup.uri.pathSegments.last),
-        );
-        return;
-      }
-
-      showCenteredSnackBar(
-        context,
-        l10n.backupCloudSyncSuccess(cloudBackup.uri.pathSegments.last),
-      );
-    } catch (error) {
-      showCenteredSnackBar(context, l10n.exportFailed(error.toString()));
-    }
-  }
-
-  Future<void> _toggleCloudBackupSync(
-    BuildContext context,
-    ProviderContainer container,
-  ) async {
-    final controller = container.read(backupCloudSyncEnabledProvider.notifier);
-    final nextValue = !container.read(backupCloudSyncEnabledProvider);
-    await controller.setEnabled(nextValue);
-
-    final l10n = context.l10n;
-    showCenteredSnackBar(
+    ProviderContainer container, {
+    Rect? shareOrigin,
+  }) async {
+    await _shareFile(
       context,
-      nextValue ? l10n.backupCloudSyncOn : l10n.backupCloudSyncOff,
+      createFile: () =>
+          container.read(backupServiceProvider).exportBackupArchive(),
+      successMessage: (fileName) => context.l10n.backupExportReady(fileName),
+      shareOrigin: shareOrigin,
     );
-
-    if (nextValue &&
-        (container.read(backupCloudDirectoryPathProvider) == null ||
-            container.read(backupCloudDirectoryPathProvider)!.isEmpty)) {
-      await _chooseCloudBackupFolder(context, container);
-    }
-  }
-
-  Future<void> _chooseCloudBackupFolder(
-    BuildContext context,
-    ProviderContainer container,
-  ) async {
-    final l10n = context.l10n;
-    final controller = container.read(
-      backupCloudDirectoryPathProvider.notifier,
-    );
-
-    try {
-      String? cloudDirectoryPath;
-
-      try {
-        cloudDirectoryPath = await FilePicker.platform.getDirectoryPath(
-          dialogTitle: l10n.backupCloudFolderAction,
-        );
-      } catch (_) {
-        try {
-          cloudDirectoryPath = await getDirectoryPath(
-            confirmButtonText: l10n.backupCloudFolderAction,
-          );
-        } on UnimplementedError {
-          showCenteredSnackBar(context, l10n.backupCloudFolderPickFileHint);
-          return;
-        }
-      }
-
-      if (cloudDirectoryPath == null || cloudDirectoryPath.isEmpty) {
-        return;
-      }
-
-      await controller.setPath(cloudDirectoryPath);
-      showCenteredSnackBar(
-        context,
-        l10n.backupCloudFolderSet(p.basename(cloudDirectoryPath)),
-      );
-    } catch (error) {
-      showCenteredSnackBar(
-        context,
-        l10n.backupCloudFolderSetFailed(error.toString()),
-      );
-    }
   }
 
   Future<void> _shareFile(
@@ -439,23 +304,63 @@ class AppMenuDrawer extends ConsumerWidget {
   ) async {
     final l10n = context.l10n;
     final backupService = container.read(backupServiceProvider);
-    final cloudDirectoryPath = container.read(backupCloudDirectoryPathProvider);
 
     try {
-      final versions = await backupService.listRestorableBackups(
-        cloudDirectoryPath: cloudDirectoryPath,
-      );
-      if (versions.isEmpty) {
-        showCenteredSnackBar(context, l10n.backupRestoreNoBackupFound);
+      XFile? selectedFile;
+
+      try {
+        selectedFile = await openFile(
+          confirmButtonText: l10n.importBackupAction,
+          acceptedTypeGroups: const [
+            XTypeGroup(
+              label: 'JSON',
+              extensions: ['json'],
+              mimeTypes: ['application/json', 'text/json'],
+              uniformTypeIdentifiers: ['public.json'],
+            ),
+          ],
+        );
+      } catch (_) {
+        selectedFile = await openFile(
+          confirmButtonText: l10n.importBackupAction,
+        );
+      }
+
+      if (selectedFile == null || selectedFile.path.isEmpty) {
         return;
       }
 
-      final selected = await _showBackupVersionPicker(context, versions);
-      if (selected == null) {
+      if (!context.mounted) {
         return;
       }
 
-      await backupService.restoreFromFile(selected.file);
+      final shouldRestore =
+          await showDialog<bool>(
+            context: context,
+            builder: (dialogContext) {
+              return AlertDialog(
+                title: Text(l10n.importBackupAction),
+                content: Text(l10n.backupRestoreConfirmBody),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(false),
+                    child: Text(l10n.cancel),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(true),
+                    child: Text(l10n.importBackupAction),
+                  ),
+                ],
+              );
+            },
+          ) ??
+          false;
+
+      if (!shouldRestore) {
+        return;
+      }
+
+      await backupService.restoreFromFile(File(selectedFile.path));
 
       container.invalidate(dependantListControllerProvider);
       container.invalidate(allNotesFeedProvider);
@@ -464,75 +369,6 @@ class AppMenuDrawer extends ConsumerWidget {
     } catch (error) {
       showCenteredSnackBar(context, l10n.backupRestoreFailed(error.toString()));
     }
-  }
-
-  Future<BackupVersion?> _showBackupVersionPicker(
-    BuildContext context,
-    List<BackupVersion> versions,
-  ) async {
-    final l10n = context.l10n;
-    BackupVersion selected = versions.first;
-
-    return showDialog<BackupVersion>(
-      context: context,
-      builder: (dialogContext) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: Text(l10n.backupVersionPickerTitle),
-              content: SizedBox(
-                width: double.maxFinite,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      for (final version in versions)
-                        RadioListTile<BackupVersion>(
-                          value: version,
-                          groupValue: selected,
-                          onChanged: (value) {
-                            if (value != null) {
-                              setState(() {
-                                selected = value;
-                              });
-                            }
-                          },
-                          title: Text(_backupVersionLabel(context, version)),
-                          subtitle: Text(
-                            version.source == BackupSource.cloud
-                                ? l10n.backupSourceCloud
-                                : l10n.backupSourceDevice,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(),
-                  child: Text(l10n.cancel),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(selected),
-                  child: Text(l10n.importBackupAction),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  String _backupVersionLabel(BuildContext context, BackupVersion version) {
-    final localizations = MaterialLocalizations.of(context);
-    final date = localizations.formatShortDate(version.modifiedAt);
-    final time = localizations.formatTimeOfDay(
-      TimeOfDay.fromDateTime(version.modifiedAt),
-      alwaysUse24HourFormat: true,
-    );
-    return '$date $time - ${version.fileName}';
   }
 
   Future<void> _showLanguageDialog(
