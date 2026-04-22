@@ -348,63 +348,32 @@ pw.Widget _buildPdfDependantSection({
   return pw.Column(
     crossAxisAlignment: pw.CrossAxisAlignment.start,
     children: [
-      pw.Container(
-        width: double.infinity,
-        padding: const pw.EdgeInsets.all(12),
-        decoration: pw.BoxDecoration(
-          color: PdfColors.white,
-          border: pw.Border.all(color: PdfColors.blueGrey100),
-          borderRadius: pw.BorderRadius.circular(8),
-        ),
-        child: pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.start,
-          children: [
-            pw.Text(
-              dependant.name,
-              style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
-            ),
-            if (dependant.initialDate != null) ...[
-              pw.SizedBox(height: 4),
-              pw.Text(
-                '${_pdfDependantDateLabel(dependant, l10n)}: ${formatDate(dependant.initialDate!)}',
-              ),
-            ],
-            if (buildPdfDependantDescription(dependant) != null) ...[
-              pw.SizedBox(height: 4),
-              pw.Text(
-                buildPdfDependantDescription(dependant)!,
-                style: pw.TextStyle(fontStyle: pw.FontStyle.italic),
-              ),
-            ],
-          ],
-        ),
+      pw.Text(
+        dependant.name,
+        style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
       ),
+      if (dependant.initialDate != null) ...[
+        pw.SizedBox(height: 4),
+        pw.Text(
+          '${_pdfDependantDateLabel(dependant, l10n)}: ${formatDate(dependant.initialDate!)}',
+        ),
+      ],
+      if (buildPdfDependantDescription(dependant) != null) ...[
+        pw.SizedBox(height: 4),
+        pw.Text(
+          buildPdfDependantDescription(dependant)!,
+          style: pw.TextStyle(fontStyle: pw.FontStyle.italic),
+        ),
+      ],
       pw.SizedBox(height: 8),
+      pw.Divider(color: PdfColors.blueGrey400, thickness: 1.2),
+      pw.SizedBox(height: 6),
       if (notes.isEmpty)
-        pw.Container(
-          width: double.infinity,
-          padding: const pw.EdgeInsets.all(10),
-          decoration: pw.BoxDecoration(
-            color: PdfColors.grey50,
-            border: pw.Border.all(color: PdfColors.grey300),
-            borderRadius: pw.BorderRadius.circular(6),
-          ),
-          child: pw.Text(
-            l10n.noNotes,
-            style: const pw.TextStyle(color: PdfColors.blueGrey700),
-          ),
-        )
+        pw.Text(l10n.noNotes, style: pw.TextStyle(color: PdfColors.blueGrey700))
       else
         ...notes.map(
-          (note) => pw.Container(
-            width: double.infinity,
-            margin: const pw.EdgeInsets.only(bottom: 8),
-            padding: const pw.EdgeInsets.all(10),
-            decoration: pw.BoxDecoration(
-              color: PdfColors.grey50,
-              border: pw.Border.all(color: PdfColors.grey300),
-              borderRadius: pw.BorderRadius.circular(6),
-            ),
+          (note) => pw.Padding(
+            padding: const pw.EdgeInsets.only(left: 14, bottom: 8),
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
@@ -415,7 +384,7 @@ pw.Widget _buildPdfDependantSection({
                     fontWeight: pw.FontWeight.bold,
                   ),
                 ),
-                pw.SizedBox(height: 6),
+                pw.SizedBox(height: 4),
                 ...buildPdfNoteDetails(
                   note: note,
                   dependantGroup: dependant.dependantGroup,
@@ -432,6 +401,8 @@ pw.Widget _buildPdfDependantSection({
                     ),
                   ),
                 ),
+                pw.SizedBox(height: 4),
+                pw.Divider(color: PdfColors.grey400, thickness: 0.6),
               ],
             ),
           ),
