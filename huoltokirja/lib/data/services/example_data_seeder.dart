@@ -48,7 +48,7 @@ class ExampleDataSeeder {
       Dependant(
         name: 'Toyota Corolla',
         dependantGroup: DependantGroup.vehicle,
-        tag: 'autot käyttöauto',
+        tag: 'auto',
         createdAt: now,
         updatedAt: now,
       ),
@@ -73,7 +73,7 @@ class ExampleDataSeeder {
         title: 'Jarrupalat',
         body: '',
         serviceDate: _subtractMonths(now, 5),
-        estimatedCounter: 220000,
+        estimatedCounter: 224000,
         performerName: 'Korjaamo Oy',
         price: 169,
         createdAt: now,
@@ -83,7 +83,7 @@ class ExampleDataSeeder {
     await noteRepository.create(
       ServiceNote(
         dependantId: toyota.id!,
-        title: 'Öljynvaihto',
+        title: 'Ilmastoinnin huolto',
         body: '',
         serviceDate: _subtractMonths(now, 1),
         estimatedCounter: 232000,
@@ -98,8 +98,8 @@ class ExampleDataSeeder {
         dependantId: toyota.id!,
         title: 'Katsastus',
         body: '',
-        noteDate: _subtractDays(_subtractMonths(now, 5), 14),
-        estimatedCounter: 219000,
+        noteDate: _subtractDays(_subtractMonths(now, 11), 14),
+        estimatedCounter: 211000,
         performerName: 'Katsastaja Oy',
         price: 74,
         isApproved: false,
@@ -112,8 +112,8 @@ class ExampleDataSeeder {
         dependantId: toyota.id!,
         title: 'Uusinta katsastus',
         body: '',
-        noteDate: _subtractDays(_subtractMonths(now, 4), 21),
-        estimatedCounter: 221000,
+        noteDate: _subtractDays(_subtractMonths(now, 10), 21),
+        estimatedCounter: 212000,
         performerName: 'Katsastaja Oy',
         price: 34,
         isApproved: true,
@@ -127,20 +127,36 @@ class ExampleDataSeeder {
         dependantId: toyota.id!,
         label: 'Katsastus',
         noteType: NoteType.inspection,
-        startDate: _subtractYears(now, 1),
+        startDate: _addDays(_subtractYears(now, 1), 7),
         calendarIntervalMonths: 12,
         createdAt: now,
         updatedAt: now,
       ),
     );
-    await schedulerRepository.create(
+    final oilScheduler = await schedulerRepository.create(
       Scheduler(
         dependantId: toyota.id!,
         label: 'Öljynvaihto',
         noteType: NoteType.service,
-        startDate: _subtractYears(now, 1),
+        startDate: _subtractMonths(now, 9),
         usageInterval: 20000,
-        usageStartValue: 190000,
+        usageStartValue: 213000,
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+
+    await noteRepository.create(
+      ServiceNote(
+        dependantId: toyota.id!,
+        schedulerId: oilScheduler.id,
+        // Seed an old untouched auto-note so scheduler refresh logic can replace it.
+        schedulerTriggerKey: '${oilScheduler.autoTriggerKey}|vanhentunut',
+        isUserModified: false,
+        title: 'Öljynvaihto',
+        body: '',
+        serviceDate: _subtractDays(now, 15),
+        estimatedCounter: 233000,
         createdAt: now,
         updatedAt: now,
       ),
@@ -151,7 +167,7 @@ class ExampleDataSeeder {
         name: 'Musti',
         dependantGroup: DependantGroup.animal,
         initialDate: _subtractYears(now, 3),
-        tag: 'lemmikit rokotus',
+        tag: 'lemmikit',
         createdAt: now,
         updatedAt: now,
       ),
@@ -193,6 +209,8 @@ DateTime _dateOnly(DateTime value) =>
 
 DateTime _subtractDays(DateTime value, int days) =>
     value.subtract(Duration(days: days));
+
+DateTime _addDays(DateTime value, int days) => value.add(Duration(days: days));
 
 DateTime _subtractYears(DateTime value, int years) {
   final year = value.year - years;

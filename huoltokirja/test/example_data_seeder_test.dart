@@ -59,13 +59,25 @@ void main() {
     expect(toyota.tag, 'autot käyttöauto');
     expect(toyota.usage, isNull);
     expect(musti.tag, 'lemmikit rokotus');
-    expect(toyotaNotes, hasLength(5));
+    expect(toyotaNotes, hasLength(6));
+    expect(
+      toyotaNotes.map((note) => note.title),
+      contains('Ilmastoinnin huolto'),
+    );
     expect(mustiNotes, hasLength(1));
     expect(
       toyotaSchedulers.map((scheduler) => scheduler.label),
       containsAll(['Katsastus', 'Öljynvaihto']),
     );
     expect(toyotaSchedulers, hasLength(2));
+    final oilScheduler = toyotaSchedulers.firstWhere(
+      (scheduler) => scheduler.label == 'Öljynvaihto',
+    );
+    final autoOilNote = toyotaNotes.firstWhere(
+      (note) => note.schedulerId != null && note.title == 'Öljynvaihto',
+    );
+    expect(autoOilNote.isUserModified, isFalse);
+    expect(autoOilNote.schedulerTriggerKey, isNot(oilScheduler.autoTriggerKey));
     expect(mustiSchedulers, hasLength(1));
     expect(mustiSchedulers.single.noteType, NoteType.service);
   });

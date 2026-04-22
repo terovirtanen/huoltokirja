@@ -77,6 +77,7 @@ class SchedulerAutoTriggerService {
       }
 
       final triggerKey = scheduler.autoTriggerKey;
+      final schedulerKey = _schedulerNoteKey(schedulerId, triggerKey);
       final staleNotes = notes.where(
         (note) =>
             note.schedulerId == schedulerId &&
@@ -84,18 +85,7 @@ class SchedulerAutoTriggerService {
             note.schedulerTriggerKey != triggerKey,
       );
 
-      for (final note in staleNotes) {
-        if (note.id != null) {
-          await noteRepository.delete(note.id!);
-        }
-        existingSchedulerKeys.remove(
-          _schedulerNoteKey(schedulerId, note.schedulerTriggerKey ?? ''),
-        );
-      }
-
-      if (existingSchedulerKeys.contains(
-        _schedulerNoteKey(schedulerId, triggerKey),
-      )) {
+      if (existingSchedulerKeys.contains(schedulerKey)) {
         continue;
       }
 
@@ -107,6 +97,15 @@ class SchedulerAutoTriggerService {
         continue;
       }
 
+      for (final note in staleNotes) {
+        if (note.id != null) {
+          await noteRepository.delete(note.id!);
+        }
+        existingSchedulerKeys.remove(
+          _schedulerNoteKey(schedulerId, note.schedulerTriggerKey ?? ''),
+        );
+      }
+
       await noteRepository.create(
         _buildTriggeredNote(
           scheduler: scheduler,
@@ -114,7 +113,7 @@ class SchedulerAutoTriggerService {
           createdAt: referenceDate,
         ),
       );
-      existingSchedulerKeys.add(_schedulerNoteKey(schedulerId, triggerKey));
+      existingSchedulerKeys.add(schedulerKey);
       createdCount += 1;
     }
 

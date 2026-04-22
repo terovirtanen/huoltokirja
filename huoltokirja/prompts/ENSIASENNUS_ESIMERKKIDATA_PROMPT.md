@@ -68,10 +68,10 @@ Luo huoltomuistiinpanot:
    - hinta: `69`
 2. `Jarrupalat`
    - ajankohta: tasan 5 kuukautta tästä hetkestä taaksepäin
-   - km-lukema (`estimatedCounter`): `220000`
+   - km-lukema (`estimatedCounter`): `224000`
    - tekijä: `Korjaamo Oy`
    - hinta: `169`
-3. `Öljynvaihto`
+3. `Ilmastoinnin huolto`
    - ajankohta: tasan 1 kuukausi tästä hetkestä taaksepäin
    - km-lukema (`estimatedCounter`): `232000`
    - tekijä: `Korjaamo Oy`
@@ -79,14 +79,14 @@ Luo huoltomuistiinpanot:
 
 Luo tarkastusmuistiinpanot:
 1. `Katsastus`
-   - ajankohta: tasan 5 kuukautta ja 2 viikkoa tästä hetkestä taaksepäin
-   - km-lukema (`estimatedCounter`): `219000`
+   - ajankohta: tasan 11 kuukautta ja 2 viikkoa tästä hetkestä taaksepäin
+   - km-lukema (`estimatedCounter`): `211000`
    - tekijä: `Katsastaja Oy`
    - hinta: `74`
    - `approved = false`
 2. `Uusinta katsastus`
-   - ajankohta: tasan 4 kuukautta ja 3 viikkoa tästä hetkestä taaksepäin
-   - km-lukema (`estimatedCounter`): `221000`
+   - ajankohta: tasan 10 kuukautta ja 3 viikkoa tästä hetkestä taaksepäin
+   - km-lukema (`estimatedCounter`): `212000`
    - tekijä: `Katsastaja Oy`
    - hinta: `34`
    - `approved = true`
@@ -94,13 +94,14 @@ Luo tarkastusmuistiinpanot:
 Luo ajastukset:
 1. `Katsastus`
    - tyyppi: tarkastusmuistiinpano
-   - aloitus: noin 1 vuosi sitten
+   - aloitus: 1 viikko vajaa 1 vuosi sitten
    - sääntö: `vuosittain`
 2. `Öljynvaihto`
    - tyyppi: huoltomuistiinpano
    - käyttömääräsääntö
    - väli: `20000`
-   - alkuarvo: sellainen, että seuraava raja löytyy viimeisimpien km-muistiinpanojen perusteella oikein
+   - alkuajankohta: tasan 9 kuukautta sitten
+   - luo tähän ajastuksella luotu huoltomuistiinpano joka on mennyt vanhaksi ilman että käyttäjä on sitä muokannut
 
 ### Esimerkki 2: lemmikki
 

@@ -153,42 +153,45 @@ void main() {
     expect(notes.single.noteDate, DateTime(2026, 4, 20));
   });
 
-  test('new yearly calendar scheduler starting today does not trigger today', () async {
-    final createdDependant = await dependantRepo.create(
-      Dependant(
-        name: 'Calendar vehicle',
-        dependantGroup: DependantGroup.vehicle,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      ),
-    );
+  test(
+    'new yearly calendar scheduler starting today does not trigger today',
+    () async {
+      final createdDependant = await dependantRepo.create(
+        Dependant(
+          name: 'Calendar vehicle',
+          dependantGroup: DependantGroup.vehicle,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        ),
+      );
 
-    await schedulerRepo.create(
-      Scheduler(
-        dependantId: createdDependant.id!,
-        label: 'Vuosihuolto',
-        noteType: NoteType.service,
-        startDate: DateTime(2026, 4, 10),
-        calendarIntervalMonths: 12,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      ),
-    );
+      await schedulerRepo.create(
+        Scheduler(
+          dependantId: createdDependant.id!,
+          label: 'Vuosihuolto',
+          noteType: NoteType.service,
+          startDate: DateTime(2026, 4, 10),
+          calendarIntervalMonths: 12,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        ),
+      );
 
-    final triggerService = SchedulerAutoTriggerService(
-      dependantRepository: dependantRepo,
-      noteRepository: noteRepo,
-      schedulerRepository: schedulerRepo,
-    );
+      final triggerService = SchedulerAutoTriggerService(
+        dependantRepository: dependantRepo,
+        noteRepository: noteRepo,
+        schedulerRepository: schedulerRepo,
+      );
 
-    await triggerService.triggerForDependant(
-      createdDependant.id!,
-      asOf: DateTime(2026, 4, 10),
-    );
+      await triggerService.triggerForDependant(
+        createdDependant.id!,
+        asOf: DateTime(2026, 4, 10),
+      );
 
-    final notes = await noteRepo.listByDependant(createdDependant.id!);
-    expect(notes, isEmpty);
-  });
+      final notes = await noteRepo.listByDependant(createdDependant.id!);
+      expect(notes, isEmpty);
+    },
+  );
 
   test('significant scheduler change resets untouched auto note', () async {
     final createdDependant = await dependantRepo.create(
@@ -237,6 +240,102 @@ void main() {
     expect(notes, hasLength(1));
     expect(notes.single.noteDate, DateTime(2026, 5, 20));
     expect(notes.single.schedulerTriggerKey, updatedScheduler.autoTriggerKey);
+  });
+
+  test('stale untouched auto note stays when replacement is not due', () async {
+    final createdDependant = await dependantRepo.create(
+      Dependant(
+        name: 'Seed vehicle',
+        dependantGroup: DependantGroup.vehicle,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+
+    await noteRepo.create(
+      ServiceNote(
+        dependantId: createdDependant.id!,
+        title: 'Öljynvaihto',
+        body: '',
+        serviceDate: DateTime(2025, 4, 10),
+        estimatedCounter: 210000,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+    await noteRepo.create(
+      ServiceNote(
+        dependantId: createdDependant.id!,
+        title: 'Jarrupalat',
+        body: '',
+        serviceDate: DateTime(2025, 11, 10),
+        estimatedCounter: 220000,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+    await noteRepo.create(
+      ServiceNote(
+        dependantId: createdDependant.id!,
+        title: 'Ilmastoinnin huolto',
+        body: '',
+        serviceDate: DateTime(2026, 3, 10),
+        estimatedCounter: 232000,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+
+    final scheduler = await schedulerRepo.create(
+      Scheduler(
+        dependantId: createdDependant.id!,
+        label: 'Öljynvaihto',
+        noteType: NoteType.service,
+        startDate: DateTime(2025, 6, 10),
+        usageInterval: 50000,
+        usageStartValue: 210000,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+
+    await noteRepo.create(
+      ServiceNote(
+        dependantId: createdDependant.id!,
+        schedulerId: scheduler.id,
+        schedulerTriggerKey: '${scheduler.autoTriggerKey}|vanhentunut',
+        isUserModified: false,
+        title: 'Öljynvaihto',
+        body: '',
+        serviceDate: DateTime(2026, 2, 10),
+        estimatedCounter: 226000,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+
+    final triggerService = SchedulerAutoTriggerService(
+      dependantRepository: dependantRepo,
+      noteRepository: noteRepo,
+      schedulerRepository: schedulerRepo,
+    );
+
+    await triggerService.triggerForDependant(
+      createdDependant.id!,
+      asOf: DateTime(2026, 4, 10),
+    );
+
+    final notes = await noteRepo.listByDependant(createdDependant.id!);
+    final schedulerNotes = notes.where(
+      (note) => note.schedulerId == scheduler.id,
+    );
+
+    expect(schedulerNotes, hasLength(1));
+    expect(
+      schedulerNotes.single.schedulerTriggerKey,
+      isNot(scheduler.autoTriggerKey),
+    );
+    expect(schedulerNotes.single.isUserModified, isFalse);
   });
 
   test(
