@@ -1,3 +1,29 @@
+# Käynnistys Android-emulaattorilla ja release-version teko
+
+## Android-emulaattorin käynnistys komentoriviltä
+
+1. Listaa asennetut emulaattorit: emulator list avd
+2. Käynnistä emulaattori: emulator -avd <emulaattorin_nimi>
+3. Varmista, että laite näkyy Flutterille: flutter devices
+
+## Sovelluksen ajaminen emulaattorissa
+
+1. Siirry projektin juureen: cd huoltokirja/huoltokirja
+2. Hae riippuvuudet: flutter pub get
+3. Käynnistä sovellus: flutter run -d android
+
+## Release-version teko ja asennus puhelimeen
+
+1. Rakenna release APK: flutter build apk --release
+  - Löydät valmiin APK-tiedoston polusta build/app/outputs/flutter-apk/app-release.apk
+2. Siirrä APK puhelimeen (esim. USB, sähköposti, pilvipalvelu)
+3. Asenna APK puhelimeen (esim. tiedostonhallinnalla tai komennolla adb install build/app/outputs/flutter-apk/app-release.apk)
+
+Jos haluat tehdä allekirjoitetun ja Play-kauppaan sopivan AAB-paketin:
+1. flutter build appbundle --release
+  - Tiedosto löytyy polusta build/app/outputs/bundle/release/app-release.aab
+
+Lisätietoa: https://docs.flutter.dev/deployment/android
 # huoltokirja
 
 Flutter-versio Huoltokirja-sovelluksesta.
