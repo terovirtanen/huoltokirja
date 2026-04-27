@@ -251,7 +251,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deviceGroup => 'Device';
 
   @override
-  String get animalGroup => 'Animal';
+  String get animalGroup => 'Pet';
 
   @override
   String get noRelation => 'No relation';

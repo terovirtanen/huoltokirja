@@ -253,7 +253,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get deviceGroup => 'Laite';
 
   @override
-  String get animalGroup => 'Eläin';
+  String get animalGroup => 'Lemmikki';
 
   @override
   String get noRelation => 'Ei suhdetta';
