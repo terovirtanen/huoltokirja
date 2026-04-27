@@ -19,16 +19,16 @@ BUILD_DATE=$(date +%F)
 
 case $valinta in
   1)
-    echo "Rakennetaan ja käynnistetään iOS-simulaattorissa..."
     flutter pub get
+    echo "Rakennetaan ja käynnistetään iOS-simulaattorissa..."
     open -a Simulator
     flutter run -d ios --dart-define=APP_BUILD_DATE=$BUILD_DATE
     ;;
   2)
     echo "Rakennetaan iOS release (ipa)..."
     flutter pub get
-    flutter build ios --release --dart-define=APP_BUILD_DATE=$BUILD_DATE
-    echo "Valmis. Löydät .ipa-tiedoston Xcode Organizerista."
+    flutter build ipa --release --dart-define=APP_BUILD_DATE=$BUILD_DATE
+    echo "Valmis. Julkaistava .ipa-tiedosto löytyy polusta: huoltokirja/build/ios/ipa/"
     ;;
   3)
     echo "Rakennetaan ja käynnistetään Android-emulaattorissa..."

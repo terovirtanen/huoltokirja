@@ -20,8 +20,16 @@
 3. Asenna APK puhelimeen (esim. tiedostonhallinnalla tai komennolla adb install build/app/outputs/flutter-apk/app-release.apk)
 
 Jos haluat tehdä allekirjoitetun ja Play-kauppaan sopivan AAB-paketin:
+
 1. flutter build appbundle --release
   - Tiedosto löytyy polusta build/app/outputs/bundle/release/app-release.aab
+
+## iOS release-paketin (ipa) sijainti
+
+Kun ajat iOS release buildin komennolla:
+    flutter build ios --release --dart-define=APP_BUILD_DATE=$(date +%F)
+Julkaistava .ipa-tiedosto löytyy polusta:
+    huoltokirja/build/ios/ipa/
 
 Lisätietoa: https://docs.flutter.dev/deployment/android
 # huoltokirja
