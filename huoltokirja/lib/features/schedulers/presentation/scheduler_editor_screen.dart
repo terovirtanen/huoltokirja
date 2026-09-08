@@ -102,7 +102,7 @@ class _SchedulerEditorScreenState extends ConsumerState<SchedulerEditorScreen> {
 
     final l10n = context.l10n;
     final detailAsync = ref.watch(dependantDetailProvider(widget.dependantId));
-    final detail = detailAsync.valueOrNull;
+    final detail = detailAsync.value;
     final dependant = detail?.dependant;
     final usageEstimate = dependant == null || detail == null
         ? null
