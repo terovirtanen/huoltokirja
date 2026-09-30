@@ -257,13 +257,36 @@ class _AllNotesPage extends ConsumerWidget {
                       dependantGroup: item.dependant.dependantGroup,
                       noteType: item.note.type,
                     );
-                final subtitleLines = <String>[
-                  context.formatDate(item.note.noteDate),
-                  item.dependant.name,
-                  if (hasReading)
-                    '${item.note.estimatedCounter}$readingUnit',
-                  if (item.note.body.trim().isNotEmpty) item.note.body.trim(),
-                ];
+                final subtitleSpans = <InlineSpan>[];
+
+                void addSubtitleLine(String text, {TextStyle? style}) {
+                  if (subtitleSpans.isNotEmpty) {
+                    subtitleSpans.add(const TextSpan(text: '\n'));
+                  }
+                  subtitleSpans.add(TextSpan(text: text, style: style));
+                }
+
+                addSubtitleLine(context.formatDate(item.note.noteDate));
+                addSubtitleLine(item.dependant.name);
+                if (hasReading) {
+                  addSubtitleLine('${item.note.estimatedCounter}$readingUnit');
+                }
+                if (item.note.body.trim().isNotEmpty) {
+                  addSubtitleLine(item.note.body.trim());
+                }
+                if (item.note is InspectionNote &&
+                    !_isFutureDate(item.note.noteDate)) {
+                  addSubtitleLine(
+                    item.note.isApproved
+                        ? context.l10n.approvedLabel
+                        : context.l10n.rejectedLabel,
+                    style: TextStyle(
+                      color: item.note.isApproved
+                          ? Colors.green.shade700
+                          : Colors.red.shade700,
+                    ),
+                  );
+                }
 
                 return Card(
                   color: palette.background,
@@ -301,7 +324,7 @@ class _AllNotesPage extends ConsumerWidget {
                     ),
                     subtitle: Padding(
                       padding: const EdgeInsets.only(top: 4),
-                      child: Text(subtitleLines.join('\n')),
+                      child: Text.rich(TextSpan(children: subtitleSpans)),
                     ),
                     trailing: Icon(Icons.chevron_right, color: palette.accent),
                     onTap: item.note.id == null || item.dependant.id == null
@@ -325,6 +348,13 @@ class _AllNotesPage extends ConsumerWidget {
       NoteType.service => Icons.build_circle_outlined,
       NoteType.inspection => Icons.fact_check_outlined,
     };
+  }
+
+  bool _isFutureDate(DateTime date) {
+    final today = DateTime.now();
+    final dateOnly = DateTime(date.year, date.month, date.day);
+    final todayOnly = DateTime(today.year, today.month, today.day);
+    return dateOnly.isAfter(todayOnly);
   }
 
   _NoteCardPalette _notePalette(BuildContext context, Note note) {

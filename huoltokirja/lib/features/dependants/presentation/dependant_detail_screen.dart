@@ -474,32 +474,67 @@ class _NoteTile extends StatelessWidget {
     if (note.price != null) {
       buffer.write(' • ${note.price!.toStringAsFixed(2)} €');
     }
-    if (note.isApproved) {
-      buffer.write(context.l10n.approvedSuffix);
-    }
-
     return buffer.toString();
   }
 
-  String _buildSubtitle(BuildContext context) {
+  Widget _buildSubtitle(BuildContext context) {
     return switch (note) {
-      PlainNote plain => context.l10n.plainNoteSummary(
-        dateFormat.format(plain.noteDate),
-        plain.body.trim().isEmpty
-            ? ''
-            : context.l10n.noteBodySuffix(plain.body.trim()),
+      PlainNote plain => Text(
+        context.l10n.plainNoteSummary(
+          dateFormat.format(plain.noteDate),
+          plain.body.trim().isEmpty
+              ? ''
+              : context.l10n.noteBodySuffix(plain.body.trim()),
+        ),
       ),
-      ServiceNote service => localizedServiceNoteSummary(
-        context.l10n,
-        dependantGroup: dependantGroup,
-        date: dateFormat.format(service.serviceDate),
-        details: _buildDetails(context, service),
+      ServiceNote service => Text(
+        localizedServiceNoteSummary(
+          context.l10n,
+          dependantGroup: dependantGroup,
+          date: dateFormat.format(service.serviceDate),
+          details: _buildDetails(context, service),
+        ),
       ),
-      InspectionNote inspection => context.l10n.inspectionNoteSummary(
-        dateFormat.format(inspection.noteDate),
-        _buildDetails(context, inspection),
-      ),
+      InspectionNote inspection => _buildInspectionSubtitle(context, inspection),
     };
+  }
+
+  Widget _buildInspectionSubtitle(
+    BuildContext context,
+    InspectionNote inspection,
+  ) {
+    final summary = context.l10n.inspectionNoteSummary(
+      dateFormat.format(inspection.noteDate),
+      _buildDetails(context, inspection),
+    );
+    final today = DateTime.now();
+    final noteDay = DateTime(
+      inspection.noteDate.year,
+      inspection.noteDate.month,
+      inspection.noteDate.day,
+    );
+    final todayDay = DateTime(today.year, today.month, today.day);
+
+    if (noteDay.isAfter(todayDay)) {
+      return Text(summary);
+    }
+
+    return Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(text: summary),
+          TextSpan(
+            text:
+                ' • ${inspection.isApproved ? context.l10n.approvedLabel : context.l10n.rejectedLabel}',
+            style: TextStyle(
+              color: inspection.isApproved
+                  ? Colors.green.shade700
+                  : Colors.red.shade700,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -538,7 +573,7 @@ class _NoteTile extends StatelessWidget {
               ),
           ],
         ),
-        subtitle: Text(_buildSubtitle(context)),
+        subtitle: _buildSubtitle(context),
         trailing: PopupMenuButton<String>(
           onSelected: (value) async {
             if (value == 'edit') onEdit();
