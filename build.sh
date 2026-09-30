@@ -21,8 +21,12 @@ case $valinta in
   1)
     flutter pub get
     echo "Rakennetaan ja käynnistetään iOS-simulaattorissa..."
-    open -a Simulator
-    flutter run -d ios --dart-define=APP_BUILD_DATE=$BUILD_DATE
+    open -a Simulator 2>/dev/null || open -a "DeviceHub" 2>/dev/null || true
+    IOS_DEVICE_ID=$(flutter devices --machine 2>/dev/null | grep -B4 '"targetPlatform": "ios"' | grep '"id"' | head -1 | sed -E 's/.*"id": "([^"]+)".*/\1/')
+    if [ -z "$IOS_DEVICE_ID" ]; then
+      IOS_DEVICE_ID=ios
+    fi
+    flutter run -d "$IOS_DEVICE_ID" --dart-define=APP_BUILD_DATE=$BUILD_DATE
     ;;
   2)
     echo "Rakennetaan iOS release (ipa)..."
