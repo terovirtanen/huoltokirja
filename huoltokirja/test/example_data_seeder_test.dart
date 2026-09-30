@@ -56,9 +56,9 @@ void main() {
     final toyotaSchedulers = await schedulerRepo.listByDependant(toyota.id!);
     final mustiSchedulers = await schedulerRepo.listByDependant(musti.id!);
 
-    expect(toyota.tag, 'autot käyttöauto');
+    expect(toyota.tag, 'auto');
     expect(toyota.usage, isNull);
-    expect(musti.tag, 'lemmikit rokotus');
+    expect(musti.tag, 'lemmikit');
     expect(toyotaNotes, hasLength(6));
     expect(
       toyotaNotes.map((note) => note.title),

@@ -6,7 +6,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('app starts and shows root screen', (tester) async {
-    app.main();
+    await app.main();
     await tester.pumpAndSettle();
 
     expect(find.text('Huoltokirja'), findsOneWidget);
