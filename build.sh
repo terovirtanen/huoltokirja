@@ -11,6 +11,7 @@ echo "1) iOS simulaattori: build & run"
 echo "2) iOS release build (ipa)"
 echo "3) Android emulaattori: build & run"
 echo "4) Android release build (apk)"
+echo "5) Android release build (aab, Google Play)"
 echo "q) Lopeta"
 echo "c) Clean (poistaa build-välimuistit)"
 read -p "Valinta: " valinta
@@ -44,7 +45,25 @@ case $valinta in
     echo "Rakennetaan Android release (apk)..."
     flutter pub get
     flutter build apk --release --dart-define=APP_BUILD_DATE=$BUILD_DATE
-    echo "Valmis. Löydät APK:n polusta build/app/outputs/flutter-apk/app-release.apk"
+    APK=build/app/outputs/flutter-apk/app-release.apk
+    echo "Valmis. Löydät APK:n polusta huoltokirja/$APK"
+    echo "Allekirjoitus:"
+    keytool -printcert -jarfile "$APK"
+    ;;
+  5)
+    echo "Rakennetaan Android release (aab, Google Play)..."
+    flutter pub get
+    flutter build appbundle --release --dart-define=APP_BUILD_DATE=$BUILD_DATE
+    AAB=build/app/outputs/bundle/release/app-release.aab
+    echo "Valmis. Löydät AAB:n polusta huoltokirja/$AAB"
+    echo "Allekirjoitus:"
+    SIG=$(keytool -printcert -jarfile "$AAB")
+    echo "$SIG"
+    if echo "$SIG" | grep -q "Android Debug"; then
+      echo "VIRHE: AAB on allekirjoitettu debug-avaimella! Tarkista huoltokirja/android/key.properties. Älä lataa tätä Google Playhin."
+      popd > /dev/null
+      exit 1
+    fi
     ;;
   c)
     echo "Ajetaan flutter clean..."
