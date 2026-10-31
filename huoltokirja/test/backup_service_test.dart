@@ -58,8 +58,8 @@ void main() {
         name: 'Toyota Corolla',
         dependantGroup: DependantGroup.vehicle,
         tag: 'autot',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        createdAt: DateTime(2026, 4, 10),
+        updatedAt: DateTime(2026, 4, 10),
       ),
     );
 
@@ -69,8 +69,8 @@ void main() {
         title: 'Öljynvaihto',
         body: 'vaihdettu',
         serviceDate: DateTime(2026, 4, 10),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        createdAt: DateTime(2026, 4, 10),
+        updatedAt: DateTime(2026, 4, 10),
       ),
     );
 
@@ -81,8 +81,8 @@ void main() {
         noteType: NoteType.service,
         startDate: DateTime(2026, 4, 10),
         calendarIntervalMonths: 12,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        createdAt: DateTime(2026, 4, 10),
+        updatedAt: DateTime(2026, 4, 10),
       ),
     );
 
@@ -104,8 +104,8 @@ void main() {
       Dependant(
         name: 'Musti',
         dependantGroup: DependantGroup.animal,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        createdAt: DateTime(2026, 4, 10),
+        updatedAt: DateTime(2026, 4, 10),
       ),
     );
     await noteRepo.create(
@@ -114,8 +114,8 @@ void main() {
         title: 'Rokotus',
         body: 'vuosihuolto tehty',
         noteDate: DateTime(2026, 4, 11),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        createdAt: DateTime(2026, 4, 10),
+        updatedAt: DateTime(2026, 4, 10),
       ),
     );
 
@@ -127,8 +127,8 @@ void main() {
     await dependantRepo.create(
       Dependant(
         name: 'Vanha kohde',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        createdAt: DateTime(2026, 4, 10),
+        updatedAt: DateTime(2026, 4, 10),
       ),
     );
 
@@ -256,8 +256,8 @@ void main() {
       Dependant(
         name: 'Valtti',
         dependantGroup: DependantGroup.vehicle,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        createdAt: DateTime(2026, 4, 10),
+        updatedAt: DateTime(2026, 4, 10),
       ),
     );
 
@@ -268,8 +268,8 @@ void main() {
         body: '',
         noteDate: DateTime(2026, 4, 12),
         isApproved: true,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        createdAt: DateTime(2026, 4, 10),
+        updatedAt: DateTime(2026, 4, 10),
       ),
     );
 
@@ -280,8 +280,8 @@ void main() {
         noteType: NoteType.inspection,
         startDate: DateTime(2026, 4, 12),
         calendarIntervalMonths: 12,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        createdAt: DateTime(2026, 4, 10),
+        updatedAt: DateTime(2026, 4, 10),
       ),
     );
 

@@ -58,6 +58,9 @@ class Scheduler {
     ].join('|');
   }
 
+  String autoTriggerKeyFor(DateTime occurrenceDate) =>
+      '$autoTriggerKey|occurrence=${_dateOnly(occurrenceDate).toIso8601String()}';
+
   DateTime? nextCalendarScheduleAt({DateTime? referenceDate}) {
     final intervalMonths = calendarIntervalMonths;
     if (intervalMonths == null || intervalMonths <= 0) {
@@ -66,10 +69,34 @@ class Scheduler {
 
     final reference = _dateOnly(referenceDate ?? DateTime.now());
     var next = _dateOnly(startDate);
-    while (!next.isAfter(reference)) {
+    if (!next.isAfter(reference)) {
+      next = _addMonths(next, intervalMonths);
+    }
+    while (next.isBefore(reference)) {
       next = _addMonths(next, intervalMonths);
     }
     return next;
+  }
+
+  DateTime? latestCalendarScheduleAt({DateTime? referenceDate}) {
+    final intervalMonths = calendarIntervalMonths;
+    if (intervalMonths == null || intervalMonths <= 0) {
+      return null;
+    }
+
+    final reference = _dateOnly(referenceDate ?? DateTime.now());
+    var occurrence = _addMonths(_dateOnly(startDate), intervalMonths);
+    if (occurrence.isAfter(reference)) {
+      return null;
+    }
+
+    while (true) {
+      final next = _addMonths(occurrence, intervalMonths);
+      if (next.isAfter(reference)) {
+        return occurrence;
+      }
+      occurrence = next;
+    }
   }
 
   DateTime? nextUsageScheduleAt({

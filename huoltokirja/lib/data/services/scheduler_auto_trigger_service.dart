@@ -40,8 +40,21 @@ class SchedulerAutoTriggerService {
     return _triggerForDependant(dependantId: dependantId, asOf: asOf);
   }
 
+  Future<int> triggerForScheduler(int schedulerId, {DateTime? asOf}) async {
+    final scheduler = await schedulerRepository.getById(schedulerId);
+    if (scheduler == null) {
+      return 0;
+    }
+    return _triggerForDependant(
+      dependantId: scheduler.dependantId,
+      schedulerId: schedulerId,
+      asOf: asOf,
+    );
+  }
+
   Future<int> _triggerForDependant({
     required int dependantId,
+    int? schedulerId,
     DateTime? asOf,
   }) async {
     final dependant = await dependantRepository.getById(dependantId);
@@ -52,22 +65,17 @@ class SchedulerAutoTriggerService {
     final referenceDate = _dateOnly(asOf ?? DateTime.now());
     final triggerThreshold = referenceDate.add(triggerLeadTime);
     final notes = await noteRepository.listByDependant(dependantId);
-    final schedulers = await schedulerRepository.listByDependant(dependantId);
+    final allSchedulers = await schedulerRepository.listByDependant(
+      dependantId,
+    );
+    final schedulers = schedulerId == null
+        ? allSchedulers
+        : allSchedulers.where((scheduler) => scheduler.id == schedulerId);
     final usageEstimate = estimateDependantUsage(
       dependant: dependant,
       notes: notes,
       asOf: referenceDate,
     );
-    final existingSchedulerKeys = notes
-        .where((note) => note.schedulerId != null)
-        .map(
-          (note) => _schedulerNoteKey(
-            note.schedulerId!,
-            note.schedulerTriggerKey ?? '',
-          ),
-        )
-        .toSet();
-
     var createdCount = 0;
 
     for (final scheduler in schedulers) {
@@ -76,34 +84,43 @@ class SchedulerAutoTriggerService {
         continue;
       }
 
-      final triggerKey = scheduler.autoTriggerKey;
-      final schedulerKey = _schedulerNoteKey(schedulerId, triggerKey);
-      final staleNotes = notes.where(
-        (note) =>
-            note.schedulerId == schedulerId &&
-            !note.isUserModified &&
-            note.schedulerTriggerKey != triggerKey,
-      );
-
-      if (existingSchedulerKeys.contains(schedulerKey)) {
-        continue;
-      }
-
-      final nextScheduleAt = scheduler.nextScheduleAtForEstimate(
+      final schedulerNotes = notes
+          .where((note) => note.schedulerId == schedulerId)
+          .toList(growable: false);
+      final nextScheduleAt = _nextScheduleToTrigger(
+        scheduler: scheduler,
         usageEstimate: usageEstimate,
         referenceDate: referenceDate,
+        triggerThreshold: triggerThreshold,
+        existingNotes: schedulerNotes,
       );
-      if (nextScheduleAt == null || nextScheduleAt.isAfter(triggerThreshold)) {
+      if (nextScheduleAt == null) {
         continue;
       }
 
+      final triggerKey = scheduler.autoTriggerKeyFor(nextScheduleAt);
+      final occurrenceAlreadyExists = schedulerNotes.any(
+        (note) =>
+            note.schedulerTriggerKey == triggerKey ||
+            (note.schedulerTriggerKey == scheduler.autoTriggerKey &&
+                _dateOnly(note.noteDate) == nextScheduleAt),
+      );
+      if (occurrenceAlreadyExists) {
+        continue;
+      }
+
+      final staleNotes = schedulerNotes.where(
+        (note) =>
+            !note.isUserModified &&
+            !_matchesSchedulerConfiguration(
+              scheduler,
+              note.schedulerTriggerKey,
+            ),
+      );
       for (final note in staleNotes) {
         if (note.id != null) {
           await noteRepository.delete(note.id!);
         }
-        existingSchedulerKeys.remove(
-          _schedulerNoteKey(schedulerId, note.schedulerTriggerKey ?? ''),
-        );
       }
 
       await noteRepository.create(
@@ -113,11 +130,57 @@ class SchedulerAutoTriggerService {
           createdAt: referenceDate,
         ),
       );
-      existingSchedulerKeys.add(schedulerKey);
       createdCount += 1;
     }
 
     return createdCount;
+  }
+
+  DateTime? _nextScheduleToTrigger({
+    required Scheduler scheduler,
+    required UsageEstimate? usageEstimate,
+    required DateTime referenceDate,
+    required DateTime triggerThreshold,
+    required List<Note> existingNotes,
+  }) {
+    final upcomingDates = <DateTime>[];
+    final calendarDate = scheduler.nextCalendarScheduleAt(
+      referenceDate: referenceDate,
+    );
+    if (calendarDate != null) {
+      upcomingDates.add(calendarDate);
+    }
+    if (usageEstimate != null) {
+      final usageDate = scheduler.nextUsageScheduleAt(
+        estimate: usageEstimate,
+        referenceDate: referenceDate,
+      );
+      if (usageDate != null) {
+        upcomingDates.add(usageDate);
+      }
+    }
+    upcomingDates.sort();
+    for (final date in upcomingDates) {
+      if (!date.isAfter(triggerThreshold)) {
+        return date;
+      }
+    }
+
+    final latestCalendarDate = scheduler.latestCalendarScheduleAt(
+      referenceDate: referenceDate,
+    );
+    if (latestCalendarDate == null) {
+      return null;
+    }
+
+    final hasLatestCalendarNote = existingNotes.any(
+      (note) =>
+          note.schedulerTriggerKey ==
+              scheduler.autoTriggerKeyFor(latestCalendarDate) ||
+          (note.schedulerTriggerKey == scheduler.autoTriggerKey &&
+              _dateOnly(note.noteDate) == latestCalendarDate),
+    );
+    return hasLatestCalendarNote ? null : latestCalendarDate;
   }
 
   Note _buildTriggeredNote({
@@ -128,7 +191,7 @@ class SchedulerAutoTriggerService {
     return switch (scheduler.noteType) {
       NoteType.plain => PlainNote(
         schedulerId: scheduler.id,
-        schedulerTriggerKey: scheduler.autoTriggerKey,
+        schedulerTriggerKey: scheduler.autoTriggerKeyFor(noteDate),
         isUserModified: false,
         dependantId: scheduler.dependantId,
         title: scheduler.label,
@@ -139,7 +202,7 @@ class SchedulerAutoTriggerService {
       ),
       NoteType.service => ServiceNote(
         schedulerId: scheduler.id,
-        schedulerTriggerKey: scheduler.autoTriggerKey,
+        schedulerTriggerKey: scheduler.autoTriggerKeyFor(noteDate),
         isUserModified: false,
         dependantId: scheduler.dependantId,
         title: scheduler.label,
@@ -150,7 +213,7 @@ class SchedulerAutoTriggerService {
       ),
       NoteType.inspection => InspectionNote(
         schedulerId: scheduler.id,
-        schedulerTriggerKey: scheduler.autoTriggerKey,
+        schedulerTriggerKey: scheduler.autoTriggerKeyFor(noteDate),
         isUserModified: false,
         dependantId: scheduler.dependantId,
         title: scheduler.label,
@@ -163,8 +226,13 @@ class SchedulerAutoTriggerService {
   }
 }
 
-String _schedulerNoteKey(int schedulerId, String triggerKey) =>
-    '$schedulerId|$triggerKey';
+bool _matchesSchedulerConfiguration(Scheduler scheduler, String? triggerKey) {
+  if (triggerKey == scheduler.autoTriggerKey) {
+    return true;
+  }
+  return triggerKey?.startsWith('${scheduler.autoTriggerKey}|occurrence=') ??
+      false;
+}
 
 DateTime _dateOnly(DateTime value) =>
     DateTime(value.year, value.month, value.day);

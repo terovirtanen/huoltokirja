@@ -336,7 +336,7 @@ void main() {
     expect(threshold, 22000);
   });
 
-  test('calendar rule starting today points to the next interval', () {
+  test('calendar rule starting today is first due after one interval', () {
     final scheduler = Scheduler(
       dependantId: 1,
       label: 'Vuosihuolto',
@@ -349,6 +349,40 @@ void main() {
 
     expect(
       scheduler.nextCalendarScheduleAt(referenceDate: DateTime(2026, 4, 10)),
+      DateTime(2027, 4, 10),
+    );
+  });
+
+  test('calendar rule starting in the future is due on its start date', () {
+    final scheduler = Scheduler(
+      dependantId: 1,
+      label: 'Vuosihuolto',
+      noteType: NoteType.service,
+      startDate: DateTime(2025, 1, 8),
+      calendarIntervalMonths: 12,
+      createdAt: DateTime(2025, 1, 1),
+      updatedAt: DateTime(2025, 1, 1),
+    );
+
+    expect(
+      scheduler.nextCalendarScheduleAt(referenceDate: DateTime(2025, 1, 1)),
+      DateTime(2025, 1, 8),
+    );
+  });
+
+  test('calendar rule remains due on its first interval date', () {
+    final scheduler = Scheduler(
+      dependantId: 1,
+      label: 'Vuosihuolto',
+      noteType: NoteType.service,
+      startDate: DateTime(2026, 4, 10),
+      calendarIntervalMonths: 12,
+      createdAt: DateTime(2026, 4, 10),
+      updatedAt: DateTime(2026, 4, 10),
+    );
+
+    expect(
+      scheduler.nextCalendarScheduleAt(referenceDate: DateTime(2027, 4, 10)),
       DateTime(2027, 4, 10),
     );
   });
