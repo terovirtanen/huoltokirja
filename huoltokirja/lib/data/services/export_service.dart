@@ -65,9 +65,11 @@ class AppExportService {
       localeName: pdfL10n.localeName,
     );
     final allDependants = await _dependantRepository.getAll();
-    final dependants = filterDependantsForExport(
-      dependants: allDependants,
-      selectedTags: selectedTags,
+    final dependants = sortDependantsByTag(
+      filterDependantsForExport(
+        dependants: allDependants,
+        selectedTags: selectedTags,
+      ),
     );
     final dependantIds = dependants
         .where((dependant) => dependant.id != null)
@@ -238,6 +240,27 @@ List<Dependant> filterDependantsForExport({
   return dependants
       .where((dependant) => matchesSelectedTags(dependant, selectedTags))
       .toList(growable: false);
+}
+
+/// Groups dependants by their first tag; untagged ones go last.
+/// The original order is preserved within a tag group.
+List<Dependant> sortDependantsByTag(List<Dependant> dependants) {
+  String key(Dependant dependant) {
+    final tags = extractTagWords(dependant.tag);
+    return tags.isEmpty ? '' : tags.first;
+  }
+
+  final indexed = dependants.indexed.toList();
+  indexed.sort((a, b) {
+    final keyA = key(a.$2);
+    final keyB = key(b.$2);
+    if (keyA.isEmpty != keyB.isEmpty) {
+      return keyA.isEmpty ? 1 : -1;
+    }
+    final comparison = keyA.compareTo(keyB);
+    return comparison != 0 ? comparison : a.$1.compareTo(b.$1);
+  });
+  return indexed.map((entry) => entry.$2).toList(growable: false);
 }
 
 List<Note> filterNotesForPdfReport(List<Note> notes) {
