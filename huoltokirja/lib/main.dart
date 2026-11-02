@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app/app.dart';
 import 'app/providers.dart';
+import 'core/config/app_config.dart';
 import 'core/logging/app_logger.dart';
 import 'data/database/app_database.dart';
 import 'data/mappers/dependant_mapper.dart';
@@ -17,6 +18,7 @@ import 'data/services/scheduler_auto_trigger_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await AppConfig.loadVersion();
   configureLogging();
   final database = await AppDatabase.open();
 
